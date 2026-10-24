@@ -52,6 +52,8 @@ h1,h2,h3,h4{font-weight:800 !important;letter-spacing:-.025em}
 .cap-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 1.4em}
 .cap{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border-radius:14px;
  box-shadow:inset 0 0 0 1px var(--line);padding:14px;font-size:14px;line-height:1.4}
+.premium{display:inline-block;margin-left:8px;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:700;
+ letter-spacing:.04em;text-transform:uppercase;vertical-align:2px;background:var(--primary);color:var(--on-primary)}
 .cap-icon{font-size:20px;line-height:1.2}
 .cap-text{color:var(--muted);font-size:13px;margin-top:3px}
 @media (max-width:900px){.cap-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}

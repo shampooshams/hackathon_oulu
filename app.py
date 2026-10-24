@@ -155,9 +155,10 @@ def capabilities(team: str) -> list[tuple[str, str, str]]:
                                           f"Mention another team and I'll compare it with {html.escape(team)}."),
         ("📈", "Playoff chances", f"I simulate the rest of the season {SIMULATIONS:,} times and tell you what "
                                   "tonight's game means for the race."),
-        ("🎙️", "Daily podcast", "Two hosts talk through your team's day, ready to listen to."),
-        ("🔔", "Alerts and predictions", "Get warned when your team's chances drop, and save your score "
-                                         "prediction for the next game."),
+        ("🎙️", "Daily podcast ★", "Two hosts talk through your team's day. Ask for an episode for your "
+                                   "commute to work, school or home."),
+        ("🔔", "Alerts and predictions ★", "Get warned when your team's chances drop, and save your score "
+                                           "prediction for the next game."),
         ("🏟️", "Game night", "Follow tonight's game event by event and see how the table changes."),
         ("✅", "Checked facts", "Every number links to its source and is checked against the data. "
                                "No betting tips."),
@@ -276,7 +277,8 @@ if not ss.chat:   # before the first message: a welcome banner and what the assi
                 '<div class="welcome-sub">Ask me anything, any time. Here\'s what I can do.</div></div>'
                 '<span class="welcome-label">AI-generated image</span></div>', unsafe_allow_html=True)
     st.markdown('<div class="cap-grid">' + "".join(
-                    f'<div class="cap"><div class="cap-icon">{icon}</div><div><b>{title}</b>'
+                    f'<div class="cap"><div class="cap-icon">{icon}</div><div><b>{title.removesuffix(" ★")}</b>'
+                    + ('<span class="premium">Premium</span>' if title.endswith("★") else "") +
                     f'<div class="cap-text">{text}</div></div></div>' for icon, title, text in capabilities(T))
                 + '</div>', unsafe_allow_html=True)
 st.markdown('<div class="stat-grid">' + "".join(
