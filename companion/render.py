@@ -53,6 +53,13 @@ button[kind="primary"],button[data-testid="stBaseButton-primary"]{color:#122014 
 .scoreline span{margin-left:auto;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
 [data-testid="stSidebar"] [data-testid="stExpander"]{margin-top:.2em}
 .block-container{padding-top:2.2rem;max-width:1180px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:.2em 0 1.2em}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 18px;min-width:0}
+.stat-label{font-size:10px;letter-spacing:1.3px;font-weight:700;text-transform:uppercase;color:var(--muted)}
+.stat-value{font-size:clamp(24px,2.6vw,34px);font-weight:900;letter-spacing:-.04em;line-height:1.15;margin:.25em 0 .2em;
+ overflow-wrap:anywhere}
+.stat-sub{font-size:12px;color:var(--muted)}
+@media (max-width:1250px){.stat-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}}
 @media (max-width:640px){
  [data-testid="stHorizontalBlock"]:has([data-testid="stMetric"]){flex-flow:row wrap;gap:.6rem}
  [data-testid="stHorizontalBlock"]:has([data-testid="stMetric"])>[data-testid="stColumn"]{

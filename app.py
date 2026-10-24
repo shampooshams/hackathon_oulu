@@ -190,14 +190,19 @@ st.markdown(f'<div class="kicker">Your team companion</div>'
 if snap.is_mock:
     st.markdown('<div class="demo">ⓘ Demo data: team names are real Liiga clubs, but all players, scores and '
                 'results are fictional.</div>', unsafe_allow_html=True)
-c1, c2, c3, c4 = st.columns(4)
-c1.metric("Position", ordinal(row.rank), help=f"{row.gp} games played")
-c2.metric("Points", row.pts)
-c3.metric(f"Top-{D} chance", pct(season.p_top6[TEAM]),
-          help=f"Top {D} go straight to the quarter-finals. Chance of making the playoffs (top {P}): "
-               f"{pct(season.p_top10[TEAM])}")
+rows = standings(snap)
+gap = rows[D - 1].pts - row.pts
+cards = [("Position", ordinal(row.rank), f"{row.gp} games played"),
+         ("Points", str(row.pts), f"In the top {D}" if row.rank <= D else
+          f"Level with {ordinal(D)}" if gap == 0 else f"{gap} behind {ordinal(D)}"),
+         (f"Top-{D} chance", pct(season.p_top6[TEAM]), f"Playoffs (top {P}): {pct(season.p_top10[TEAM])}")]
 if ng:
-    c4.metric(f"Next: {'vs' if ng['home'] == TEAM else 'at'} {OPP}", fmt_date(ng["date"]), help=ng["time"])
+    days = (datetime.fromisoformat(ng["date"]).date() - fetched_at.date()).days
+    when = {0: "Today", 1: "Tomorrow"}.get(days, fmt_date(ng["date"]))
+    cards.append(("Next game", f"{'vs' if ng['home'] == TEAM else 'at'} {OPP}", f"{when} · {ng['time']}"))
+st.markdown('<div class="stat-grid">' + "".join(
+    f'<div class="stat"><div class="stat-label">{html.escape(k)}</div><div class="stat-value">{html.escape(v)}</div>'
+    f'<div class="stat-sub">{html.escape(sub)}</div></div>' for k, v, sub in cards) + "</div>", unsafe_allow_html=True)
 
 tab_chat, tab_game, tab_race, tab_pod = st.tabs(["Chat", "Tonight", "Table", "Podcast"])
 
@@ -218,11 +223,11 @@ with tab_chat:
     if not ss.chat:
         st.caption(f"Ask anything about {T}, or ask me to do something: make today's podcast, "
                    f"save your prediction, set an alert.")
-    sugg = ["What are our playoff chances?", "What's at stake tonight?", "Make today's podcast",
-            f"Set a top-{D} alert"]
+    sugg = {"Playoff chances": "What are our playoff chances?", "Tonight's stakes": "What's at stake tonight?",
+            "Today's podcast": "Make today's podcast", f"Top-{D} alert": f"Set a top-{D} alert"}
     cols = st.columns(len(sugg))
-    for col, q in zip(cols, sugg):
-        if col.button(q, width="stretch"):
+    for col, (label, q) in zip(cols, sugg.items()):
+        if col.button(label, width="stretch"):
             ss.pending = q
     prompt = st.chat_input(f"Ask or tell your {T} companion…")
     question = prompt or ss.pop("pending", None)
