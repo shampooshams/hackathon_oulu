@@ -213,7 +213,7 @@ head, toggle = st.columns([5, 1], vertical_alignment="top")
 head.markdown(f'<div class="kicker">{LEAGUE.name}{" · " + html.escape(city) if city else ""}</div>'
               f'<div class="hero">{html.escape(T)}</div>', unsafe_allow_html=True)
 with toggle:
-    components.html(THEME_TOGGLE, height=56)
+    components.html(THEME_TOGGLE, height=42)
 if snap.is_mock:
     st.markdown('<div class="notice notice-demo"><span class="notice-label">Demo</span><span>Team names are real '
                 'clubs, but all players, scores and results are invented.'

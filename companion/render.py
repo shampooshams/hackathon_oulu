@@ -99,7 +99,7 @@ html[data-theme="dark"] button[data-testid="stBaseButton-primary"]{color:#003580
  font-variant-numeric:tabular-nums}
 .scoreline span{margin-left:auto;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 [data-testid="stSidebar"] [data-testid="stExpander"]{margin-top:.2em}
-.block-container{padding-top:2.2rem;max-width:1180px}
+.block-container{padding-top:3.6rem;max-width:1180px}
 @media (max-width:640px){
  [data-testid="stHorizontalBlock"]:has([data-testid="stMetric"]){flex-flow:row wrap;gap:.6rem}
  [data-testid="stHorizontalBlock"]:has([data-testid="stMetric"])>[data-testid="stColumn"]{
@@ -138,9 +138,11 @@ sync(); setInterval(sync, 400);
 THEME_TOGGLE = """<style>
  :root{--t:#0f1a2a;--l:#8796a8;--h:#eef2f7}
  html[data-theme=dark]{--t:#fff;--l:#6f8fbf;--h:#134489}
- body{margin:0;padding:4px 2px;display:flex;justify-content:flex-end;font-family:'Plus Jakarta Sans',Helvetica,Arial,sans-serif}
- button{min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--l);background:transparent;
-   color:var(--t);font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;white-space:nowrap}
+ html,body{background:transparent}
+ body{margin:0;padding:3px 3px 3px 0;display:flex;justify-content:flex-end;
+   font-family:'Plus Jakarta Sans',Helvetica,Arial,sans-serif}
+ button{height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--l);background:transparent;
+   color:var(--t);font-weight:600;font-size:13px;line-height:1;font-family:inherit;cursor:pointer;white-space:nowrap}
  button:hover{background:var(--h);border-color:var(--t)}
  button:focus-visible{outline:2px solid var(--t);outline-offset:2px}
 </style>
