@@ -338,10 +338,21 @@ with tab_game:
                         f'<div class="section-title">{html.escape(H)} vs {html.escape(A)}</div>',
                         unsafe_allow_html=True)
             if st_:
-                st.caption(f"Top-{D} chance after tonight")
-                m1, m2 = st.columns(2)
-                m1.metric("If they win", pct(st_["top6_if_win"]))
-                m2.metric("If they don't win" if LEAGUE.draws else "If they lose", pct(st_["top6_if_loss"]))
+                # Show the race tonight's game can actually move: the top places, or else the playoff line.
+                race, win, loss = f"top {D}", st_["top6_if_win"], st_["top6_if_loss"]
+                if P > D and max(win, loss) < 0.02:
+                    race, win, loss = f"top {P}", st_["top10_if_win"], st_["top10_if_loss"]
+                st.markdown(f"**What tonight means for {html.escape(T)}**")
+                if max(win, loss) < 0.01 or min(win, loss) > 0.99 or abs(win - loss) < 0.01:
+                    where = "out of reach" if max(win, loss) < 0.5 else "almost certain"
+                    st.caption(f"A {race} finish is {where} either way ({pct(win)}), so tonight's result "
+                               f"won't change it much. It's still a chance to get some points on the board.")
+                else:
+                    st.caption(f"{T}'s chance of finishing {race}, depending on tonight's result "
+                               f"(a swing of {round(100 * abs(win - loss))} percentage points):")
+                    m1, m2 = st.columns(2)
+                    m1.metric(f"If {T} win", pct(win))
+                    m2.metric(f"If {T} don't win" if LEAGUE.draws else f"If {T} lose", pct(loss))
             with st.container(border=True):
                 st.markdown("**Your prediction**")
                 pred = prof["predictions"].get(ng["id"], {"home": 2, "away": 2})
