@@ -149,19 +149,19 @@ def hero_image() -> str:
 
 
 def capabilities(team: str) -> list[tuple[str, str, str]]:
-    """What the assistant can do: shown in the empty chat and in the sidebar."""
-    return [
+    """What the assistant can do, shown above the stats before the first message."""
+    return [   # free features first, the three Premium ones (★) on the second row
         ("💬", "Answers about your team", f"The table, form, home and away, the schedule and top scorers. "
                                           f"Mention another team and I'll compare it with {html.escape(team)}."),
-        ("📈", "Playoff chances", f"I simulate the rest of the season {SIMULATIONS:,} times and tell you what "
-                                  "tonight's game means for the race."),
+        ("🏟️", "Game night", "Follow tonight's game event by event and see how the table changes."),
+        ("✅", "Checked facts", "Every number links to its source and is checked against the data. "
+                               "No betting tips."),
+        ("📈", "Playoff chances ★", f"I simulate the rest of the season {SIMULATIONS:,} times and tell you what "
+                                    "tonight's game means for the race."),
         ("🎙️", "Daily podcast ★", "Two hosts talk through your team's day. Ask for an episode for your "
                                    "commute to work, school or home."),
         ("🔔", "Alerts and predictions ★", "Get warned when your team's chances drop, and save your score "
                                            "prediction for the next game."),
-        ("🏟️", "Game night", "Follow tonight's game event by event and see how the table changes."),
-        ("✅", "Checked facts", "Every number links to its source and is checked against the data. "
-                               "No betting tips."),
     ]
 
 
