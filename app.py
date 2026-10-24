@@ -274,7 +274,8 @@ if ng:
 if not ss.chat:   # before the first message: a welcome banner and what the assistant can do
     st.markdown(f'<div class="welcome" style="background-image:url(data:image/jpeg;base64,{hero_image()})">'
                 f'<div class="welcome-text"><div class="welcome-title">Hi! I follow {html.escape(T)} for you.</div>'
-                '<div class="welcome-sub">Ask me anything, any time. Here\'s what I can do.</div></div>'
+                '<div class="welcome-sub">Ask me anything, any time. Here\'s what I can do.</div>'
+                '<a class="welcome-btn" href="#chat-box" target="_self">💬 Chat with me here</a></div>'
                 '<span class="welcome-label">AI-generated image</span></div>', unsafe_allow_html=True)
     st.markdown('<div class="cap-grid">' + "".join(
                     f'<div class="cap"><div class="cap-icon">{icon}</div><div><b>{title.removesuffix(" ★")}</b>'
@@ -343,6 +344,7 @@ with tab_chat:
             else:
                 render_reply(m["reply"])
 
+    st.markdown('<div id="chat-box"></div>', unsafe_allow_html=True)   # where "Chat with me here" jumps to
     prompt = st.chat_input(f"Ask your {T} assistant anything…")
     question = prompt or ss.pop("pending", None)
     if question:

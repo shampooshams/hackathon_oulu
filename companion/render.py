@@ -44,6 +44,9 @@ h1,h2,h3,h4{font-weight:800 !important;letter-spacing:-.025em}
 .welcome-text{position:relative;padding:24px 26px;max-width:min(440px,60%);color:#fff}
 .welcome-title{font-size:clamp(22px,2.4vw,30px);font-weight:800;line-height:1.15;letter-spacing:-.02em}
 .welcome-sub{font-size:15px;margin-top:6px;color:#dbe6f5}
+.welcome-btn{display:inline-block;margin-top:14px;padding:10px 20px;border-radius:999px;background:#fff;
+ color:#003580 !important;font-weight:800;font-size:15px;text-decoration:none !important;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.welcome-btn:hover{background:#e8f0fb}
 .welcome-label{position:absolute;right:10px;bottom:8px;font-size:11px;font-weight:600;color:#fff;
  background:rgba(0,0,0,.45);padding:2px 8px;border-radius:999px}
 @media (max-width:560px){.welcome{min-height:300px;background-position:72% 30%}
@@ -149,6 +152,22 @@ function sync() {
   if (doc.documentElement.dataset.theme !== theme) doc.documentElement.dataset.theme = theme;
 }
 sync(); setInterval(sync, 400);
+// "Chat with me" on the welcome banner: open the Chat tab, scroll to the message box and focus it.
+if (!doc.__chatJump) {
+  doc.__chatJump = true;
+  doc.addEventListener('click', (e) => {
+    if (!e.target.closest('.welcome-btn')) return;
+    e.preventDefault();
+    const tab = [...doc.querySelectorAll('[role="tab"]')].find(t => t.textContent.trim() === 'Chat');
+    if (tab) tab.click();
+    setTimeout(() => {
+      const box = doc.querySelector('[data-testid="stChatInput"] textarea');
+      if (!box) return;
+      box.scrollIntoView({behavior: 'smooth', block: 'center'});
+      box.focus({preventScroll: true});
+    }, 150);
+  });
+}
 </script>"""
 
 
