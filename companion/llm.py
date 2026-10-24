@@ -7,7 +7,7 @@ import os
 import re
 
 # Tried in order if the chosen Gemini model isn't found or its quota is used up (each model has its own).
-GEMINI_BACKUPS = ("gemini-flash-latest", "gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-3.8-flash")
+GEMINI_BACKUPS = ("gemini-flash-latest", "gemini-3.8-flash", "gemini-3.6-flash", "gemini-2.5-flash")
 
 
 def explain(e: Exception) -> str:
