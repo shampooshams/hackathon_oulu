@@ -11,7 +11,11 @@ from companion.config import LEAGUE
 from companion.facts import FactStore
 from companion.stats import ordinal
 
-D, P = LEAGUE.direct_spots, LEAGUE.playin_last  # top-D go straight to the quarter-finals, top-P make the playoffs
+
+
+def _loss() -> str:
+    """What 'not winning' means: in football a draw also costs points against a win."""
+    return "a draw or loss" if LEAGUE.draws else "a loss"
 
 
 def _who(fs: FactStore, persona: str, cap: bool = True) -> str:
@@ -66,15 +70,15 @@ def chat(message: str, fs: FactStore, persona: str, user_name: str = "") -> str:
                       "rank", "points", "gp"))
         out.append(_s(fs, f"That's {fs.v('gap6')}.", "gap6"))
         if fs.has("p_top6"):
-            out.append(_s(fs, f"Across the simulated rest of the season, {w} finish in the top {D} (straight to the "
-                              f"quarter-finals) in {fs.v('p_top6')} of runs and reach the playoffs (top {P}) in "
-                              f"{fs.v('p_top10')}.",
-                          "p_top6", "p_top10"))
-            out.append(_s(fs, f"The {ordinal(D)}-placed team typically ends on about {fs.v('cutline')}, and {w} are "
+            reach = (f" and {LEAGUE.reach_goal} (top {LEAGUE.playin_last}) in {fs.v('p_top10')}"
+                     if fs.has("p_top10") else "")
+            out.append(_s(fs, f"Across the simulated rest of the season, {w} finish in the top {LEAGUE.direct_spots} "
+                              f"({LEAGUE.direct_goal}) in {fs.v('p_top6')} of runs{reach}.", "p_top6", "p_top10"))
+            out.append(_s(fs, f"The {ordinal(LEAGUE.direct_spots)}-placed team typically ends on about {fs.v('cutline')}, and {w} are "
                               f"projected at {fs.v('proj_points')}.", "cutline", "proj_points"))
         if fs.has("stake_win"):
-            out.append(_s(fs, f"Tonight matters: a win lifts the top-{D} chance to {fs.v('stake_win')}, "
-                              f"a loss drops it to {fs.v('stake_loss')}.", "stake_win", "stake_loss"))
+            out.append(_s(fs, f"Tonight matters: a win lifts the top-{LEAGUE.direct_spots} chance to {fs.v('stake_win')}, "
+                              f"{_loss()} drops it to {fs.v('stake_loss')}.", "stake_win", "stake_loss"))
         if persona == "buddy":
             out.append("Long way to go, but every point counts from here.")
     elif intent == "next":
@@ -86,8 +90,8 @@ def chat(message: str, fs: FactStore, persona: str, user_name: str = "") -> str:
                           f"{fs.v('opp_form5')}.", "opp_rank", "opp_points", "opp_form5"))
         out.append(_s(fs, f"Head-to-head: {fs.v('h2h')}.", "h2h"))
         if fs.has("stake_win"):
-            out.append(_s(fs, f"What's at stake: win and the top-{D} chance goes to {fs.v('stake_win')}, "
-                              f"lose and it's {fs.v('stake_loss')}, a swing of {fs.v('stake_swing')}.",
+            out.append(_s(fs, f"What's at stake: win and the top-{LEAGUE.direct_spots} chance goes to {fs.v('stake_win')}, "
+                              f"{'drop points' if LEAGUE.draws else 'lose'} and it's {fs.v('stake_loss')}, a swing of {fs.v('stake_swing')}.",
                           "stake_win", "stake_loss", "stake_swing"))
         if fs.has("prediction"):
             out.append(_s(fs, f"Your call on record: {fs.v('prediction')}.", "prediction"))
@@ -112,7 +116,7 @@ def chat(message: str, fs: FactStore, persona: str, user_name: str = "") -> str:
         out.append(_s(fs, f"Last results, oldest to newest: {fs.v('form5')}, worth {fs.v('form5_pts')} points.",
                       "form5", "form5_pts"))
         out.append(_s(fs, f"Current streak: {fs.v('streak')}.", "streak"))
-        out.append(_s(fs, f"Season record (W–OTW–OTL–L) is {fs.v('record')} with a goal difference of {fs.v('gd')}.",
+        out.append(_s(fs, f"Season record ({fs.get('record').label.split('(')[-1].rstrip(')')}) is {fs.v('record')} with a goal difference of {fs.v('gd')}.",
                       "record", "gd"))
     elif intent == "last":
         out.append(_s(fs, f"Last game: {fs.v('last_game')}.", "last_game"))
@@ -146,8 +150,8 @@ def brief(fs: FactStore, persona: str, user_name: str = "", sponsor: str = "") -
         parts.append(_s(fs, f"The opponent sits {fs.v('opp_rank')} with recent form {fs.v('opp_form5')}.",
                         "opp_rank", "opp_form5"))
     if fs.has("stake_win"):
-        parts.append(_s(fs, f"Why it matters: a win takes the top-{D} chance to {fs.v('stake_win')}, "
-                            f"a loss leaves it at {fs.v('stake_loss')}.", "stake_win", "stake_loss"))
+        parts.append(_s(fs, f"Why it matters: a win takes the top-{LEAGUE.direct_spots} chance to {fs.v('stake_win')}, "
+                            f"{_loss()} leaves it at {fs.v('stake_loss')}.", "stake_win", "stake_loss"))
     if fs.has("top_scorer"):
         parts.append(_s(fs, f"Player to watch: {fs.v('top_scorer')}.", "top_scorer"))
     parts.append("That's your brief. Enjoy the game!" if persona == "buddy" else "That's the brief for today.")
@@ -178,15 +182,15 @@ def podcast(fs: FactStore, sponsor: str = "", short: bool = False) -> str:
                                    "opp_rank", "opp_form5"))
     if fs.has("stake_win"):
         lines.append(f"{a}: So how big is it?")
-        lines.append(f"{m}: " + _s(fs, f"A win takes the top-{D} chance to {fs.v('stake_win')}, a loss leaves it "
-                                       f"at {fs.v('stake_loss')}.", "stake_win", "stake_loss"))
+        lines.append(f"{m}: " + _s(fs, f"A win takes the top-{LEAGUE.direct_spots} chance to {fs.v('stake_win')}, "
+                                       f"{_loss()} leaves it at {fs.v('stake_loss')}.", "stake_win", "stake_loss"))
     if fs.has("p_top10") and not short:
-        lines.append(f"{m}: " + _s(fs, f"Over the whole season, the simulations put {T} in the top {P} in "
+        lines.append(f"{m}: " + _s(fs, f"Over the whole season, the simulations put {T} in the top {LEAGUE.playin_last} in "
                                        f"{fs.v('p_top10')} of runs.", "p_top10"))
     if fs.has("top_scorer"):
         lines.append(f"{a}: " + _s(fs, f"Player to watch: {fs.v('top_scorer')}.", "top_scorer"))
     lines.append(f"{m}: That's the numbers. The rest is up to the players.")
-    lines.append(f"{a}: See you at the rink. Hyvä {T}!")
+    lines.append(f"{a}: See you at the {LEAGUE.venue}. Hyvä {T}!")
     return "\n".join(lines)
 
 
@@ -204,6 +208,9 @@ def ping(ev: dict, fs: FactStore, fav_team_name: str) -> str:
         if fs.has("assists"):
             text += " " + _s(fs, f"Assists: {fs.v('assists')}.", "assists")
         return text
+    if t == "card":
+        return _s(fs, f"{fs.v('detail')}: {fs.v('player')} ({fs.v('ev_team')}), {fs.v('time')}.",
+                  "detail", "player", "ev_team", "time")
     if t == "penalty":
         return _s(fs, f"Penalty: {fs.v('player')} ({fs.v('ev_team')}), {fs.v('detail')}, at {fs.v('time')}.",
                   "player", "ev_team", "detail", "time")
@@ -219,7 +226,8 @@ def postgame(fs: FactStore, persona: str) -> str:
     won = fs.v("result").startswith("win")
     out = []
     if persona == "buddy":
-        out.append("What a night!" if won else "Tough one tonight.")
+        out.append("What a night!" if won else "Honours even tonight." if fs.v("result") == "draw"
+                   else "Tough one tonight.")
     out.append(_s(fs, f"Final: {fs.v('final')}, a {fs.v('result')} worth {fs.v('points_earned')} "
                       f"point{'s' if fs.v('points_earned') != '1' else ''}.", "final", "result", "points_earned"))
     if fs.has("star"):
@@ -227,7 +235,7 @@ def postgame(fs: FactStore, persona: str) -> str:
     out.append(_s(fs, f"{T} move from {fs.v('rank_before')} to {fs.v('rank_after')} on {fs.v('points_after')} "
                       f"points, with tonight's other games still to finish.",
                   "rank_before", "rank_after", "points_after"))
-    out.append(_s(fs, f"Top-{D} chance: {fs.v('top6_before')} before the game, {fs.v('top6_after')} now "
+    out.append(_s(fs, f"Top-{LEAGUE.direct_spots} chance: {fs.v('top6_before')} before the game, {fs.v('top6_after')} now "
                       f"({fs.v('top6_change')}).", "top6_before", "top6_after", "top6_change"))
     if fs.has("prediction"):
         out.append(_s(fs, f"Your prediction ({fs.v('prediction')}): {fs.v('prediction_verdict')}.",

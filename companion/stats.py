@@ -16,6 +16,7 @@ class Row:
     w: int = 0
     otw: int = 0
     otl: int = 0
+    d: int = 0          # draws (football)
     l: int = 0
     gf: int = 0
     ga: int = 0
@@ -45,9 +46,12 @@ def result_for(g: dict, team: str) -> dict:
     home = g["home"] == team
     gf, ga = (g["home_goals"], g["away_goals"]) if home else (g["away_goals"], g["home_goals"])
     won, extra = gf > ga, g["decided"] in ("OT", "SO")
-    outcome = ("OTW" if extra else "W") if won else ("OTL" if extra else "L")
-    pts = {"W": LEAGUE.points_reg_win, "OTW": LEAGUE.points_ot_win,
-           "OTL": LEAGUE.points_ot_loss, "L": 0}[outcome]
+    if gf == ga:
+        outcome = "D"
+    else:
+        outcome = ("OTW" if extra else "W") if won else ("OTL" if extra else "L")
+    pts = {"W": LEAGUE.points_reg_win, "OTW": LEAGUE.points_ot_win, "OTL": LEAGUE.points_ot_loss,
+           "D": LEAGUE.points_draw, "L": 0}[outcome]
     return {"game": g, "home": home, "opponent": g["away"] if home else g["home"],
             "gf": gf, "ga": ga, "outcome": outcome, "points": pts, "won": won}
 
@@ -62,8 +66,10 @@ def standings(snap: Snapshot) -> list[Row]:
             r.ga += res["ga"]
             r.pts += res["points"]
             setattr(r, res["outcome"].lower(), getattr(r, res["outcome"].lower()) + 1)
-    # Liiga tie-break: points, then regulation (3-point) wins, then goal difference, then goals scored
-    ordered = sorted(rows.values(), key=lambda r: (-r.pts, -r.w, -r.gd, -r.gf, r.name))
+    # Liiga tie-break: points, then regulation (3-point) wins, then goal difference, then goals scored.
+    # Football: points, goal difference, goals scored.
+    reg = LEAGUE.tiebreak_reg_wins
+    ordered = sorted(rows.values(), key=lambda r: (-r.pts, -r.w if reg else 0, -r.gd, -r.gf, r.name))
     for i, r in enumerate(ordered, 1):
         r.rank = i
     return ordered
@@ -74,16 +80,18 @@ def team_results(snap: Snapshot, team: str) -> list[dict]:
 
 
 def streak(results: list[dict]) -> tuple[str, int]:
-    """('win'|'loss', length) counting OT results by win/loss."""
+    """('win'|'draw'|'loss', length) counting OT results by win/loss."""
     if not results:
         return "none", 0
-    kind = results[-1]["won"]
-    n = 0
+
+    def kind(r):
+        return "draw" if r["outcome"] == "D" else ("win" if r["won"] else "loss")
+    k, n = kind(results[-1]), 0
     for r in reversed(results):
-        if r["won"] != kind:
+        if kind(r) != k:
             break
         n += 1
-    return ("win" if kind else "loss"), n
+    return k, n
 
 
 def next_game(snap: Snapshot, team: str) -> dict | None:

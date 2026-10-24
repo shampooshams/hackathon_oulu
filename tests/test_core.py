@@ -119,3 +119,30 @@ def test_companion_declines_betting():
     fs = build_team_facts(SNAP, "KARPAT", ODDS)
     r = Companion(None, "stats").chat(fs, [], "Should I bet on tonight?")
     assert "don't do betting" in r.text and r.status == "verified"
+
+
+def test_football_demo_season_rules_and_answers():
+    from companion.config import LIIGA, VEIKKAUSLIIGA, use_league
+    from companion.data.providers import get_provider
+    use_league(VEIKKAUSLIIGA)
+    try:
+        snap = get_provider("football").snapshot()
+        scen = simulate(snap, n=2000)
+        rows = standings(snap)
+        assert any(r.d for r in rows)                                  # football has draws
+        for r in rows:
+            assert r.pts == 3 * r.w + r.d and r.gp == r.w + r.d + r.l and r.otw == r.otl == 0
+        for t in snap.teams:
+            assert abs(scen.p_top6[t] + scen.p_out[t] - 1) < 1e-9     # no middle band: top 6 or not
+        evs = [e for evs in snap.events.values() for e in evs]
+        assert {e["type"] for e in evs} <= {"goal", "card", "period_end", "game_end"}
+        fs = build_team_facts(snap, "ACOULU", scen)
+        assert "championship group" in fs.v("format")
+        for q in QUESTIONS:
+            r = Companion(None, "buddy").chat(fs, [], q)
+            assert r.status == "verified", (q, r.report.feedback(fs))
+            assert "quarter-final" not in r.text and "rink" not in r.text
+        pod = Companion(None, "buddy").podcast(fs, "Sponsor Oy")
+        assert pod.status == "verified" and "stadium" in pod.text
+    finally:
+        use_league(LIIGA)

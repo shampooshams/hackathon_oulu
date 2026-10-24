@@ -18,7 +18,7 @@ load_dotenv()
 
 from companion.agent import route  # noqa: E402
 from companion.companion import Companion  # noqa: E402
-from companion.config import LEAGUE, SIMULATIONS  # noqa: E402
+from companion.config import FORMATS, LEAGUE, SIMULATIONS, use_league  # noqa: E402
 from companion.data.providers import get_provider  # noqa: E402
 from companion.facts import build_team_facts, pct  # noqa: E402
 from companion.live import apply_result, event_facts, postgame_facts, simulate_tonight  # noqa: E402
@@ -32,7 +32,6 @@ from companion.tts import browser_player, gemini_audio  # noqa: E402
 
 st.set_page_config(page_title="Fan Companion · Kaleva Media", page_icon="🏒", layout="wide")
 st.markdown(CSS, unsafe_allow_html=True)
-D, P = LEAGUE.direct_spots, LEAGUE.playin_last
 
 
 # ---------- cached data ----------------------------------------------------
@@ -122,9 +121,23 @@ def make_podcast(short: bool) -> dict:
     return item
 
 
-# ---------- league data ----------------------------------------------------
-# Real Liiga data only. COMPANION_DATA=mock is kept for offline development and tests.
-source = os.getenv("COMPANION_DATA", "liiga").lower()
+# ---------- sport and league data ------------------------------------------
+SPORTS = {"Hockey": "🏒 Hockey", "Football": "⚽ Football"}
+DEFAULT_TEAM = {"Hockey": "KARPAT", "Football": "ACOULU"}
+with st.sidebar:
+    st.markdown('<div class="brand"><span class="brand-mark">↗</span><span>FAN<span class="brand-thin">'
+                'COMPANION</span><span class="dot">.</span></span></div>', unsafe_allow_html=True)
+    sport = st.segmented_control("Sport", list(SPORTS), format_func=SPORTS.get, width="stretch",
+                                 default=prof.get("sport", "Hockey") if prof.get("sport") in SPORTS else "Hockey")
+    sport = sport or prof.get("sport") or "Hockey"
+if ss.get("sport_shown") not in (None, sport):   # switching sport starts a fresh conversation
+    ss.chat, ss.game, ss.podcast = [], None, None
+ss.sport_shown = prof["sport"] = sport
+
+# Hockey: real Liiga data (COMPANION_DATA=mock for offline work). Football: demo season until a feed exists.
+source = "football" if sport == "Football" else os.getenv("COMPANION_DATA", "liiga").lower()
+use_league(FORMATS[source])          # every rule and wording below follows this sport's league
+D, P = LEAGUE.direct_spots, LEAGUE.playin_last
 try:
     snap, fetched_at = load_snapshot(source)
 except Exception as e:  # API unreachable or changed
@@ -138,12 +151,14 @@ season = season_sim(source, results_key, snap)
 
 # ---------- sidebar --------------------------------------------------------
 with st.sidebar:
-    st.markdown('<div class="brand"><span class="brand-mark">↗</span><span>FAN<span class="brand-thin">'
-                'COMPANION</span><span class="dot">.</span></span></div>', unsafe_allow_html=True)
-
     team_ids = sorted(snap.teams, key=snap.name)
-    prof["team"] = st.selectbox("Your team", team_ids, format_func=snap.name,
-                                index=team_ids.index(prof["team"]) if prof["team"] in team_ids else 0)
+    teams_by_sport = prof.setdefault("teams", {})
+    current = teams_by_sport.get(sport) or (prof["team"] if sport == "Hockey" else DEFAULT_TEAM[sport])
+    if current not in team_ids:
+        current = DEFAULT_TEAM[sport] if DEFAULT_TEAM[sport] in team_ids else team_ids[0]
+    teams_by_sport[sport] = st.selectbox("Your team", team_ids, format_func=snap.name,
+                                         index=team_ids.index(current), key=f"team_{sport}")
+    prof["team"] = teams_by_sport[sport]
     with st.expander("Personalise"):
         prof["name"] = st.text_input("Your name", prof.get("name", ""))
         prof["language"] = st.selectbox("Language", ["English", "Suomi"],
@@ -164,7 +179,7 @@ with st.sidebar:
         demo_halluc = st.toggle("Inject a hallucination",
                                 help="Corrupts one number in the AI's draft to show the fact checker catching it.")
         st.markdown(
-            "**How it works.** Results come from the Liiga API. Plain code computes the table and "
+            f"**How it works.** Results come from {snap.source}. Plain code computes the table and "
             f"{SIMULATIONS:,} simulated seasons. Every number becomes a fact with an ID; the AI must cite it, "
             "and a checker blocks any number that doesn't match.")
 
@@ -188,14 +203,16 @@ OPP = (A if ng["home"] == TEAM else H) if ng else ""
 st.markdown(f'<div class="kicker">Your team companion</div>'
             f'<div class="hero">{html.escape(T)} <em>companion.</em></div>', unsafe_allow_html=True)
 if snap.is_mock:
-    st.markdown('<div class="demo">ⓘ Demo data: team names are real Liiga clubs, but all players, scores and '
-                'results are fictional.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="demo">ⓘ Demo data: team names are real clubs, but all players, scores and '
+                'results are fictional.' + (" There's no football data feed yet." if sport == "Football" else "")
+                + '</div>', unsafe_allow_html=True)
 rows = standings(snap)
 gap = rows[D - 1].pts - row.pts
 cards = [("Position", ordinal(row.rank), f"{row.gp} games played"),
          ("Points", str(row.pts), f"In the top {D}" if row.rank <= D else
           f"Level with {ordinal(D)}" if gap == 0 else f"{gap} behind {ordinal(D)}"),
-         (f"Top-{D} chance", pct(season.p_top6[TEAM]), f"Playoffs (top {P}): {pct(season.p_top10[TEAM])}")]
+         (f"Top-{D} chance", pct(season.p_top6[TEAM]),
+          f"Playoffs (top {P}): {pct(season.p_top10[TEAM])}" if P > D else LEAGUE.direct_goal.capitalize())]
 if ng:
     days = (datetime.fromisoformat(ng["date"]).date() - fetched_at.date()).days
     when = {0: "Today", 1: "Tomorrow"}.get(days, fmt_date(ng["date"]))
@@ -209,7 +226,7 @@ tab_chat, tab_game, tab_race, tab_pod = st.tabs(["Chat", "Tonight", "Table", "Po
 # ---------- chat (agent) ---------------------------------------------------
 with tab_chat:
     for m in ss.chat:
-        with st.chat_message(m["role"], avatar="🧑" if m["role"] == "user" else "🏒"):
+        with st.chat_message(m["role"], avatar="🧑" if m["role"] == "user" else ("⚽" if sport == "Football" else "🏒")):
             if m["role"] == "user":
                 st.markdown(m["content"])
             elif m["kind"] == "podcast":
@@ -223,7 +240,7 @@ with tab_chat:
     if not ss.chat:
         st.caption(f"Ask anything about {T}, or ask me to do something: make today's podcast, "
                    f"save your prediction, set an alert.")
-    sugg = {"Playoff chances": "What are our playoff chances?", "Tonight's stakes": "What's at stake tonight?",
+    sugg = {("Top-6 race" if LEAGUE.draws else "Playoff chances"): "What are our playoff chances?", "Tonight's stakes": "What's at stake tonight?",
             "Today's podcast": "Make today's podcast", f"Top-{D} alert": f"Set a top-{D} alert"}
     cols = st.columns(len(sugg))
     for col, (label, q) in zip(cols, sugg.items()):
@@ -280,8 +297,9 @@ with tab_game:
                         unsafe_allow_html=True)
             if st_:
                 m1, m2 = st.columns(2)
-                m1.metric(f"Top-{D} if they win", pct(st_["top6_if_win"]))
-                m2.metric(f"Top-{D} if they lose", pct(st_["top6_if_loss"]))
+                st.caption(f"Top-{D} chance after tonight")
+                m1.metric("If they win", pct(st_["top6_if_win"]))
+                m2.metric("If they don't win" if LEAGUE.draws else "If they lose", pct(st_["top6_if_loss"]))
             with st.container(border=True):
                 st.markdown("**Your prediction**")
                 pred = prof["predictions"].get(ng["id"], {"home": 2, "away": 2})
@@ -370,15 +388,24 @@ with tab_game:
 
 # ---------- table ----------------------------------------------------------
 with tab_race:
-    st.markdown('<div class="kicker">The race</div><div class="section-title">Playoff race'
-                '<span class="dot">.</span></div>', unsafe_allow_html=True)
-    st.caption(f"Top {D} go straight to the quarter-finals, {D + 1}th–{P}th play the first playoff round. "
-               f"Chances come from {season.n:,} simulated seasons: probabilities, not predictions.")
+    football = sport == "Football"
+    st.markdown(f'<div class="kicker">The race</div><div class="section-title">'
+                f'{"Top-6 race" if football else "Playoff race"}<span class="dot">.</span></div>',
+                unsafe_allow_html=True)
+    middle = f", {D + 1}th–{P}th play the {LEAGUE.first_round}" if P > D else ""
+    st.caption(f"Top {D} go {LEAGUE.direct_goal}{middle}; the rest {LEAGUE.out_label}. Chances come from "
+               f"{season.n:,} simulated seasons: probabilities, not predictions.")
+    # Bands of the final table: (name, % column, colour, first place, last place)
+    bands = ([("Championship group", f"Top {D} %", "#d3fa5b", 1, D),
+              ("Relegation group", "Bottom %", "#6b7b8b", D + 1, len(snap.teams))] if P == D else
+             [("Quarter-final", f"Top {D} %", "#d3fa5b", 1, D),
+              ("First round", f"{D + 1}–{P} %", "#ff9b63", D + 1, P),
+              ("Miss", "Miss %", "#6b7b8b", P + 1, len(snap.teams))])
+    probs = {f"Top {D} %": season.p_top6, f"{D + 1}–{P} %": season.p_playin, "Miss %": season.p_out,
+             "Bottom %": season.p_out}
     table = pd.DataFrame([{
         "Pos": r.rank, "Team": r.name, "GP": r.gp, "Pts": r.pts, "GD": r.gd,
-        f"Top {D} %": round(100 * season.p_top6[r.team]),
-        f"{D + 1}–{P} %": round(100 * season.p_playin[r.team]),
-        "Miss %": round(100 * season.p_out[r.team]),
+        **{col: round(100 * probs[col][r.team]) for _, col, _, _, _ in bands},
         "Proj. pts": round(season.proj_points[r.team]),
     } for r in standings(snap)])
     styled = table.style.apply(
@@ -388,14 +415,11 @@ with tab_race:
 
     st.markdown(f"#### Where {T} finish")
     dist = season.rank_dist[TEAM]
-    chart = pd.DataFrame({
-        "Final position": [ordinal(i + 1) for i in range(len(dist))],
-        "Quarter-final": [round(100 * p, 1) if i < D else 0 for i, p in enumerate(dist)],
-        "First round": [round(100 * p, 1) if D <= i < P else 0 for i, p in enumerate(dist)],
-        "Miss": [round(100 * p, 1) if i >= P else 0 for i, p in enumerate(dist)],
-    })
-    st.bar_chart(chart, x="Final position", y=["Quarter-final", "First round", "Miss"], y_label="% of simulations",
-                 color=["#d3fa5b", "#ff9b63", "#6b7b8b"], sort=False)
+    chart = pd.DataFrame({"Final position": [ordinal(i + 1) for i in range(len(dist))],
+                          **{name: [round(100 * p, 1) if lo <= i + 1 <= hi else 0 for i, p in enumerate(dist)]
+                             for name, _, _, lo, hi in bands}})
+    st.bar_chart(chart, x="Final position", y=[b[0] for b in bands], y_label="% of simulations",
+                 color=[b[2] for b in bands], sort=False)
 
 # ---------- podcast --------------------------------------------------------
 with tab_pod:

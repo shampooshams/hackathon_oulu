@@ -1,0 +1,758 @@
+[
+ {
+  "id": "ACOULU",
+  "name": "AC Oulu",
+  "city": "Oulu",
+  "roster": [
+   {
+    "name": "Santeri Jokela",
+    "weight": 2.337060293358045
+   },
+   {
+    "name": "Oskari Nyström",
+    "weight": 1.2345137424329182
+   },
+   {
+    "name": "Kasper Ylönen",
+    "weight": 2.9629141115759077
+   },
+   {
+    "name": "Otto Sirviö",
+    "weight": 2.9020276240303087
+   },
+   {
+    "name": "Daniel Jokela",
+    "weight": 1.3462344383575091
+   },
+   {
+    "name": "Henri Karjalainen",
+    "weight": 1.6873767003656068
+   },
+   {
+    "name": "Daniel Toivonen",
+    "weight": 1.8145094366626255
+   },
+   {
+    "name": "Otto Toivonen",
+    "weight": 2.1792170671066176
+   },
+   {
+    "name": "Leo Karjalainen",
+    "weight": 2.9148781868672424
+   },
+   {
+    "name": "Topias Huttunen",
+    "weight": 1.8992323466322936
+   },
+   {
+    "name": "Ilmari Lehtinen",
+    "weight": 2.6595036082693126
+   },
+   {
+    "name": "Viljami Pöllänen",
+    "weight": 2.536254964622248
+   },
+   {
+    "name": "Topias Hiltunen",
+    "weight": 2.2208768370747025
+   },
+   {
+    "name": "Eetu Ylönen",
+    "weight": 2.0153299948835235
+   }
+  ]
+ },
+ {
+  "id": "HJK",
+  "name": "HJK",
+  "city": "Helsinki",
+  "roster": [
+   {
+    "name": "Elias Saarinen",
+    "weight": 2.9888603085830687
+   },
+   {
+    "name": "Juho Pöllänen",
+    "weight": 2.9544065244529922
+   },
+   {
+    "name": "Onni Hakala",
+    "weight": 1.2649537452458262
+   },
+   {
+    "name": "Arttu Lehtinen",
+    "weight": 1.8175659093968335
+   },
+   {
+    "name": "Topias Ylönen",
+    "weight": 2.1773267405314183
+   },
+   {
+    "name": "Jesse Moilanen",
+    "weight": 2.259556754993321
+   },
+   {
+    "name": "Otto Riikonen",
+    "weight": 1.0012008266172931
+   },
+   {
+    "name": "Valtteri Ikonen",
+    "weight": 1.4495439376128967
+   },
+   {
+    "name": "Oskari Riikonen",
+    "weight": 0.6246995773947818
+   },
+   {
+    "name": "Arttu Mäkelä",
+    "weight": 2.3882814017851097
+   },
+   {
+    "name": "Akseli Toivonen",
+    "weight": 2.12281651277054
+   },
+   {
+    "name": "Joona Seppälä",
+    "weight": 1.898214694616006
+   },
+   {
+    "name": "Lauri Hakala",
+    "weight": 2.5667329660991336
+   },
+   {
+    "name": "Eemil Karjalainen",
+    "weight": 2.7665373173265904
+   }
+  ]
+ },
+ {
+  "id": "KUPS",
+  "name": "KuPS",
+  "city": "Kuopio",
+  "roster": [
+   {
+    "name": "Eemil Jokela",
+    "weight": 0.7643734719785709
+   },
+   {
+    "name": "Valtteri Heikkinen",
+    "weight": 2.001128395534106
+   },
+   {
+    "name": "Otto Pesonen",
+    "weight": 1.4642662541813305
+   },
+   {
+    "name": "Kasper Vuorinen",
+    "weight": 2.4014579248658148
+   },
+   {
+    "name": "Valtteri Tuominen",
+    "weight": 2.4059457859576234
+   },
+   {
+    "name": "Arttu Väisänen",
+    "weight": 2.7283786191761115
+   },
+   {
+    "name": "Daniel Koivisto",
+    "weight": 1.6443875170188882
+   },
+   {
+    "name": "Arttu Ikonen",
+    "weight": 0.7921685597683568
+   },
+   {
+    "name": "Jesse Halme",
+    "weight": 2.0959646417784192
+   },
+   {
+    "name": "Lauri Huttunen",
+    "weight": 2.7218606661803113
+   },
+   {
+    "name": "Niko Peltola",
+    "weight": 1.3031021823275408
+   },
+   {
+    "name": "Santeri Seppälä",
+    "weight": 2.5592637033751995
+   },
+   {
+    "name": "Veeti Pesonen",
+    "weight": 0.7822641359955822
+   },
+   {
+    "name": "Onni Niemi",
+    "weight": 1.3334651061340501
+   }
+  ]
+ },
+ {
+  "id": "SJK",
+  "name": "SJK",
+  "city": "Seinäjoki",
+  "roster": [
+   {
+    "name": "Valtteri Nyström",
+    "weight": 2.406485940808034
+   },
+   {
+    "name": "Otto Peltola",
+    "weight": 2.671057740249588
+   },
+   {
+    "name": "Jesse Lindqvist",
+    "weight": 2.2868697950301184
+   },
+   {
+    "name": "Otto Pöllänen",
+    "weight": 0.9493881186031995
+   },
+   {
+    "name": "Eemil Kallio",
+    "weight": 2.743060229513255
+   },
+   {
+    "name": "Leo Hiltunen",
+    "weight": 1.8706601077551839
+   },
+   {
+    "name": "Eetu Salminen",
+    "weight": 0.5844220016503536
+   },
+   {
+    "name": "Eemil Vuorinen",
+    "weight": 0.6392744741758809
+   },
+   {
+    "name": "Otto Ahola",
+    "weight": 2.3275386239590246
+   },
+   {
+    "name": "Eemil Ikonen",
+    "weight": 2.1994992007185292
+   },
+   {
+    "name": "Aleksi Väisänen",
+    "weight": 2.292541429077569
+   },
+   {
+    "name": "Roope Laukkanen",
+    "weight": 2.9707488112673737
+   },
+   {
+    "name": "Valtteri Niemi",
+    "weight": 2.639103979066357
+   },
+   {
+    "name": "Aleksi Toivonen",
+    "weight": 1.268859109583495
+   }
+  ]
+ },
+ {
+  "id": "ILVES",
+  "name": "Ilves",
+  "city": "Tampere",
+  "roster": [
+   {
+    "name": "Topias Saarinen",
+    "weight": 0.6450068399595641
+   },
+   {
+    "name": "Aleksi Sirviö",
+    "weight": 2.1097916396745395
+   },
+   {
+    "name": "Niko Koivisto",
+    "weight": 0.7339680169547859
+   },
+   {
+    "name": "Juho Mäkelä",
+    "weight": 1.7274194894161183
+   },
+   {
+    "name": "Niko Turunen",
+    "weight": 1.408629679073064
+   },
+   {
+    "name": "Arttu Tuominen",
+    "weight": 2.6129600720232737
+   },
+   {
+    "name": "Veeti Peltola",
+    "weight": 2.2943404184833622
+   },
+   {
+    "name": "Niko Hiltunen",
+    "weight": 2.467716244342042
+   },
+   {
+    "name": "Markus Salminen",
+    "weight": 2.291565667659474
+   },
+   {
+    "name": "Elias Mäkelä",
+    "weight": 1.5212278895080806
+   },
+   {
+    "name": "Lucas Ahola",
+    "weight": 2.6490680920260887
+   },
+   {
+    "name": "Aleksi Seppälä",
+    "weight": 1.850178769543875
+   },
+   {
+    "name": "Elias Moilanen",
+    "weight": 1.9419366288878117
+   },
+   {
+    "name": "Henri Ahola",
+    "weight": 2.667439661905304
+   }
+  ]
+ },
+ {
+  "id": "INTER",
+  "name": "FC Inter",
+  "city": "Turku",
+  "roster": [
+   {
+    "name": "Eemil Ahola",
+    "weight": 2.8823046155900265
+   },
+   {
+    "name": "Oskari Keränen",
+    "weight": 1.750808141626826
+   },
+   {
+    "name": "Daniel Väisänen",
+    "weight": 0.8494893623947926
+   },
+   {
+    "name": "Jesse Riikonen",
+    "weight": 0.7677679860262405
+   },
+   {
+    "name": "Topias Tolvanen",
+    "weight": 1.4208421814017052
+   },
+   {
+    "name": "Oskari Karjalainen",
+    "weight": 1.8185602662825913
+   },
+   {
+    "name": "Juho Toivonen",
+    "weight": 2.403780185246645
+   },
+   {
+    "name": "Niko Moilanen",
+    "weight": 2.28108621178104
+   },
+   {
+    "name": "Daniel Peltola",
+    "weight": 1.3644575717932175
+   },
+   {
+    "name": "Henri Kallio",
+    "weight": 0.5392913331296088
+   },
+   {
+    "name": "Jesse Niemi",
+    "weight": 1.4770541906297245
+   },
+   {
+    "name": "Elias Hiltunen",
+    "weight": 2.483387990195981
+   },
+   {
+    "name": "Severi Heikkinen",
+    "weight": 1.6993729443149095
+   },
+   {
+    "name": "Veeti Vuorinen",
+    "weight": 2.2949216688208054
+   }
+  ]
+ },
+ {
+  "id": "LAHTI",
+  "name": "FC Lahti",
+  "city": "Lahti",
+  "roster": [
+   {
+    "name": "Daniel Huttunen",
+    "weight": 1.4366213938309347
+   },
+   {
+    "name": "Eetu Karjalainen",
+    "weight": 2.427831977146834
+   },
+   {
+    "name": "Valtteri Tolvanen",
+    "weight": 2.7011074353177005
+   },
+   {
+    "name": "Santeri Riikonen",
+    "weight": 2.7009939985952363
+   },
+   {
+    "name": "Kasper Aaltonen",
+    "weight": 2.0134946027191463
+   },
+   {
+    "name": "Markus Toivonen",
+    "weight": 1.545219616255313
+   },
+   {
+    "name": "Akseli Ylönen",
+    "weight": 2.8433595991614222
+   },
+   {
+    "name": "Akseli Tuominen",
+    "weight": 1.588329207763352
+   },
+   {
+    "name": "Niko Ylönen",
+    "weight": 1.354343843734103
+   },
+   {
+    "name": "Niko Kemppainen",
+    "weight": 1.920300760658049
+   },
+   {
+    "name": "Aleksi Aaltonen",
+    "weight": 2.609776308980753
+   },
+   {
+    "name": "Eemil Lindqvist",
+    "weight": 1.7602548495925676
+   },
+   {
+    "name": "Eemil Seppälä",
+    "weight": 1.127596307005517
+   },
+   {
+    "name": "Niko Lindqvist",
+    "weight": 2.512701606974495
+   }
+  ]
+ },
+ {
+  "id": "VPS",
+  "name": "VPS",
+  "city": "Vaasa",
+  "roster": [
+   {
+    "name": "Veeti Lindqvist",
+    "weight": 1.0659948890731554
+   },
+   {
+    "name": "Aleksi Ylönen",
+    "weight": 2.507244065518402
+   },
+   {
+    "name": "Joona Lehtinen",
+    "weight": 2.3893822922881482
+   },
+   {
+    "name": "Lucas Turunen",
+    "weight": 2.0823569054509257
+   },
+   {
+    "name": "Ilmari Kallio",
+    "weight": 2.85797052479838
+   },
+   {
+    "name": "Akseli Ojala",
+    "weight": 1.4222766401314115
+   },
+   {
+    "name": "Eemil Sirviö",
+    "weight": 1.8850847532867299
+   },
+   {
+    "name": "Akseli Jokela",
+    "weight": 1.6540762606765187
+   },
+   {
+    "name": "Viljami Ylönen",
+    "weight": 2.4704506684991516
+   },
+   {
+    "name": "Topias Kemppainen",
+    "weight": 2.814474728677613
+   },
+   {
+    "name": "Veeti Ikonen",
+    "weight": 1.5643068791201515
+   },
+   {
+    "name": "Otto Lehtinen",
+    "weight": 2.9236262666523
+   },
+   {
+    "name": "Leo Tolvanen",
+    "weight": 0.7586253759629015
+   },
+   {
+    "name": "Ilmari Heikkinen",
+    "weight": 1.2572597194581088
+   }
+  ]
+ },
+ {
+  "id": "GNISTAN",
+  "name": "Gnistan",
+  "city": "Helsinki",
+  "roster": [
+   {
+    "name": "Eetu Ahola",
+    "weight": 1.3253478669956897
+   },
+   {
+    "name": "Ilmari Pesonen",
+    "weight": 2.841767517445871
+   },
+   {
+    "name": "Veeti Pöllänen",
+    "weight": 2.820383008441032
+   },
+   {
+    "name": "Niko Pesonen",
+    "weight": 1.4491668875349237
+   },
+   {
+    "name": "Severi Hakala",
+    "weight": 1.1525774258710646
+   },
+   {
+    "name": "Otto Turunen",
+    "weight": 1.869076181120927
+   },
+   {
+    "name": "Topias Heikkinen",
+    "weight": 2.605456165096493
+   },
+   {
+    "name": "Santeri Halme",
+    "weight": 1.9041377708282377
+   },
+   {
+    "name": "Lucas Hiltunen",
+    "weight": 0.5834728793629191
+   },
+   {
+    "name": "Juho Huttunen",
+    "weight": 1.4332251425747053
+   },
+   {
+    "name": "Topias Kallio",
+    "weight": 0.6199704903954126
+   },
+   {
+    "name": "Severi Toivonen",
+    "weight": 0.7119840619209026
+   },
+   {
+    "name": "Elias Lehtinen",
+    "weight": 1.5152931761506938
+   },
+   {
+    "name": "Viljami Vuorinen",
+    "weight": 2.3988781638168613
+   }
+  ]
+ },
+ {
+  "id": "JARO",
+  "name": "FF Jaro",
+  "city": "Pietarsaari",
+  "roster": [
+   {
+    "name": "Kasper Moilanen",
+    "weight": 1.965191479993475
+   },
+   {
+    "name": "Severi Halme",
+    "weight": 1.5714444666161396
+   },
+   {
+    "name": "Veeti Saarinen",
+    "weight": 2.064686054358633
+   },
+   {
+    "name": "Leo Väisänen",
+    "weight": 1.6289313761565567
+   },
+   {
+    "name": "Kasper Kallio",
+    "weight": 2.6943752200206488
+   },
+   {
+    "name": "Viljami Tuominen",
+    "weight": 2.1109381674727263
+   },
+   {
+    "name": "Akseli Moilanen",
+    "weight": 2.138817433706559
+   },
+   {
+    "name": "Kasper Ikonen",
+    "weight": 1.97055899819643
+   },
+   {
+    "name": "Kasper Tolvanen",
+    "weight": 2.3521257175852366
+   },
+   {
+    "name": "Santeri Toivonen",
+    "weight": 2.8136278526579153
+   },
+   {
+    "name": "Henri Koivisto",
+    "weight": 2.882844499734339
+   },
+   {
+    "name": "Veeti Ylönen",
+    "weight": 0.8574902280538822
+   },
+   {
+    "name": "Juho Moilanen",
+    "weight": 1.9035326165977111
+   },
+   {
+    "name": "Viljami Rautio",
+    "weight": 2.786986734316323
+   }
+  ]
+ },
+ {
+  "id": "MARIEHAMN",
+  "name": "IFK Mariehamn",
+  "city": "Maarianhamina",
+  "roster": [
+   {
+    "name": "Niko Kallio",
+    "weight": 0.8633690365178102
+   },
+   {
+    "name": "Leo Moilanen",
+    "weight": 1.8305707611059865
+   },
+   {
+    "name": "Arttu Turunen",
+    "weight": 2.7293071373018534
+   },
+   {
+    "name": "Joona Hakala",
+    "weight": 2.9135563201827486
+   },
+   {
+    "name": "Eetu Jokela",
+    "weight": 2.4934582730101917
+   },
+   {
+    "name": "Elias Laukkanen",
+    "weight": 2.39189773995905
+   },
+   {
+    "name": "Leo Laukkanen",
+    "weight": 1.2146398876184246
+   },
+   {
+    "name": "Oskari Tuominen",
+    "weight": 0.584718930900945
+   },
+   {
+    "name": "Niko Lehtinen",
+    "weight": 2.658819622216752
+   },
+   {
+    "name": "Niko Halme",
+    "weight": 1.5751236905724766
+   },
+   {
+    "name": "Kasper Pöllänen",
+    "weight": 1.7345939030935282
+   },
+   {
+    "name": "Oskari Peltola",
+    "weight": 1.465940719131782
+   },
+   {
+    "name": "Arttu Keränen",
+    "weight": 2.7701322952965204
+   },
+   {
+    "name": "Leo Pöllänen",
+    "weight": 0.7647656555526584
+   }
+  ]
+ },
+ {
+  "id": "HAKA",
+  "name": "FC Haka",
+  "city": "Valkeakoski",
+  "roster": [
+   {
+    "name": "Valtteri Salminen",
+    "weight": 2.1864832133818632
+   },
+   {
+    "name": "Niko Keränen",
+    "weight": 2.3787940069080618
+   },
+   {
+    "name": "Leo Ikonen",
+    "weight": 2.9497682644830827
+   },
+   {
+    "name": "Onni Seppälä",
+    "weight": 1.0454142045961956
+   },
+   {
+    "name": "Roope Ylönen",
+    "weight": 1.7057116058931454
+   },
+   {
+    "name": "Eetu Ikonen",
+    "weight": 2.567726494118061
+   },
+   {
+    "name": "Veeti Aaltonen",
+    "weight": 2.4672253750578417
+   },
+   {
+    "name": "Kasper Toivonen",
+    "weight": 2.748770663566948
+   },
+   {
+    "name": "Joona Tuominen",
+    "weight": 0.7086846172656123
+   },
+   {
+    "name": "Otto Rautio",
+    "weight": 2.3828250612169883
+   },
+   {
+    "name": "Leo Keränen",
+    "weight": 2.0557565844497803
+   },
+   {
+    "name": "Daniel Aaltonen",
+    "weight": 1.2790733003005446
+   },
+   {
+    "name": "Veeti Laukkanen",
+    "weight": 1.0281786927689796
+   },
+   {
+    "name": "Otto Koivisto",
+    "weight": 2.394742651635557
+   }
+  ]
+ }
+]

@@ -74,6 +74,17 @@ The adapter for the Liiga stats API (v1) is in `companion/data/providers.py` (`L
   - `simulate(snapshot)` gives the playoff odds
 - If a teammate already pulls Liiga data, share one provider so both of you get the same numbers.
 
+## Sports
+
+A **Sport** switch in the sidebar picks the league. Everything sport-specific (points, draws, tie-breaks,
+playoff or split format, periods vs halves, wording) lives in `LeagueFormat` in `companion/config.py`;
+the rest of the app reads the active sport's rules.
+
+- **Hockey:** real Liiga data from the Liiga API.
+- **Football:** a Veikkausliiga-style demo season (`data/mock_football/`, real club names, fictional players
+  and results) until a football data feed is available. Add a provider for a real feed in
+  `companion/data/providers.py` and point `get_provider("football")` to it.
+
 ## Demo data
 
 The mock season uses real Liiga club names, with fictional players, scores and results. "Today" is set to 2026-10-24 (`COMPANION_AS_OF`). Regenerate with `python -m companion.data.generate_mock`.

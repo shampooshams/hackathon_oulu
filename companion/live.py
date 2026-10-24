@@ -45,7 +45,10 @@ def event_facts(snap: Snapshot, game: dict, ev: dict) -> FactStore:
     H, A = snap.name(game["home"]), snap.name(game["away"])
     fs.add("score", "Score now", f"{H} {ev['home_score']}–{ev['away_score']} {A}", "Live event feed")
     if ev.get("period") is not None:
-        per = {"OT": "overtime", "SO": "shootout"}.get(ev["period"], f"period {ev['period']}")
+        names = LEAGUE.period_names
+        per = {"OT": "overtime", "SO": "shootout"}.get(
+            ev["period"], names[ev["period"] - 1] if isinstance(ev["period"], int) and ev["period"] <= len(names)
+            else f"period {ev['period']}")
         fs.add("time", "Game time", f"{per}, {ev['clock']}" if ev.get("clock") else per, "Live event feed")
     if ev.get("team"):
         fs.add("ev_team", "Team", snap.name(ev["team"]), "Live event feed")
@@ -71,8 +74,9 @@ def postgame_facts(before: Snapshot, after: Snapshot, team: str, game: dict,
     src_sim = f"Season simulation · {scen_after.n:,} runs"
 
     fs.add("final", "Final score", game_line(after, game), src_live)
-    fs.add("result", f"{T} result", {"W": "win in regulation", "OTW": "win in overtime/shootout",
-                                      "OTL": "loss in overtime/shootout", "L": "loss in regulation"}[res["outcome"]],
+    reg = "" if LEAGUE.draws else " in regulation"
+    fs.add("result", f"{T} result", {"W": f"win{reg}", "OTW": "win in overtime/shootout", "D": "draw",
+                                      "OTL": "loss in overtime/shootout", "L": f"loss{reg}"}[res["outcome"]],
            src_live)
     fs.add("points_earned", f"Points {T} earned tonight", res["points"], src_calc)
     fs.add("points_after", f"{T} points now", ra.pts, src_calc)

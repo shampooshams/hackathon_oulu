@@ -74,15 +74,18 @@ def build_team_facts(snap: Snapshot, team: str, scen: ScenarioResult | None,
     mock_note = " (fictional mock player)" if snap.is_mock else ""
 
     fs.add("team", "User's favourite team", T, "Your profile")
-    fs.add("format", "Playoff format",
-           f"Top {LEAGUE.direct_spots} go straight to the quarter-finals; {LEAGUE.direct_spots + 1}th–"
-           f"{LEAGUE.playin_last}th play the {LEAGUE.first_round}; {LEAGUE.playin_last + 1}th–{len(rows)}th "
-           f"miss the playoffs",
-           "Liiga regular-season rules")
+    D, P = LEAGUE.direct_spots, LEAGUE.playin_last
+    middle = f"{D + 1}th–{P}th play the {LEAGUE.first_round}; " if P > D else ""
+    fs.add("format", "Season format",
+           f"Top {D} go {LEAGUE.direct_goal}; {middle}{P + 1}th–{len(rows)}th {LEAGUE.out_label}",
+           f"{LEAGUE.name} rules")
     fs.add("rank", f"{T} league position", ordinal(row.rank), src_calc)
     fs.add("points", f"{T} points", row.pts, src_calc)
     fs.add("gp", f"{T} games played", row.gp, src_calc)
-    fs.add("record", f"{T} record (W–OTW–OTL–L)", f"{row.w}–{row.otw}–{row.otl}–{row.l}", src_calc)
+    if LEAGUE.draws:
+        fs.add("record", f"{T} record (W–D–L)", f"{row.w}–{row.d}–{row.l}", src_calc)
+    else:
+        fs.add("record", f"{T} record (W–OTW–OTL–L)", f"{row.w}–{row.otw}–{row.otl}–{row.l}", src_calc)
     fs.add("goals", f"{T} goals for–against", f"{row.gf}–{row.ga}", src_calc)
     fs.add("gd", f"{T} goal difference", f"{row.gd:+d}", src_calc)
 
@@ -93,9 +96,10 @@ def build_team_facts(snap: Snapshot, team: str, scen: ScenarioResult | None,
                ", ".join(r["outcome"] for r in last5), src_data)
         fs.add("form5_pts", f"{T} points from last {len(last5)} games", sum(r["points"] for r in last5), src_calc)
         kind, n = streak(results)
-        streak_txt = (("won the last game" if kind == "win" else "lost the last game") if n == 1
-                      else f"{n} {'wins' if kind == 'win' else 'losses'} in a row")
-        fs.add("streak", f"{T} current streak (OT results count as wins/losses)", streak_txt, src_calc)
+        streak_txt = ({"win": "won the last game", "draw": "drew the last game", "loss": "lost the last game"}[kind]
+                      if n == 1 else f"{n} {dict(win='wins', draw='draws', loss='losses')[kind]} in a row")
+        fs.add("streak", f"{T} current streak" + ("" if LEAGUE.draws else " (OT results count as wins/losses)"),
+               streak_txt, src_calc)
         fs.add("last_game", f"{T} last game", game_line(snap, results[-1]["game"]), src_data)
 
     leader = rows[0]
@@ -125,8 +129,11 @@ def build_team_facts(snap: Snapshot, team: str, scen: ScenarioResult | None,
         h2h = head_to_head(snap, team, opp)
         if h2h:
             w = sum(r["won"] for r in h2h)
+            d = sum(r["outcome"] == "D" for r in h2h)
+            lost = len(h2h) - w - d
+            draws = f", {d} draw{'s' if d != 1 else ''}" if LEAGUE.draws else ""
             fs.add("h2h", f"{T} vs {O} this season",
-                   f"{w} win{'s' if w != 1 else ''}, {len(h2h) - w} loss{'es' if len(h2h) - w != 1 else ''} "
+                   f"{w} win{'s' if w != 1 else ''}{draws}, {lost} loss{'es' if lost != 1 else ''} "
                    f"(last: {game_line(snap, h2h[-1]['game'])})", src_data)
         else:
             fs.add("h2h", f"{T} vs {O} this season", "first meeting this season", src_data)
@@ -143,13 +150,12 @@ def build_team_facts(snap: Snapshot, team: str, scen: ScenarioResult | None,
     fs.add("remaining", f"{T} regular-season games left", remaining, f"{snap.source} · fixtures")
 
     if scen:
-        fs.add("p_top6", f"{T} chance of a top-{LEAGUE.direct_spots} finish (direct quarter-final)",
-               pct(scen.p_top6[team]), src_sim)
-        fs.add("p_playin", f"{T} chance of finishing {LEAGUE.direct_spots + 1}th–{LEAGUE.playin_last}th "
-               f"({LEAGUE.first_round})", pct(scen.p_playin[team]), src_sim)
-        fs.add("p_top10", f"{T} chance of reaching the playoffs (top {LEAGUE.playin_last})",
-               pct(scen.p_top10[team]), src_sim)
-        fs.add("p_out", f"{T} chance of missing the playoffs", pct(scen.p_out[team]), src_sim)
+        fs.add("p_top6", f"{T} chance of a top-{D} finish ({LEAGUE.direct_goal})", pct(scen.p_top6[team]), src_sim)
+        if P > D:
+            fs.add("p_playin", f"{T} chance of finishing {D + 1}th–{P}th ({LEAGUE.first_round})",
+                   pct(scen.p_playin[team]), src_sim)
+            fs.add("p_top10", f"{T} chance to {LEAGUE.reach_goal} (top {P})", pct(scen.p_top10[team]), src_sim)
+        fs.add("p_out", f"{T} chance to {LEAGUE.out_label}", pct(scen.p_out[team]), src_sim)
         fs.add("p_first", f"{T} chance of finishing 1st", pct(scen.p_first[team]), src_sim)
         fs.add("proj_points", f"{T} projected final points (median)", round(scen.proj_points[team]), src_sim)
         fs.add("cutline", f"Projected final points of the {ordinal(LEAGUE.direct_spots)}-placed team (median)",
@@ -160,7 +166,9 @@ def build_team_facts(snap: Snapshot, team: str, scen: ScenarioResult | None,
                    pct(st["p_win"]), src_sim)
             fs.add("stake_win", f"{T} top-{LEAGUE.direct_spots} chance if they win the next game",
                    pct(st["top6_if_win"]), src_sim)
-            fs.add("stake_loss", f"{T} top-{LEAGUE.direct_spots} chance if they lose the next game (incl. OT/SO)",
+            fs.add("stake_loss", f"{T} top-{LEAGUE.direct_spots} chance if they "
+                   + ("don't win the next game (draw or loss)" if LEAGUE.draws else
+                      "lose the next game (incl. OT/SO)"),
                    pct(st["top6_if_loss"]), src_sim)
             swing = round(100 * st["top6_if_win"]) - round(100 * st["top6_if_loss"])
             fs.add("stake_swing", f"Swing in {T} top-{LEAGUE.direct_spots} chance riding on the next game",
