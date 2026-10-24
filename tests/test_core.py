@@ -189,23 +189,3 @@ def test_stakes_talk_about_a_race_tonight_can_move():
     r = c.chat(fs, [], "what's at stake tonight")
     assert r.status == "verified" and "won't move" in r.text and "swing" not in r.text
 
-
-def test_questions_outside_the_data_go_to_web_search():
-    from companion.agent import needs_web
-    for q in QUESTIONS + ["will we make the championship group?", "what was the latest result?"]:
-        if q != "any injuries?":
-            assert not needs_web(q), q
-    for q in ["any injuries?", "who is the coach?", "any news about Kärpät?", "when was the arena built?",
-              "how many championships have we won?", "where can I buy tickets?"]:
-        assert needs_web(q), q
-
-
-def test_web_answers_keep_their_sources():
-    class FakeSearch:
-        name = "Gemini (test)"
-
-        def search(self, system, messages, max_tokens=700):
-            assert "Google Search" in system and messages[-1]["content"] == "who is the coach?"
-            return "The head coach is named on the club site.", [("karpat.fi", "https://karpat.fi")]
-    out = Companion(FakeSearch()).web("Kärpät", [], "who is the coach?")
-    assert out["sources"] == [("karpat.fi", "https://karpat.fi")] and "Google Search" in out["engine"]

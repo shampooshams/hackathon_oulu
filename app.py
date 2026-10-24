@@ -20,7 +20,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from companion.agent import follow_ups, needs_web, route  # noqa: E402
+from companion.agent import follow_ups, route  # noqa: E402
 from companion.companion import Companion  # noqa: E402
 from companion.config import FORMATS, LEAGUE, SIMULATIONS, use_league  # noqa: E402
 from companion.data.providers import get_provider  # noqa: E402
@@ -96,26 +96,10 @@ def render_receipts(reply):
 def render_reply(reply):
     st.markdown(to_html(reply.text, reply.facts), unsafe_allow_html=True)
     st.markdown(badges(reply), unsafe_allow_html=True)
-    for line in reply.log:
-        if line.startswith("Web search"):
-            st.caption(f"🔎 {line}")
     if reply.engine.endswith("(fallback)"):
         why = next((l for l in reply.log if l.startswith("AI model unavailable")), "")
         st.caption(f"⚠ {why or 'The AI model could not be reached.'}")
     render_receipts(reply)
-
-
-def render_web(item: dict):
-    """An answer found on the web: its sources, and a clear label that it isn't checked against league data."""
-    st.markdown(item["content"])
-    st.markdown(f'<span class="badge b-ai">AI-generated · {html.escape(item["engine"])}</span> '
-                '<span class="badge b-fix">From the web · not checked against league data</span>',
-                unsafe_allow_html=True)
-    if item["sources"]:
-        st.markdown("**Sources**\n" + "\n".join(f"{i}. [{title}]({url})"
-                                                  for i, (title, url) in enumerate(item["sources"][:6], 1)))
-    else:
-        st.caption("No sources were returned for this answer, so treat it with care.")
 
 
 def render_podcast(item: dict):
@@ -170,8 +154,8 @@ def capabilities(team: str) -> list[tuple[str, str, str]]:
         ("💬", "Answers about your team", f"The table, form, home and away, the schedule and top scorers. "
                                           f"Mention another team and I'll compare it with {html.escape(team)}."),
         ("🏟️", "Game night", "Follow tonight's game event by event and see how the table changes."),
-        ("✅", "Checked facts", "Every number links to its source and is checked against the data. For news "
-                               "or injuries I search the web and show my sources. No betting tips."),
+        ("✅", "Checked facts", "Every number links to its source and is checked against the data. "
+                               "No betting tips."),
         ("📈", "Playoff chances ★", f"I simulate the rest of the season {SIMULATIONS:,} times and tell you what "
                                     "tonight's game means for the race."),
         ("🎙️", "Daily podcast ★", "Two hosts talk through your team's day. Ask for an episode for your "
@@ -216,21 +200,21 @@ with st.sidebar:
     teams_by_sport[sport] = st.selectbox("Your team", team_ids, format_func=snap.name,
                                          index=team_ids.index(current), key=f"team_{sport}")
     prof["team"] = teams_by_sport[sport]
-    with st.expander("Personalise"):
-        with st.form("personalise", border=False):   # changes apply when the fan presses Submit
-            my_name = st.text_input("Your name", prof.get("name", ""))
-            my_language = st.selectbox("Language", ["English", "Suomi"],
-                                       index=["English", "Suomi"].index(prof.get("language", "English")))
-            my_length = st.select_slider("Answer length", ["short", "normal", "long"],
-                                         value=prof.get("length", "normal"))
-            my_fan_since = st.text_input("Fan since (year)", prof.get("fan_since", ""))
-            roster = [""] + sorted(p["name"] for p in snap.roster(prof["team"]))
-            fav = prof.get("fav_player", "")
-            my_fav_player = st.selectbox("Favourite player", roster, index=roster.index(fav) if fav in roster else 0)
-            if st.form_submit_button("Submit", type="primary", width="stretch"):
-                prof.update(name=my_name.strip(), language=my_language, length=my_length,
-                            fan_since=my_fan_since.strip(), fav_player=my_fav_player)
-                st.toast("Saved. Your assistant now knows this about you.")
+    with st.form("personalise"):                     # always open; changes apply when the fan presses Submit
+        st.markdown("**Personalise**")
+        my_name = st.text_input("Your name", prof.get("name", ""))
+        my_language = st.selectbox("Language", ["English", "Suomi"],
+                                   index=["English", "Suomi"].index(prof.get("language", "English")))
+        my_length = st.select_slider("Answer length", ["short", "normal", "long"],
+                                     value=prof.get("length", "normal"))
+        my_fan_since = st.text_input("Fan since (year)", prof.get("fan_since", ""))
+        roster = [""] + sorted(p["name"] for p in snap.roster(prof["team"]))
+        fav = prof.get("fav_player", "")
+        my_fav_player = st.selectbox("Favourite player", roster, index=roster.index(fav) if fav in roster else 0)
+        if st.form_submit_button("Submit", type="primary", width="stretch"):
+            prof.update(name=my_name.strip(), language=my_language, length=my_length,
+                        fan_since=my_fan_since.strip(), fav_player=my_fav_player)
+            st.success("✓ Submitted")
     save_profile(prof)
 
     backend = llm_backend()
@@ -348,21 +332,7 @@ def answer(question: str) -> dict:
         for other in mentioned:
             add_team_facts(msg_facts, snap, TEAM, other, season)
     history = [{"role": m["role"], "content": m.get("content", "")} for m in ss.chat]
-    if needs_web(question) and not mentioned:
-        if hasattr(comp.backend, "search"):          # news, injuries, coaches…: search the web, show sources
-            try:
-                web = comp.web(T, history, question)
-                return {"role": "assistant", "kind": "web", "content": web["text"], "sources": web["sources"],
-                        "engine": web["engine"]}
-            except Exception as e:
-                web_note = f"Web search failed ({explain(e)}), so this answer uses the league data only."
-        else:
-            web_note = "Web search needs the Gemini model, so this answer uses the league data only."
-    else:
-        web_note = ""
     reply = comp.chat(msg_facts, history, question, simulate_error=demo_halluc)
-    if web_note:
-        reply.log.insert(0, web_note)
     return {"role": "assistant", "kind": "chat", "reply": reply, "content": reply.text}
 
 
@@ -373,8 +343,6 @@ with tab_chat:
                 st.markdown(m["content"])
             elif m["kind"] == "podcast":
                 render_podcast(m)
-            elif m["kind"] == "web":
-                render_web(m)
             elif m["kind"] == "action":
                 st.markdown(m["content"])
                 st.markdown('<span class="badge b-ok">✓ Done</span>', unsafe_allow_html=True)

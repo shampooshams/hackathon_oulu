@@ -131,18 +131,6 @@ class Companion:
         return self._run(fs, team, "Chat with the fan and answer their latest message.", msgs,
                          lambda: offline.chat(message, fs, self.persona, self.user_name), "chat", simulate_error)
 
-    def web(self, team: str, history: list[dict], message: str) -> dict:
-        """Answer from a Google search (Gemini only). Not checked against league data, so it's labelled."""
-        system = (f"You are a friendly AI sports assistant for a fan of {team} in Finland's {LEAGUE.name} "
-                  f"({LEAGUE.sport}). The fan asked something the league statistics don't cover, so use Google "
-                  f"Search. Answer in {self.language} in {LENGTHS.get(self.length)}. Give the facts you found, mention "
-                  "how recent they are, and say plainly if you couldn't find a reliable answer. Plain text, no "
-                  "markdown, no links in the text (sources are shown separately). Never give betting tips or odds.")
-        msgs = [m for m in history[-12:] if m["role"] in ("user", "assistant") and m.get("content")]
-        text, sources = self.backend.search(system, msgs + [{"role": "user", "content": message}])
-        return {"text": text or "I couldn't find a reliable answer to that online.", "sources": sources,
-                "engine": f"{self.backend.name} + Google Search"}
-
     def brief(self, fs: FactStore, sponsor: str = "", simulate_error=False) -> Reply:
         team = fs.v("team")
         ad = (f" Start right after the greeting with one clearly labelled ad line: '[Ad] Today's brief is "

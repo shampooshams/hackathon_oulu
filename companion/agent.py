@@ -47,23 +47,6 @@ def keyword_route(message: str, team: str = "", opponent: str = "") -> dict:
     return {"tool": "answer"}
 
 
-WEB_TOPICS = (r"\b(search|google|look (it |that )?up|on the (web|internet)|online|news|headlines|sources?)\b|"
-              r"injur|coach|trainer|transfer|signing|signed|contract|rumou?r|arena|stadium|ticket|"
-              r"history|founded|championships|titles|trophies|won the (league|title|cup)|salary|captain|"
-              r"\bnhl\b|draft|interview|weather|parking")
-
-
-def needs_web(message: str) -> bool:
-    """Questions the league data can't answer (news, injuries, coaches, history…): search the web instead."""
-    from companion.offline import _intent
-    m = message.lower()
-    if re.search(WEB_TOPICS, m):
-        return True
-    # Something we don't recognise that is phrased as a real question (not a greeting or a feeling)
-    return _intent(message) == "summary" and bool(
-        re.search(r"\?|^\s*(who|what|when|where|why|which|how|is|are|does|did|can)\b", m)) and len(m.split()) > 3
-
-
 def route(message: str, backend=None, team: str = "", opponent: str = "", fixture: str = "unknown") -> dict:
     """Return {"tool": ..., **args}. Falls back to keyword rules on any problem."""
     fallback = keyword_route(message, team, opponent)
