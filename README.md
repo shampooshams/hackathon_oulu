@@ -74,6 +74,14 @@ The adapter for the Liiga stats API (v1) is in `companion/data/providers.py` (`L
   - `simulate(snapshot)` gives the playoff odds
 - If a teammate already pulls Liiga data, share one provider so both of you get the same numbers.
 
+## Design
+
+The app uses the **Siniristi** design system shared with Local SportsReel (`design/siniristi.css`, with a
+component sample in `design/example.html`): Finnish blue on light, white on deep blue for dark, Plus Jakarta
+Sans and IBM Plex Mono. Fans switch **Light / Dark / System** in the app menu (⋮). Streamlit's own widgets
+take their colours from `.streamlit/config.toml`; the app's custom HTML uses the same tokens from
+`companion/render.py`, and a small script keeps it in step with the chosen theme.
+
 ## Sports
 
 A **Sport** switch in the sidebar picks the league. Everything sport-specific (points, draws, tie-breaks,

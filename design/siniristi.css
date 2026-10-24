@@ -1,0 +1,333 @@
+/* ==========================================================================
+   Siniristi design system — Local SportsReel × Fan Companion (Kaleva / Liiga)
+   Light theme by default. Dark theme: <html data-theme="dark">.
+   Fonts: Plus Jakarta Sans (UI + headlines), IBM Plex Mono (fact chips, IDs).
+   ========================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&family=IBM+Plex+Mono:wght@500;600&display=swap");
+
+/* ---------- 1. Tokens ---------- */
+:root {
+  /* surfaces */
+  --bg: #f4f7fb;
+  --surface: #ffffff;
+  --surface-2: #eef2f7;
+  --raised: #e3e9f1;
+  --line: #d8e1ec;
+  --line-strong: #8796a8;          /* input borders, 3:1+ */
+
+  /* text */
+  --text: #0f1a2a;                 /* 17:1 */
+  --muted: #4f5d6e;                /* 6.8:1 */
+  --disabled: #6b7785;
+
+  /* brand — Finnish blue */
+  --primary: #003580;              /* 11.5:1 on white */
+  --primary-hover: #00296a;
+  --on-primary: #ffffff;
+  --primary-tint: #e6eef9;
+  --primary-tint-line: #b9cdea;
+  --link: #003580;
+  --focus: #003580;
+
+  /* semantic */
+  --positive: var(--primary);      /* goal for, verified */
+  --danger: #c62828;               /* goal against */
+  --danger-tint: #fdecec;
+  --danger-line: #f2b8b5;
+  --warning: #8a5a00;              /* alerts, unverified */
+  --warning-tint: #fdf3dc;
+  --warning-line: #e8cf94;
+  --info: #2f64b0;
+
+  /* honest labels — never reuse these colours for anything else */
+  --label-fact: var(--primary);
+  --label-ai: #5b3fc4;
+  --label-ai-tint: #efebfb;
+  --label-ai-line: #cfc5f2;
+  --label-demo: #9a4a12;
+  --label-demo-tint: #fdf0e7;
+  --label-demo-line: #b85c1c;
+  --label-ad: #4f5d6e;
+
+  /* team accent (identity only: band, YOU tag, favourite row, follow card) */
+  --team: #fcd116;                 /* Kärpät — shapes only on white */
+  --team-ink: #0f1a2a;
+  --team-tint: rgba(252, 209, 22, 0.14);
+  --team-line: rgba(200, 160, 0, 0.55);
+
+  /* chart: playoff zones */
+  --chart-top4: #003580;
+  --chart-mid: #6f9fe0;
+  --chart-miss: #c3cedb;
+
+  /* type */
+  --font: "Plus Jakarta Sans", Helvetica, Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --fs-display-xl: clamp(48px, 6vw, 72px);
+  --fs-display-l: clamp(36px, 4.5vw, 48px);
+  --fs-display-m: clamp(24px, 3vw, 30px);
+  --fs-stat: clamp(32px, 3.5vw, 40px);
+  --fs-title: 18px;
+  --fs-body: 16px;
+  --fs-small: 14px;
+  --fs-label: 12px;
+  --fs-mono: 13px;
+  --fs-chip: 11px;
+
+  /* space · radius · motion */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px;
+  --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
+  --r-xs: 4px; --r-sm: 8px; --r-md: 14px; --r-lg: 18px; --r-pill: 999px;
+  --shadow-modal: 0 24px 64px rgba(15, 26, 42, 0.18);
+  --ease: 150ms ease-out;
+  --touch: 44px;
+}
+
+[data-theme="dark"] {
+  --bg: #002a66;
+  --surface: #0b3a7e;
+  --surface-2: #134489;
+  --raised: #1a4d94;
+  --line: #2a5596;
+  --line-strong: #6f8fbf;
+
+  --text: #ffffff;
+  --muted: #b8c7dd;
+  --disabled: #8fa3c2;
+
+  --primary: #ffffff;
+  --primary-hover: #e6eef9;
+  --on-primary: #003580;
+  --primary-tint: rgba(140, 192, 255, 0.18);
+  --primary-tint-line: rgba(140, 192, 255, 0.45);
+  --link: #8cc0ff;
+  --focus: #ffffff;
+
+  --danger: #ff9c9c;
+  --danger-tint: rgba(255, 156, 156, 0.12);
+  --danger-line: rgba(255, 156, 156, 0.5);
+  --warning: #ffd27a;
+  --warning-tint: rgba(255, 210, 122, 0.12);
+  --warning-line: rgba(255, 210, 122, 0.5);
+  --info: #8cc0ff;
+
+  --label-ai: #d4c9ff;
+  --label-ai-tint: rgba(212, 201, 255, 0.12);
+  --label-ai-line: rgba(212, 201, 255, 0.45);
+  --label-demo: #ffc29e;
+  --label-demo-tint: rgba(255, 194, 158, 0.12);
+  --label-demo-line: #ffc29e;
+  --label-ad: #d7dde3;
+
+  --team-tint: rgba(252, 209, 22, 0.12);
+  --team-line: rgba(252, 209, 22, 0.55);
+
+  --chart-top4: #ffffff;
+  --chart-mid: #8cc0ff;
+  --chart-miss: #2a5596;
+
+  --shadow-modal: 0 24px 64px rgba(0, 0, 0, 0.45);
+}
+
+/* ---------- 2. Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+}
+a { color: var(--link); text-underline-offset: 3px; }
+a:hover { color: var(--primary-hover); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-xs); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* ---------- 3. Type helpers ---------- */
+.display-xl, .display-l, .display-m {
+  margin: 0; font-weight: 800; letter-spacing: -0.03em; line-height: 1.02;
+}
+.display-xl { font-size: var(--fs-display-xl); }
+.display-l  { font-size: var(--fs-display-l); letter-spacing: -0.025em; line-height: 1.05; }
+.display-m  { font-size: var(--fs-display-m); letter-spacing: -0.02em; line-height: 1.1; }
+.title { font-size: var(--fs-title); font-weight: 700; line-height: 1.3; }
+.small, .meta { font-size: var(--fs-small); color: var(--muted); line-height: 1.45; }
+.kicker {
+  font-size: var(--fs-label); font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--primary);
+}
+.mono { font-family: var(--font-mono); font-size: var(--fs-mono); }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ---------- 4. Buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--s2);
+  min-height: var(--touch); padding: 0 20px; border-radius: var(--r-pill);
+  font: 700 15px/1 var(--font); text-decoration: none; cursor: pointer;
+  border: 1px solid transparent; transition: background var(--ease), border-color var(--ease);
+}
+.btn-primary { background: var(--primary); color: var(--on-primary); }
+.btn-primary:hover { background: var(--primary-hover); color: var(--on-primary); }
+.btn-secondary { background: transparent; color: var(--text); border-color: var(--line-strong); }
+.btn-secondary:hover { background: var(--surface-2); border-color: var(--text); }
+.btn:disabled, .btn[aria-disabled="true"] {
+  background: var(--line); color: var(--disabled); border-color: transparent; cursor: not-allowed;
+}
+
+/* ---------- 5. Chips (filters, quick questions, persona) ---------- */
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 36px; padding: 0 14px; border-radius: var(--r-pill);
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--line-strong);
+  font: 600 14px/1 var(--font); cursor: pointer; white-space: nowrap;
+  transition: background var(--ease), border-color var(--ease);
+}
+.chip:hover { background: var(--surface-2); border-color: var(--text); }
+.chip[aria-pressed="true"], .chip[aria-checked="true"], .chip.is-active {
+  background: var(--primary); color: var(--on-primary); border-color: var(--primary);
+}
+.chip:disabled { background: transparent; color: var(--disabled); border-style: dashed; border-color: var(--line); cursor: not-allowed; }
+
+/* static tag (sport, city) — not interactive */
+.tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 6px 10px; border-radius: var(--r-pill);
+  background: var(--surface-2); border: 1px solid var(--line);
+  font: 700 12px/1 var(--font); letter-spacing: 0.08em; text-transform: uppercase;
+}
+
+/* ---------- 6. Honest-label badges ---------- */
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 28px; padding: 0 10px; border-radius: var(--r-sm);
+  font: 700 13px/1 var(--font); white-space: nowrap;
+}
+.badge-verified   { background: var(--primary); color: var(--on-primary); }
+.badge-unverified { background: var(--warning-tint); color: var(--warning); border: 1px solid var(--warning-line); }
+.badge-ai         { background: var(--label-ai-tint); color: var(--label-ai); border: 1px solid var(--label-ai-line); }
+.badge-demo       { background: var(--label-demo-tint); color: var(--label-demo); border: 1px dashed var(--label-demo-line); }
+.badge-ad         { background: transparent; color: var(--label-ad); border: 1px dashed var(--muted);
+                    font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; }
+.badge-live       { background: var(--danger-tint); color: var(--danger); border: 1px solid var(--danger-line);
+                    font-size: 12px; letter-spacing: 0.12em; }
+.badge-live::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--danger); }
+
+/* ---------- 7. Fact chip (the trust layer) ----------
+   <span class="fact">41</span><sup class="fact-chip" data-fact="F2">F2</sup> */
+.fact-chip {
+  font: 600 var(--fs-chip)/1 var(--font-mono);
+  padding: 2px 4px; margin-left: 2px; border-radius: var(--r-xs);
+  background: var(--primary-tint); color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary-tint-line);
+  cursor: pointer; vertical-align: super;
+}
+.fact-chip:hover, .fact-chip.is-active { background: var(--primary); color: var(--on-primary); box-shadow: none; }
+.fact-chip.is-unverified { background: transparent; color: var(--warning); box-shadow: inset 0 0 0 1px var(--warning); }
+.fact.is-unverified { text-decoration: line-through; color: var(--muted); }
+
+/* receipts table */
+.receipts { width: 100%; border-collapse: collapse; font-size: var(--fs-small); }
+.receipts th { text-align: left; font: 700 12px var(--font); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 10px 16px; }
+.receipts td { padding: 10px 16px; border-top: 1px solid var(--line); }
+.receipts td.mono, .receipts .id { font-family: var(--font-mono); }
+.receipts .id { color: var(--primary); font-weight: 600; }
+.receipts tr.is-active td { background: var(--primary-tint); }
+
+/* ---------- 8. Cards ---------- */
+.card {
+  background: var(--surface); border-radius: var(--r-lg);
+  box-shadow: inset 0 0 0 1px var(--line); overflow: hidden;
+}
+.card-body { padding: var(--s4) 18px 18px; display: flex; flex-direction: column; gap: 10px; }
+
+/* moment card (SportsReel) */
+.moment-score { padding: 18px 18px 0; display: flex; justify-content: space-between; align-items: baseline; }
+.moment-score .score { font-size: 48px; font-weight: 800; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.moment-score .clock { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.moment-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--line); }
+
+/* follow / bridge card */
+.follow-card { background: var(--team-tint); box-shadow: inset 0 0 0 1px var(--team-line); border-radius: var(--r-lg); overflow: hidden; }
+.follow-card::before { content: ""; display: block; height: 6px; background: var(--team); }
+
+/* ---------- 9. Stat card ---------- */
+.stat {
+  background: var(--surface); border-radius: var(--r-md); box-shadow: inset 0 0 0 1px var(--line);
+  padding: var(--s4); display: flex; flex-direction: column; gap: 4px;
+  transition: background var(--ease);
+}
+.stat:hover { background: var(--surface-2); }
+.stat.is-changed { box-shadow: inset 0 0 0 2px var(--primary); }
+.stat.is-stale { box-shadow: inset 0 0 0 1px var(--line); border: 1px dashed var(--line-strong); }
+.stat-label { font-size: 13px; font-weight: 500; color: var(--muted); }
+.stat-value { font-size: var(--fs-stat); font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.stat.is-stale .stat-value { color: var(--disabled); }
+.stat-delta-up   { color: var(--primary); font-weight: 700; font-size: 13px; }   /* use ▲ + text, not colour alone */
+.stat-delta-down { color: var(--danger); font-weight: 700; font-size: 13px; }    /* ▼ */
+.stat-bar { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.stat-bar > span { display: block; height: 100%; background: var(--primary); }
+
+/* ---------- 10. Feed item (Game night) ---------- */
+.feed-item {
+  display: grid; grid-template-columns: 36px 1fr auto; gap: 12px; align-items: start;
+  padding: 12px 16px; border-radius: var(--r-md);
+  background: var(--surface); box-shadow: inset 0 0 0 1px var(--line);
+  transition: background var(--ease);
+}
+.feed-item:hover { background: var(--surface-2); }
+.feed-icon {
+  width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center;
+  background: var(--surface-2); color: var(--text); box-shadow: inset 0 0 0 1px var(--line-strong);
+  font: 700 14px var(--font-mono);
+}
+.feed-label { font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.feed-time { font: 600 13px var(--font-mono); }
+.feed-item.is-for     { background: var(--primary-tint); box-shadow: inset 0 0 0 1px var(--primary-tint-line); }
+.feed-item.is-for .feed-icon     { background: var(--primary); color: var(--on-primary); box-shadow: none; }
+.feed-item.is-for .feed-label    { color: var(--primary); }
+.feed-item.is-against { background: var(--danger-tint); box-shadow: inset 0 0 0 1px var(--danger-line); }
+.feed-item.is-against .feed-icon { background: var(--danger); color: #fff; box-shadow: none; }
+.feed-item.is-against .feed-label{ color: var(--danger); }
+.feed-item.is-alert   { background: var(--warning-tint); box-shadow: inset 0 0 0 1px var(--warning-line); }
+.feed-item.is-alert .feed-icon   { background: var(--warning); color: #fff; box-shadow: none; }
+.feed-item.is-alert .feed-label  { color: var(--warning); }
+.feed-item.is-overturned { background: transparent; box-shadow: none; border: 1px dashed var(--line); }
+.feed-item.is-overturned .feed-title { text-decoration: line-through; color: var(--muted); }
+[data-theme="dark"] .feed-item.is-against .feed-icon,
+[data-theme="dark"] .feed-item.is-alert .feed-icon { color: #002a66; }
+
+/* ---------- 11. Table (playoff race) ---------- */
+.table-wrap { overflow-x: auto; background: var(--surface); border-radius: var(--r-md); box-shadow: inset 0 0 0 1px var(--line); }
+.table { width: 100%; border-collapse: collapse; font-size: var(--fs-small); font-variant-numeric: tabular-nums; }
+.table th { text-align: left; padding: 12px 16px; background: var(--surface-2); font: 700 12px var(--font); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.table td { padding: 10px 16px; border-top: 1px solid var(--line); }
+.table td.r, .table th.r { text-align: right; }
+.table tr:hover td { background: var(--surface-2); }
+.table tr.is-favourite td { background: var(--team-tint); font-weight: 700; }
+.table tr.is-favourite td:first-child { box-shadow: inset 4px 0 0 var(--team); }
+.table tr.zone-line td { padding: 4px 16px; border-top: 2px solid var(--primary); font: 800 11px var(--font); letter-spacing: 0.12em; color: var(--primary); }
+.you-tag { font: 800 11px/1 var(--font); letter-spacing: 0.08em; background: var(--team); color: var(--team-ink); padding: 3px 6px; border-radius: var(--r-xs); }
+
+/* ---------- 12. Notices ---------- */
+.notice { display: flex; gap: 12px; padding: 12px 14px; border-radius: var(--r-md); font-size: var(--fs-small); line-height: 1.45; }
+.notice-label { font-weight: 800; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; white-space: nowrap; padding-top: 1px; }
+.notice-demo  { background: var(--label-demo-tint); border: 1px dashed var(--label-demo-line); }
+.notice-demo  .notice-label { color: var(--label-demo); }
+.notice-ai    { background: var(--label-ai-tint); border: 1px solid var(--label-ai-line); }
+.notice-ai    .notice-label { color: var(--label-ai); }
+.notice-info  { background: var(--primary-tint); border: 1px solid var(--primary-tint-line); }
+.notice-info  .notice-label { color: var(--info); }
+.notice-stale { background: var(--danger-tint); border: 1px solid var(--danger-line); }
+.notice-stale .notice-label { color: var(--danger); }
+
+/* ad slot — always outside editorial cards */
+.ad-slot { border: 1px dashed var(--muted); border-radius: var(--r-md); padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+.ad-slot .ad-label { font-weight: 800; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--label-ad); }
+
+/* ---------- 13. Footer banner ---------- */
+.banner { background: var(--primary); color: var(--on-primary); padding: var(--s7) var(--s5); }
+.banner .display-xl { color: inherit; }

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Siniristi components</title>
+<link rel="stylesheet" href="siniristi.css">
+<style>
+  main { max-width: 760px; margin: 0 auto; padding: 32px 16px; display: flex; flex-direction: column; gap: 20px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="row" style="justify-content: space-between">
+    <span class="kicker">Your team · Oulu</span>
+    <button class="btn btn-secondary" type="button"
+      onclick="document.documentElement.dataset.theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'">Toggle dark</button>
+  </div>
+  <h1 class="display-l">Kärpät</h1>
+
+  <div class="stats">
+    <div class="stat"><span class="stat-label">Position</span><span class="stat-value">3rd</span><span class="stat-delta-up">▲ 1</span></div>
+    <div class="stat"><span class="stat-label">Points</span><span class="stat-value">41</span><span class="small">24 games</span></div>
+    <div class="stat"><span class="stat-label">Top-4 chance</span><span class="stat-value">68%</span><div class="stat-bar"><span style="width:68%"></span></div></div>
+    <div class="stat"><span class="stat-label">Next game</span><span class="stat-value">Tue 18:30</span><span class="small">vs Tappara</span></div>
+  </div>
+
+  <div class="row">
+    <button class="chip" type="button" aria-pressed="false">Superfan buddy</button>
+    <button class="chip" type="button" aria-pressed="true">Calm analyst</button>
+    <button class="chip" type="button" aria-pressed="false">Bettor’s notebook</button>
+  </div>
+
+  <article class="card"><div class="card-body">
+    <div class="row"><span class="badge badge-verified">✓ 7/7 verified</span><span class="badge badge-ai">AI-written</span></div>
+    <p style="margin:0">Likely, not locked. Kärpät are 3rd<sup class="fact-chip">F1</sup> on 41 points<sup class="fact-chip">F2</sup>, 1 point<sup class="fact-chip">F4</sup> clear of Lukko.</p>
+  </div></article>
+
+  <div class="feed-item is-for"><div class="feed-icon">▲</div><div><div class="feed-label">Goal · for Kärpät</div><div class="feed-title"><strong>2–1 · #19 [Player] (PP)</strong></div></div><span class="feed-time">33:38</span></div>
+  <div class="feed-item is-against"><div class="feed-icon">▼</div><div><div class="feed-label">Goal · against</div><div class="feed-title"><strong>1–1 · Tappara #71</strong></div></div><span class="feed-time">14:05</span></div>
+  <div class="feed-item is-alert"><div class="feed-icon">!</div><div><div class="feed-label">Alert · odds</div><div class="feed-title"><strong>Top-4 chance now 72%</strong></div></div><span class="feed-time">33:40</span></div>
+
+  <div class="notice notice-demo"><span class="notice-label">Demo</span><span>Synthetic moments. Players, scores and places are invented.</span></div>
+  <aside class="ad-slot" aria-label="Advertisement"><span class="ad-label">Mainos · Ad</span><span>[Sponsor line]</span></aside>
+  <a class="btn btn-primary" href="#">Follow Kärpät with your AI companion →</a>
+</main>
+</body>
+</html>

@@ -59,16 +59,23 @@ def gemini_audio(text: str) -> bytes:
 
 
 def browser_player(text: str, lang: str = "en-GB") -> str:
-    """HTML/JS player that reads the lines with two different browser voices."""
+    """HTML/JS player that reads the lines with two different browser voices. It sits in its own frame,
+    so it copies the page's light/dark choice (data-theme) to style its buttons."""
     payload = json.dumps(script_lines(text)).replace("</", "<\\/")
     return f"""
-<div style="font-family:Arial,Helvetica,sans-serif;color:#f0f4f5;display:flex;align-items:center;gap:.5em">
- <button id="play" style="padding:.55em 1.1em;border-radius:6px;border:0;background:#d3fa5b;color:#122014;
-   font-weight:800;cursor:pointer">▶ Play</button>
- <button id="stop" style="padding:.55em 1.1em;border-radius:6px;border:1px solid #3a4652;background:#202b36;
-   color:#f0f4f5;cursor:pointer">■ Stop</button>
- <span id="now" style="font-size:12px;color:#9ba7b4">Browser voices</span>
-</div>
+<style>
+ :root{{--p:#003580;--on:#fff;--t:#0f1a2a;--m:#4f5d6e;--l:#8796a8}}
+ html[data-theme=dark]{{--p:#fff;--on:#003580;--t:#fff;--m:#b8c7dd;--l:#6f8fbf}}
+ body{{margin:0;font-family:'Plus Jakarta Sans',Helvetica,Arial,sans-serif;color:var(--t)}}
+ .row{{display:flex;align-items:center;gap:.5em}}
+ button{{min-height:40px;padding:0 18px;border-radius:999px;font-weight:700;font-size:15px;font-family:inherit;
+   cursor:pointer}}
+ #play{{border:0;background:var(--p);color:var(--on)}}
+ #stop{{border:1px solid var(--l);background:transparent;color:var(--t)}}
+ #now{{font-size:13px;color:var(--m)}}
+</style>
+<div class="row"><button id="play">▶ Play</button><button id="stop">■ Stop</button>
+ <span id="now">Browser voices</span></div>
 <script>
  const lines = {payload}, hosts = {json.dumps(list(HOSTS))};
  function voicesFor() {{
@@ -87,4 +94,7 @@ def browser_player(text: str, lang: str = "en-GB") -> str:
    }});
  }};
  document.getElementById('stop').onclick = () => speechSynthesis.cancel();
+ const follow = () => {{ try {{ document.documentElement.dataset.theme =
+   window.parent.document.documentElement.dataset.theme || 'light'; }} catch (e) {{}} }};
+ follow(); setInterval(follow, 400);
 </script>"""

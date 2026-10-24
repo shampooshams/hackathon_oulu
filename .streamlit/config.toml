@@ -1,17 +1,38 @@
-# Same design tokens as Local SportsReel (frontend/app/globals.css)
-[theme]
-base = "dark"
-primaryColor = "#d3fa5b"
-backgroundColor = "#0b1018"
-secondaryBackgroundColor = "#18212b"
-textColor = "#f0f4f5"
-borderColor = "#2a3340"
-font = "Arial, Helvetica, sans-serif"
-baseRadius = "8px"
+# .streamlit/config.toml — Fan Companion (Siniristi design: Local SportsReel × Fan Companion)
+# Two themes: fans pick Light / Dark / System in the app menu (⋮ → Settings).
+# Custom HTML in the app (stat cards, feed, chips) follows the same choice via companion/render.py.
 
-[theme.sidebar]
-backgroundColor = "#141b24"
-secondaryBackgroundColor = "#202b36"
+[theme]
+font = "Plus Jakarta Sans:https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&display=swap, Helvetica, Arial, sans-serif"
+codeFont = "IBM Plex Mono:https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&display=swap, monospace"
+baseRadius = "14px"
+showWidgetBorder = true
+
+[theme.light]
+primaryColor = "#003580"
+backgroundColor = "#f4f7fb"
+secondaryBackgroundColor = "#ffffff"
+textColor = "#0f1a2a"
+borderColor = "#d8e1ec"
+linkColor = "#003580"
+
+[theme.light.sidebar]
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#eef2f7"
+
+[theme.dark]
+# White would hide the text on Streamlit's own buttons, so native
+# widgets use sky blue; custom HTML buttons stay white.
+primaryColor = "#8cc0ff"
+backgroundColor = "#002a66"
+secondaryBackgroundColor = "#0b3a7e"
+textColor = "#ffffff"
+borderColor = "#2a5596"
+linkColor = "#8cc0ff"
+
+[theme.dark.sidebar]
+backgroundColor = "#0b3a7e"
+secondaryBackgroundColor = "#134489"
 
 [client]
-toolbarMode = "minimal"   # hide Streamlit's developer menu and Deploy button
+toolbarMode = "viewer"    # visitors get ⋮ → Settings (Light / Dark / System) but no developer tools or Deploy button

@@ -25,13 +25,17 @@ from companion.live import apply_result, event_facts, postgame_facts, simulate_t
 from companion.llm import get_backend  # noqa: E402
 from companion.offline import HOSTS  # noqa: E402
 from companion.profile import load_profile, save_profile  # noqa: E402
-from companion.render import CSS, badges, receipts_rows, to_html  # noqa: E402
+from companion.render import CSS, THEME_SYNC, badges, receipts_rows, to_html  # noqa: E402
 from companion.scenarios import simulate  # noqa: E402
 from companion.stats import fmt_date, next_game, ordinal, standings  # noqa: E402
 from companion.tts import browser_player, gemini_audio  # noqa: E402
 
 st.set_page_config(page_title="Fan Companion · Kaleva Media", page_icon="🏒", layout="wide")
+# Light and dark themes: fans pick in ⋮ → Settings (System follows the device). THEME_SYNC (in the sidebar)
+# makes the custom HTML follow. Charts and table colours below are chosen to read well on both.
 st.markdown(CSS, unsafe_allow_html=True)
+CHART = {"top": "#2f64b0", "mid": "#8cc0ff", "miss": "#8796a8"}
+TEAM_TINT = "rgba(252, 209, 22, 0.16)"
 
 
 # ---------- cached data ----------------------------------------------------
@@ -183,6 +187,7 @@ with st.sidebar:
             f"{SIMULATIONS:,} simulated seasons. Every number becomes a fact with an ID; the AI must cite it, "
             "and a checker blocks any number that doesn't match.")
 
+    components.html(THEME_SYNC, height=0)
     s1, s2 = st.columns([3, 1], vertical_alignment="center")
     s1.caption(f"● {snap.source} · updated {fetched_at:%H:%M}")
     if s2.button("↻", help=f"Refresh now (data refreshes every {REFRESH_MINUTES} min)"):
@@ -200,26 +205,31 @@ H, A = (snap.name(ng["home"]), snap.name(ng["away"])) if ng else ("", "")
 OPP = (A if ng["home"] == TEAM else H) if ng else ""
 
 # ---------- header ---------------------------------------------------------
-st.markdown(f'<div class="kicker">Your team companion</div>'
-            f'<div class="hero">{html.escape(T)} <em>companion.</em></div>', unsafe_allow_html=True)
+city = snap.teams[TEAM].get("city")
+st.markdown(f'<div class="kicker">Your team{" · " + html.escape(city) if city else ""}</div>'
+            f'<div class="hero">{html.escape(T)}</div>', unsafe_allow_html=True)
 if snap.is_mock:
-    st.markdown('<div class="demo">ⓘ Demo data: team names are real clubs, but all players, scores and '
-                'results are fictional.' + (" There's no football data feed yet." if sport == "Football" else "")
-                + '</div>', unsafe_allow_html=True)
+    st.markdown('<div class="notice notice-demo"><span class="notice-label">Demo</span><span>Team names are real '
+                'clubs, but all players, scores and results are invented.'
+                + (" There's no football data feed yet." if sport == "Football" else "") + '</span></div>',
+                unsafe_allow_html=True)
 rows = standings(snap)
 gap = rows[D - 1].pts - row.pts
-cards = [("Position", ordinal(row.rank), f"{row.gp} games played"),
+cards = [("Position", ordinal(row.rank), f"{row.gp} games played", None),
          ("Points", str(row.pts), f"In the top {D}" if row.rank <= D else
-          f"Level with {ordinal(D)}" if gap == 0 else f"{gap} behind {ordinal(D)}"),
+          f"Level with {ordinal(D)}" if gap == 0 else f"{gap} behind {ordinal(D)}", None),
          (f"Top-{D} chance", pct(season.p_top6[TEAM]),
-          f"Playoffs (top {P}): {pct(season.p_top10[TEAM])}" if P > D else LEAGUE.direct_goal.capitalize())]
+          f"Playoffs (top {P}): {pct(season.p_top10[TEAM])}" if P > D else LEAGUE.direct_goal.capitalize(),
+          season.p_top6[TEAM])]
 if ng:
     days = (datetime.fromisoformat(ng["date"]).date() - fetched_at.date()).days
     when = {0: "Today", 1: "Tomorrow"}.get(days, fmt_date(ng["date"]))
-    cards.append(("Next game", f"{'vs' if ng['home'] == TEAM else 'at'} {OPP}", f"{when} · {ng['time']}"))
+    cards.append(("Next game", f"{'vs' if ng['home'] == TEAM else 'at'} {OPP}", f"{when} · {ng['time']}", None))
 st.markdown('<div class="stat-grid">' + "".join(
     f'<div class="stat"><div class="stat-label">{html.escape(k)}</div><div class="stat-value">{html.escape(v)}</div>'
-    f'<div class="stat-sub">{html.escape(sub)}</div></div>' for k, v, sub in cards) + "</div>", unsafe_allow_html=True)
+    + (f'<div class="stat-bar"><span style="width:{100 * bar:.0f}%"></span></div>' if bar is not None else "")
+    + f'<div class="stat-sub">{html.escape(sub)}</div></div>' for k, v, sub, bar in cards) + "</div>",
+    unsafe_allow_html=True)
 
 tab_chat, tab_game, tab_race, tab_pod = st.tabs(["Chat", "Tonight", "Table", "Podcast"])
 
@@ -296,8 +306,8 @@ with tab_game:
                         f'<div class="section-title">{html.escape(H)} vs {html.escape(A)}</div>',
                         unsafe_allow_html=True)
             if st_:
-                m1, m2 = st.columns(2)
                 st.caption(f"Top-{D} chance after tonight")
+                m1, m2 = st.columns(2)
                 m1.metric("If they win", pct(st_["top6_if_win"]))
                 m2.metric("If they don't win" if LEAGUE.draws else "If they lose", pct(st_["top6_if_loss"]))
             with st.container(border=True):
@@ -378,29 +388,29 @@ with tab_game:
 
                 if gs["post"]:
                     for text, pf in gs["alerts"]:
-                        st.markdown(f'<div class="ping alert">{to_html(text, pf)}</div>', unsafe_allow_html=True)
+                        st.markdown(f'<div class="ping alert"><div>{to_html(text, pf)}</div></div>', unsafe_allow_html=True)
                     with st.container(border=True):
                         st.markdown("**Post-game recap**")
                         render_reply(gs["post"])
                 for cls, rep, ev in reversed(gs["feed"]):
-                    st.markdown(f'<div class="ping {cls}">{to_html(rep.text, rep.facts)}</div>',
+                    st.markdown(f'<div class="ping {cls}"><div>{to_html(rep.text, rep.facts)}</div></div>',
                                 unsafe_allow_html=True)
 
 # ---------- table ----------------------------------------------------------
 with tab_race:
     football = sport == "Football"
     st.markdown(f'<div class="kicker">The race</div><div class="section-title">'
-                f'{"Top-6 race" if football else "Playoff race"}<span class="dot">.</span></div>',
+                f'{"Top-6 race" if football else "Playoff race"}</div>',
                 unsafe_allow_html=True)
     middle = f", {D + 1}th–{P}th play the {LEAGUE.first_round}" if P > D else ""
     st.caption(f"Top {D} go {LEAGUE.direct_goal}{middle}; the rest {LEAGUE.out_label}. Chances come from "
                f"{season.n:,} simulated seasons: probabilities, not predictions.")
     # Bands of the final table: (name, % column, colour, first place, last place)
-    bands = ([("Championship group", f"Top {D} %", "#d3fa5b", 1, D),
-              ("Relegation group", "Bottom %", "#6b7b8b", D + 1, len(snap.teams))] if P == D else
-             [("Quarter-final", f"Top {D} %", "#d3fa5b", 1, D),
-              ("First round", f"{D + 1}–{P} %", "#ff9b63", D + 1, P),
-              ("Miss", "Miss %", "#6b7b8b", P + 1, len(snap.teams))])
+    bands = ([("Championship group", f"Top {D} %", CHART["top"], 1, D),
+              ("Relegation group", "Bottom %", CHART["miss"], D + 1, len(snap.teams))] if P == D else
+             [("Quarter-final", f"Top {D} %", CHART["top"], 1, D),
+              ("First round", f"{D + 1}–{P} %", CHART["mid"], D + 1, P),
+              ("Miss", "Miss %", CHART["miss"], P + 1, len(snap.teams))])
     probs = {f"Top {D} %": season.p_top6, f"{D + 1}–{P} %": season.p_playin, "Miss %": season.p_out,
              "Bottom %": season.p_out}
     table = pd.DataFrame([{
@@ -409,7 +419,7 @@ with tab_race:
         "Proj. pts": round(season.proj_points[r.team]),
     } for r in standings(snap)])
     styled = table.style.apply(
-        lambda r: ["background-color: rgba(211,250,91,.16); font-weight: 700" if r["Team"] == T else ""] * len(r),
+        lambda r: [f"background-color: {TEAM_TINT}; font-weight: 700" if r["Team"] == T else ""] * len(r),
         axis=1)
     st.dataframe(styled, hide_index=True, width="stretch", height=36 * (len(table) + 1) + 3)
 
@@ -424,7 +434,7 @@ with tab_race:
 # ---------- podcast --------------------------------------------------------
 with tab_pod:
     st.markdown('<div class="kicker">Today</div><div class="section-title">Your podcast'
-                '<span class="dot">.</span></div>', unsafe_allow_html=True)
+                '</div>', unsafe_allow_html=True)
     st.caption(f"{HOSTS[0]} (the fan) and {HOSTS[1]} (the analyst) talk through today's {T} news, written from "
                "the data and fact-checked. The sponsor line is clearly labelled.")
     k1, k2 = st.columns([1, 1])

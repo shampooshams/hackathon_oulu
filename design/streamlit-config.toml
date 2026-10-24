@@ -1,0 +1,28 @@
+# .streamlit/config.toml — Fan Companion (Siniristi design)
+# Light and dark themes need a recent Streamlit version. On an older
+# version, delete the [theme.light]/[theme.dark] headers and keep one
+# [theme] block with the light values.
+
+[theme]
+font = "Plus Jakarta Sans, sans-serif"
+codeFont = "IBM Plex Mono, monospace"
+baseRadius = "14px"
+showWidgetBorder = true
+
+[theme.light]
+primaryColor = "#003580"
+backgroundColor = "#f4f7fb"
+secondaryBackgroundColor = "#ffffff"
+textColor = "#0f1a2a"
+borderColor = "#d8e1ec"
+linkColor = "#003580"
+
+[theme.dark]
+# White would hide the text on Streamlit's own buttons, so native
+# widgets use sky blue; custom HTML buttons from siniristi.css stay white.
+primaryColor = "#8cc0ff"
+backgroundColor = "#002a66"
+secondaryBackgroundColor = "#0b3a7e"
+textColor = "#ffffff"
+borderColor = "#2a5596"
+linkColor = "#8cc0ff"
