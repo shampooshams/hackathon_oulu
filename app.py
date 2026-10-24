@@ -140,6 +140,22 @@ SPORTS = {"Hockey": "🏒 Ice hockey", "Football": "⚽ Football (demo)", "Floor
 ICON = {"Hockey": "🏒", "Football": "⚽", "Floorball": "🏑", "Basketball": "🏀", "Bandy": "⛸️"}
 DEFAULT_TEAM = {"Hockey": "KARPAT", "Football": "ACOULU", "Floorball": "OLS", "Basketball": "KATAJA",
                 "Bandy": "OLS"}   # Oulu teams where there is one
+def capabilities(team: str) -> list[tuple[str, str, str]]:
+    """What the assistant can do: shown in the empty chat and in the sidebar."""
+    return [
+        ("💬", "Answers about your team", f"The table, form, home and away, the schedule and top scorers. "
+                                          f"Mention another team and I'll compare it with {html.escape(team)}."),
+        ("📈", "Playoff chances", f"I simulate the rest of the season {SIMULATIONS:,} times and tell you what "
+                                  "tonight's game means for the race."),
+        ("🎙️", "Daily podcast", "Two hosts talk through your team's day, ready to listen to."),
+        ("🔔", "Alerts and predictions", "Get warned when your team's chances drop, and save your score "
+                                         "prediction for the next game."),
+        ("🏟️", "Game night", "Follow tonight's game event by event and see how the table changes."),
+        ("✅", "Checked facts", "Every number links to its source and is checked against the data. "
+                               "No betting tips."),
+    ]
+
+
 with st.sidebar:
     st.markdown('<div class="brand">Your AI sports assistant<span class="dot">.</span>'
                 '<div class="brand-sub">Personalised for you</div></div>', unsafe_allow_html=True)
@@ -308,7 +324,7 @@ with tab_chat:
             else:
                 render_reply(m["reply"])
 
-    prompt = st.chat_input(f"Ask or tell your {T} companion…")
+    prompt = st.chat_input(f"Ask your {T} assistant anything…")
     question = prompt or ss.pop("pending", None)
     if question:
         with st.chat_message("user", avatar="🧑"):
@@ -322,8 +338,11 @@ with tab_chat:
         st.rerun()
 
     if not ss.chat:
-        st.caption(f"Ask anything about {T}: the table, form, home and away, the schedule, another team… "
-                   "Or ask me to make today's podcast, save your prediction or set an alert.")
+        st.markdown('<div class="cap-intro">Hi! I follow ' + html.escape(T) + ' for you. Here\'s what I can do:</div>'
+                    '<div class="cap-grid">' + "".join(
+                        f'<div class="cap"><div class="cap-icon">{icon}</div><div><b>{title}</b>'
+                        f'<div class="cap-text">{text}</div></div></div>' for icon, title, text in capabilities(T))
+                    + '</div>', unsafe_allow_html=True)
     last_q = next((m["content"] for m in reversed(ss.chat) if m["role"] == "user"), None)
     sugg = follow_ups(last_q, OPP, f"Top-{D} race" if P == D else "Playoff chances")
     if not ss.chat:                      # first visit: three questions and one action
