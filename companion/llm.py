@@ -4,6 +4,27 @@ so the demo always works."""
 from __future__ import annotations
 
 import os
+import re
+
+# Tried in order if the chosen Gemini model name isn't found (renamed or retired).
+GEMINI_BACKUPS = ("gemini-flash-latest", "gemini-3.8-flash", "gemini-2.5-flash")
+
+
+def explain(e: Exception) -> str:
+    """A short, plain reason for an AI error, safe to show (no keys)."""
+    msg = str(e)
+    code = getattr(e, "code", None) or getattr(e, "status_code", None)
+    if "API_KEY_INVALID" in msg or "API key not valid" in msg:
+        why = "the API key isn't valid (revoked, or pasted with extra spaces or quotes)"
+    elif code == 403 or "PERMISSION_DENIED" in msg:
+        why = "the API key isn't allowed to use this model or API"
+    elif code == 404 or "NOT_FOUND" in msg:
+        why = "the model name wasn't found; check GEMINI_MODEL"
+    elif code == 429 or "RESOURCE_EXHAUSTED" in msg:
+        why = "the free quota or rate limit is used up; wait a minute or check the plan"
+    else:
+        why = re.sub(r"\s+", " ", msg)[:160] or "unknown error"
+    return f"{type(e).__name__}: {re.sub(r'AIza[0-9A-Za-z_-]{20,}', '[key]', why)}"
 
 
 class AnthropicBackend:
@@ -36,27 +57,46 @@ class OpenAIBackend:
 class GeminiBackend:
     def __init__(self):
         from google import genai
-        self.client = genai.Client(api_key=os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY"))
-        self.model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+        key = (os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY") or "").strip().strip("\"'")
+        self.client = genai.Client(api_key=key)
+        self.model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash").strip().strip("\"'")
         self.name = f"Gemini ({self.model})"
 
     def generate(self, system: str, messages: list[dict], max_tokens: int = 700) -> str:
         from google.genai import types
         contents = [types.Content(role="model" if m["role"] == "assistant" else "user",
                                   parts=[types.Part(text=m["content"])]) for m in messages]
-        plain = types.GenerateContentConfig(system_instruction=system, max_output_tokens=max_tokens + 2048)
-        if "flash" in self.model:  # thinking would use up the answer's token budget
+        try:
+            return self._call(types, system, contents, max_tokens)
+        except Exception as e:
+            if not ("NOT_FOUND" in str(e) or getattr(e, "code", None) == 404):
+                raise
+            for backup in GEMINI_BACKUPS:  # the chosen name doesn't exist: switch to one that does
+                if backup == self.model:
+                    continue
+                try:
+                    text = self._call(types, system, contents, max_tokens, backup)
+                except Exception:
+                    continue
+                self.model, self.name = backup, f"Gemini ({backup}, '{self.model}' not found)"
+                return text
+            raise
+
+    def _call(self, types, system, contents, max_tokens, model=None) -> str:
+        model = model or self.model
+        if "flash" in model:  # thinking would use up the answer's token budget
             config = types.GenerateContentConfig(system_instruction=system, max_output_tokens=max_tokens,
                                                  thinking_config=types.ThinkingConfig(thinking_budget=0))
             try:
-                resp = self.client.models.generate_content(model=self.model, contents=contents, config=config)
+                resp = self.client.models.generate_content(model=model, contents=contents, config=config)
                 return (resp.text or "").strip()
-            except Exception:  # newer models may not accept switching thinking off: try without it
-                pass
+            except Exception as e:  # newer models may not accept switching thinking off: try without it
+                if "NOT_FOUND" in str(e) or "API_KEY" in str(e) or getattr(e, "code", None) in (403, 404, 429):
+                    raise
         # Pro (and newer) models think first: leave room for the thinking on top of the answer
-        resp = self.client.models.generate_content(model=self.model, contents=contents, config=plain)
+        plain = types.GenerateContentConfig(system_instruction=system, max_output_tokens=max_tokens + 2048)
+        resp = self.client.models.generate_content(model=model, contents=contents, config=plain)
         return (resp.text or "").strip()
-
 
 def get_backend():
     """Return a backend, or None for offline template mode."""

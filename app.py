@@ -94,6 +94,9 @@ def render_receipts(reply):
 def render_reply(reply):
     st.markdown(to_html(reply.text, reply.facts), unsafe_allow_html=True)
     st.markdown(badges(reply), unsafe_allow_html=True)
+    if reply.engine.endswith("(fallback)"):
+        why = next((l for l in reply.log if l.startswith("AI model unavailable")), "")
+        st.caption(f"⚠ {why or 'The AI model could not be reached.'}")
     render_receipts(reply)
 
 
@@ -114,6 +117,9 @@ def render_podcast(item: dict):
             elif line.strip():
                 st.markdown(to_html(line, reply.facts), unsafe_allow_html=True)
     st.markdown(badges(reply), unsafe_allow_html=True)
+    if reply.engine.endswith("(fallback)"):
+        why = next((l for l in reply.log if l.startswith("AI model unavailable")), "")
+        st.caption(f"⚠ {why or 'The AI model could not be reached.'}")
     render_receipts(reply)
 
 

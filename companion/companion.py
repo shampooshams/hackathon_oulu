@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from companion import offline
 from companion.config import LEAGUE
 from companion.facts import FactStore
+from companion.llm import explain
 from companion.verify import Report, redact, tamper, verify
 
 PERSONAS = {
@@ -88,9 +89,11 @@ class Companion:
             nonlocal engine
             if self.backend:
                 try:
-                    return self.backend.generate(system, msgs, max_tokens=max_tokens)
+                    out = self.backend.generate(system, msgs, max_tokens=max_tokens)
+                    engine = self.engine  # the backend may have switched to a backup model
+                    return out
                 except Exception as e:  # network / quota: keep the demo alive
-                    log.append(f"AI model unavailable ({type(e).__name__}), used offline templates.")
+                    log.append(f"AI model unavailable ({explain(e)}), used offline templates.")
                     engine = "Offline templates (fallback)"
             return fallback()
 
