@@ -37,8 +37,8 @@ h1,h2,h3,h4{font-weight:800 !important;letter-spacing:-.025em}
 .brand{font-size:20px;line-height:1.2;letter-spacing:-.03em;font-weight:800;margin:.2em 0 1.2em}
 .brand-sub{font-size:13px;letter-spacing:0;font-weight:500;color:var(--muted);margin-top:2px}
 .dot{color:var(--primary)}
-.welcome{position:relative;min-height:250px;border-radius:18px;overflow:hidden;margin:.3em 0 10px;
- background-size:cover;background-position:70% 40%;display:flex;align-items:flex-end}
+.welcome{position:relative;min-height:280px;border-radius:18px;overflow:hidden;margin:.3em 0 10px;
+ background-size:cover;background-position:70% 22%;display:flex;align-items:flex-end}
 .welcome::before{content:"";position:absolute;inset:0;
  background:linear-gradient(90deg,rgba(0,24,64,.88) 0%,rgba(0,24,64,.55) 38%,rgba(0,24,64,0) 62%)}
 .welcome-text{position:relative;padding:24px 26px;max-width:min(440px,60%);color:#fff}
