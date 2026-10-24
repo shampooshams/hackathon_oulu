@@ -70,3 +70,37 @@ def route(message: str, backend=None, team: str = "", opponent: str = "", fixtur
             return fallback if fallback["tool"] == "save_prediction" else {"tool": "answer"}
         out["home"], out["away"] = int(h), int(a)
     return out
+
+
+def follow_ups(last_question: str | None, opponent: str = "", top_label: str = "Playoff chances") -> dict[str, str]:
+    """Quick-reply chips (label -> message) that fit where the conversation is."""
+    from companion.offline import _intent
+    pool = {
+        "playoff": (top_label, "What are our playoff chances?"),
+        "next": ("Tonight's stakes", "What's at stake tonight?"),
+        "form": ("Our form", "How's our form?"),
+        "home_away": ("Home vs away", "How are we doing at home and away?"),
+        "schedule": ("What's coming up", "What's coming up?"),
+        "scorer": ("Top scorer", "Who's our top scorer?"),
+        "leaders": ("Who's top?", "Who leads the league?"),
+        "compare": (f"vs {opponent}", f"How do we compare to {opponent}?") if opponent else None,
+        "podcast": ("Today's podcast", "Make today's podcast"),
+    }
+    order = {
+        None: ["playoff", "next", "podcast", "form"],
+        "playoff": ["next", "compare", "form", "podcast"],
+        "next": ["compare", "form", "home_away", "podcast"],
+        "compare": ["next", "playoff", "home_away", "podcast"],
+        "form": ["home_away", "schedule", "scorer", "playoff"],
+        "home_away": ["schedule", "next", "form", "podcast"],
+        "schedule": ["next", "playoff", "home_away", "podcast"],
+        "scorer": ["leaders", "form", "next", "podcast"],
+        "leaders": ["playoff", "compare", "scorer", "podcast"],
+    }
+    intent = _intent(last_question) if last_question else None
+    if last_question and keyword_route(last_question)["tool"] == "podcast":
+        intent = "podcast"
+    keys = order.get(intent, ["playoff", "next", "form", "podcast"])
+    if intent not in order:
+        keys = [k for k in ["playoff", "next", "form", "home_away", "podcast"] if k != intent][:4]
+    return dict(pool[k] for k in keys if pool.get(k))

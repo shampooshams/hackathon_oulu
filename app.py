@@ -4,8 +4,10 @@ Run:  streamlit run app.py
 """
 from __future__ import annotations
 
+import copy
 import html
 import os
+import time
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -16,11 +18,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from companion.agent import route  # noqa: E402
+from companion.agent import follow_ups, route  # noqa: E402
 from companion.companion import Companion  # noqa: E402
 from companion.config import FORMATS, LEAGUE, SIMULATIONS, use_league  # noqa: E402
 from companion.data.providers import get_provider  # noqa: E402
-from companion.facts import build_team_facts, pct  # noqa: E402
+from companion.facts import add_team_facts, build_team_facts, find_teams, pct  # noqa: E402
 from companion.live import apply_result, event_facts, postgame_facts, simulate_tonight  # noqa: E402
 from companion.llm import get_backend  # noqa: E402
 from companion.offline import HOSTS  # noqa: E402
@@ -29,6 +31,7 @@ from companion.render import CSS, THEME_SYNC, THEME_TOGGLE, badges, receipts_row
 from companion.scenarios import simulate  # noqa: E402
 from companion.stats import fmt_date, next_game, ordinal, standings  # noqa: E402
 from companion.tts import browser_player, gemini_audio  # noqa: E402
+from companion.verify import strip_citations  # noqa: E402
 
 st.set_page_config(page_title="Fan Companion · Kaleva Media", page_icon="🏒", layout="wide")
 # Light and dark themes: fans pick in ⋮ → Settings (System follows the device). THEME_SYNC (in the sidebar)
@@ -241,6 +244,44 @@ st.markdown('<div class="stat-grid">' + "".join(
 tab_chat, tab_game, tab_race, tab_pod = st.tabs(["Chat", "Tonight", "Table", "Podcast"])
 
 # ---------- chat (agent) ---------------------------------------------------
+def typing(text: str):
+    """Show a reply word by word, like someone typing (the fact chips appear once it's done)."""
+    for word in text.split(" "):
+        yield word + " "
+        time.sleep(0.018)
+
+
+def answer(question: str) -> dict:
+    """Route the fan's message to a tool (podcast, alert, prediction) or answer it from the facts."""
+    r = route(question, comp.backend, T, OPP, facts.v("next_game") if facts.has("next_game") else "none")
+    if r["tool"] == "podcast":
+        return make_podcast(short=False)
+    if r["tool"] == "set_alert":
+        if r.get("threshold"):
+            prof["alerts"]["odds_below"] = int(r["threshold"])
+            text = f"Done. I'll alert you if {T}'s top-{D} chance falls below {int(r['threshold'])}%."
+        else:
+            prof["alerts"]["top6_drop"] = True
+            text = f"Done. I'll alert you if {T} drop out of the top {D}."
+        save_profile(prof)
+        return {"role": "assistant", "kind": "action",
+                "content": text + " Alerts are checked after every game (see Tonight)."}
+    if r["tool"] == "save_prediction" and ng:
+        prof["predictions"][ng["id"]] = {"home": r["home"], "away": r["away"]}
+        save_profile(prof)
+        return {"role": "assistant", "kind": "action",
+                "content": f"Saved your prediction: {H} {r['home']}–{r['away']} {A}. I'll check it after the game."}
+    msg_facts = facts
+    mentioned = find_teams(snap, question, exclude=TEAM)
+    if mentioned:                        # "how about Tappara?": add facts about the teams they named
+        msg_facts = copy.deepcopy(facts)
+        for other in mentioned:
+            add_team_facts(msg_facts, snap, TEAM, other, season)
+    history = [{"role": m["role"], "content": m.get("content", "")} for m in ss.chat]
+    reply = comp.chat(msg_facts, history, question, simulate_error=demo_halluc)
+    return {"role": "assistant", "kind": "chat", "reply": reply, "content": reply.text}
+
+
 with tab_chat:
     for m in ss.chat:
         with st.chat_message(m["role"], avatar="🧑" if m["role"] == "user" else ICON[sport]):
@@ -254,47 +295,31 @@ with tab_chat:
             else:
                 render_reply(m["reply"])
 
-    if not ss.chat:
-        st.caption(f"Ask anything about {T}, or ask me to do something: make today's podcast, "
-                   f"save your prediction, set an alert.")
-    sugg = {(f"Top-{D} race" if P == D else "Playoff chances"): "What are our playoff chances?", "Tonight's stakes": "What's at stake tonight?",
-            "Today's podcast": "Make today's podcast", f"Top-{D} alert": f"Set a top-{D} alert"}
-    cols = st.columns(len(sugg))
-    for col, (label, q) in zip(cols, sugg.items()):
-        if col.button(label, width="stretch"):
-            ss.pending = q
     prompt = st.chat_input(f"Ask or tell your {T} companion…")
     question = prompt or ss.pop("pending", None)
     if question:
-        ss.chat.append({"role": "user", "content": question})
-        with st.spinner("On it…"):
-            r = route(question, comp.backend, T, OPP, facts.v("next_game") if facts.has("next_game") else "none")
-            if r["tool"] == "podcast":
-                item = make_podcast(short=False)
-            elif r["tool"] == "set_alert":
-                if r.get("threshold"):
-                    prof["alerts"]["odds_below"] = int(r["threshold"])
-                    text = f"Done. I'll alert you if {T}'s top-{D} chance falls below {int(r['threshold'])}%."
-                else:
-                    prof["alerts"]["top6_drop"] = True
-                    text = f"Done. I'll alert you if {T} drop out of the top {D}."
-                save_profile(prof)
-                item = {"role": "assistant", "kind": "action", "content": text + " Alerts are checked after "
-                        "every game (see Tonight)."}
-            elif r["tool"] == "save_prediction" and ng:
-                prof["predictions"][ng["id"]] = {"home": r["home"], "away": r["away"]}
-                save_profile(prof)
-                item = {"role": "assistant", "kind": "action",
-                        "content": f"Saved your prediction: {H} {r['home']}–{r['away']} {A}. "
-                                   f"I'll check it after the game."}
-            else:
-                history = [{"role": m["role"], "content": m.get("content") or m["reply"].text}
-                           for m in ss.chat[:-1]]
-                reply = comp.chat(facts, history, question, simulate_error=demo_halluc)
-                item = {"role": "assistant", "kind": "chat", "reply": reply}
-            item.setdefault("content", item["reply"].text if "reply" in item else "")
-        ss.chat.append(item)
+        with st.chat_message("user", avatar="🧑"):
+            st.markdown(question)
+        with st.chat_message("assistant", avatar=ICON[sport]):
+            with st.spinner("Thinking…"):
+                item = answer(question)
+            if item["kind"] != "podcast":
+                st.write_stream(typing(strip_citations(item["content"])))
+        ss.chat += [{"role": "user", "content": question}, item]
         st.rerun()
+
+    if not ss.chat:
+        st.caption(f"Ask anything about {T}: the table, form, home and away, the schedule, another team… "
+                   "Or ask me to make today's podcast, save your prediction or set an alert.")
+    last_q = next((m["content"] for m in reversed(ss.chat) if m["role"] == "user"), None)
+    sugg = follow_ups(last_q, OPP, f"Top-{D} race" if P == D else "Playoff chances")
+    if not ss.chat:                      # first visit: three questions and one action
+        sugg = dict(list(sugg.items())[:3]) | {f"Top-{D} alert": f"Set a top-{D} alert"}
+    cols = st.columns(len(sugg))
+    for col, (label, q) in zip(cols, sugg.items()):
+        if col.button(label, width="stretch", key=f"sugg_{label}"):
+            ss.pending = q
+            st.rerun()
     if ss.chat and st.button("Clear chat", type="tertiary"):
         ss.chat = []
         st.rerun()

@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from companion import offline
+from companion.config import LEAGUE
 from companion.facts import FactStore
 from companion.verify import Report, redact, tamper, verify
 
@@ -30,6 +31,19 @@ RULES = """RULES (the app automatically checks these; answers that break them ar
 5. No betting: never give betting tips, odds or bet suggestions. If asked, say you don't do betting and offer
    the data view of the game instead. Model probabilities are not betting odds.
 6. The 'fictional mock player' names are demo data: use them as given, invent nothing about them."""
+
+
+STYLE = """HOW TO TALK (sound like a real person, not a report):
+- Talk like a knowledgeable friend texting during the season: natural, warm, a bit of personality. Contractions
+  are fine. Vary how you start; never open with "Certainly", "Great question" or by repeating the question.
+- Answer the actual question first, then add the one or two facts that matter most. Don't list every fact.
+- Pick up on feelings: if the fan is nervous, gutted or hyped, acknowledge it in a few words, then help.
+- Use the conversation so far: don't repeat numbers you already gave unless asked, and build on what they said.
+- Use the fan's name now and then, not in every message. Never invent personal details.
+- You may end with one short, relevant follow-up question when it helps, not every time.
+- Plain sentences only: no headings, bullet lists or markdown. Keep it to the requested length.
+- If something isn't in the FACTS, say so naturally ("I don't have injury news, only league data") and offer
+  what you can answer instead."""
 
 
 @dataclass
@@ -60,8 +74,9 @@ class Companion:
         name, desc = PERSONAS[self.persona]
         user = f"The user's name is {self.user_name}. " if self.user_name else ""
         return (f"You are '{name}', an AI sports companion from Kaleva Media for a fan of {team} "
-                f"in Finland's Liiga. {desc}\n{user}Answer in {self.language}. Length: {LENGTHS.get(self.length)}.\n"
-                f"TASK: {task}\n\n{RULES}\n\nFACTS:\n{fs.prompt_block()}")
+                f"in Finland's {LEAGUE.name} ({LEAGUE.sport}). {desc}\n{user}Answer in {self.language}. "
+                f"Length: {LENGTHS.get(self.length)}.\nTASK: {task}\n\n{STYLE}\n\n{RULES}\n\n"
+                f"FACTS:\n{fs.prompt_block()}")
 
     def _run(self, fs: FactStore, team: str, task: str, messages: list[dict], fallback, kind: str,
              simulate_error: bool = False, max_tokens: int = 700) -> Reply:
@@ -108,7 +123,7 @@ class Companion:
     # ---- public API -------------------------------------------------------
     def chat(self, fs: FactStore, history: list[dict], message: str, simulate_error=False) -> Reply:
         team = fs.v("team")
-        msgs = [m for m in history[-8:] if m["role"] in ("user", "assistant")]
+        msgs = [m for m in history[-12:] if m["role"] in ("user", "assistant") and m.get("content")]
         msgs = msgs + [{"role": "user", "content": message}]
         return self._run(fs, team, "Chat with the fan and answer their latest message.", msgs,
                          lambda: offline.chat(message, fs, self.persona, self.user_name), "chat", simulate_error)

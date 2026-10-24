@@ -10,7 +10,9 @@ from companion.verify import tamper, verify
 SNAP = MockProvider().snapshot()
 ODDS = simulate(SNAP, n=3000)
 QUESTIONS = ["hi", "playoff chances?", "what's at stake tonight", "how is our form", "top scorer",
-             "table", "last game", "should I bet", "any injuries?"]
+             "table", "last game", "should I bet", "any injuries?", "how are we at home?", "what's coming up?",
+             "who leads the league?", "who is the top scorer in the league?", "thanks!", "what can you do?",
+             "I'm so nervous about tonight", "how are you?"]
 
 
 def test_standings_points_add_up():
@@ -159,3 +161,13 @@ def test_demo_sports_follow_their_rules_and_answers_verify(sport):
             assert event_facts(snap, game, ev)
     finally:
         use_league(LIIGA)
+
+
+def test_companion_compares_with_a_team_the_fan_mentions():
+    from companion.facts import add_team_facts, find_teams
+    fs = build_team_facts(SNAP, "KARPAT", ODDS)
+    teams = find_teams(SNAP, "How do we compare to Tappara?", exclude="KARPAT")
+    assert teams == ["TAPPARA"]
+    add_team_facts(fs, SNAP, "KARPAT", "TAPPARA", ODDS)
+    r = Companion(None, "buddy").chat(fs, [], "How do we compare to Tappara?")
+    assert r.status == "verified" and "Tappara" in r.text and "Head-to-head" in r.text

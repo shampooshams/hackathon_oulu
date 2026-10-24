@@ -5,12 +5,13 @@ writes matches a cited fact. Fact IDs become the 'fact receipts' in the UI.
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 
 from companion.config import LEAGUE
 from companion.data.providers import Snapshot
 from companion.scenarios import ScenarioResult
-from companion.stats import (fmt_date, game_line, head_to_head, next_game, ordinal, scorers,
+from companion.stats import (fmt_date, game_line, head_to_head, league_scorers, next_game, ordinal, scorers,
                              standings, streak, team_results)
 
 
@@ -148,6 +149,31 @@ def build_team_facts(snap: Snapshot, team: str, scen: ScenarioResult | None,
         fs.add("top_points", f"{T} points leader{mock_note}",
                f"{top_p['name']}, {top_p['pts']} points ({top_p['g']} goals + {top_p['a']} assists)", src_calc)
 
+    # More context, so the companion can answer follow-ups without guessing
+    if results:
+        home_r = [r for r in results if r["home"]]
+        away_r = [r for r in results if not r["home"]]
+        for key, label, rs in (("home_form", "home", home_r), ("away_form", "away", away_r)):
+            if rs:
+                fs.add(key, f"{T} {label} record this season",
+                       f"{sum(r['points'] for r in rs)} points from {len(rs)} {label} games", src_calc)
+        fs.add("per_game", f"{T} {LEAGUE.score_word}s per game (for / against)",
+               f"{row.gf / row.gp:.1f} / {row.ga / row.gp:.1f}", src_calc)
+        fs.add("last5_games", f"{T} last {len(results[-5:])} games (newest first)",
+               "; ".join(game_line(snap, r["game"]) for r in reversed(results[-5:])), src_data)
+    upcoming = sorted((x for x in snap.games if x["status"] != "final" and team in (x["home"], x["away"])),
+                      key=lambda x: (x["date"], x["time"]))[:3]
+    if upcoming:
+        fs.add("upcoming", f"{T} next {len(upcoming)} games", "; ".join(
+            f"{'vs' if x['home'] == team else 'at'} {snap.name(x['away'] if x['home'] == team else x['home'])} "
+            f"{fmt_date(x['date'])} {x['time']}" for x in upcoming), f"{snap.source} · fixtures")
+    fs.add("table", "League table (position, team, points)",
+           ", ".join(f"{ordinal(r.rank)} {r.name} {r.pts}" for r in rows), src_calc)
+    league = league_scorers(snap)[:3]
+    if league:
+        fs.add("league_scorers", f"League top goalscorers{mock_note}",
+               "; ".join(f"{p['name']} ({snap.name(p['team'])}) {p['g']} goals" for p in league), src_calc)
+
     remaining = sum(1 for x in snap.games if x["status"] != "final" and team in (x["home"], x["away"]))
     fs.add("remaining", f"{T} regular-season games left", remaining, f"{snap.source} · fixtures")
 
@@ -186,3 +212,46 @@ def build_team_facts(snap: Snapshot, team: str, scen: ScenarioResult | None,
             fs.add("prediction", "User's prediction for the next game",
                    f"{snap.name(g['home'])} {pred['home']}–{pred['away']} {snap.name(g['away'])}", "Your profile")
     return fs
+
+
+def find_teams(snap: Snapshot, message: str, exclude: str = "") -> list[str]:
+    """Teams the fan mentions by name (or id), e.g. "how about Tappara?"."""
+    m = message.lower()
+    found = []
+    for tid, t in snap.teams.items():
+        if tid == exclude:
+            continue
+        names = {t["name"].lower(), tid.lower()}
+        if any(re.search(rf"(?<![\w]){re.escape(n)}(?![\w])", m) for n in names if len(n) >= 3):
+            found.append(tid)
+    return found[:2]
+
+
+def add_team_facts(fs: FactStore, snap: Snapshot, team: str, other: str, scen: ScenarioResult | None) -> None:
+    """Facts about another team the fan asked about, compared with their own team."""
+    rows = standings(snap)
+    r = next(x for x in rows if x.team == other)
+    O, T = snap.name(other), snap.name(team)
+    src = f"Computed from {snap.source} results up to {fmt_date(snap.as_of)}"
+    k = f"x_{other.lower()}"
+    fs.add(f"{k}_rank", f"{O} league position and points", f"{ordinal(r.rank)}, {r.pts} points from {r.gp} games",
+           src)
+    fs.add(f"{k}_gd", f"{O} {LEAGUE.score_word}s for–against", f"{r.gf}–{r.ga} ({r.gd:+d})", src)
+    res = team_results(snap, other)
+    if res:
+        fs.add(f"{k}_form", f"{O} last {len(res[-5:])} results (oldest→newest)",
+               ", ".join(x["outcome"] for x in res[-5:]), src)
+    h2h = head_to_head(snap, team, other)
+    if h2h:
+        w = sum(x["won"] for x in h2h)
+        d = sum(x["outcome"] == "D" for x in h2h)
+        fs.add(f"{k}_h2h", f"{T} vs {O} this season",
+               f"{w} win{'s' if w != 1 else ''}"
+               + (f", {d} draw{'s' if d != 1 else ''}" if LEAGUE.draws else "")
+               + f", {len(h2h) - w - d} loss{'es' if len(h2h) - w - d != 1 else ''}"
+               f" (last: {game_line(snap, h2h[-1]['game'])})", src)
+    else:
+        fs.add(f"{k}_h2h", f"{T} vs {O} this season", "no meetings yet this season", src)
+    if scen:
+        fs.add(f"{k}_top", f"{O} chance of a top-{LEAGUE.direct_spots} finish", pct(scen.p_top6[other]),
+               f"Season simulation · {scen.n:,} runs")

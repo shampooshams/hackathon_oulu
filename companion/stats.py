@@ -119,6 +119,16 @@ def scorers(snap: Snapshot, team: str) -> list[dict]:
     return out
 
 
+def league_scorers(snap: Snapshot) -> list[dict]:
+    """Top goalscorers across the league: [{name, team, g}], most goals first."""
+    tally: dict[tuple, int] = {}
+    for evs in snap.events.values():
+        for e in evs:
+            if e["type"] == "goal" and e.get("player") and e.get("period") != "SO":
+                tally[(e["player"], e["team"])] = tally.get((e["player"], e["team"]), 0) + 1
+    return [{"name": n, "team": t, "g": g} for (n, t), g in sorted(tally.items(), key=lambda kv: (-kv[1], kv[0]))]
+
+
 def game_line(snap: Snapshot, g: dict) -> str:
     extra = f" ({g['decided']})" if g["decided"] in ("OT", "SO") else ""
     return (f"{snap.name(g['home'])} {g['home_goals']}–{g['away_goals']} "
