@@ -37,7 +37,18 @@ h1,h2,h3,h4{font-weight:800 !important;letter-spacing:-.025em}
 .brand{font-size:20px;line-height:1.2;letter-spacing:-.03em;font-weight:800;margin:.2em 0 1.2em}
 .brand-sub{font-size:13px;letter-spacing:0;font-weight:500;color:var(--muted);margin-top:2px}
 .dot{color:var(--primary)}
-.cap-intro{font-size:17px;font-weight:700;margin:.2em 0 .7em}
+.welcome{position:relative;min-height:250px;border-radius:18px;overflow:hidden;margin:.3em 0 10px;
+ background-size:cover;background-position:70% 40%;display:flex;align-items:flex-end}
+.welcome::before{content:"";position:absolute;inset:0;
+ background:linear-gradient(90deg,rgba(0,24,64,.88) 0%,rgba(0,24,64,.55) 38%,rgba(0,24,64,0) 62%)}
+.welcome-text{position:relative;padding:24px 26px;max-width:min(440px,60%);color:#fff}
+.welcome-title{font-size:clamp(22px,2.4vw,30px);font-weight:800;line-height:1.15;letter-spacing:-.02em}
+.welcome-sub{font-size:15px;margin-top:6px;color:#dbe6f5}
+.welcome-label{position:absolute;right:10px;bottom:8px;font-size:11px;font-weight:600;color:#fff;
+ background:rgba(0,0,0,.45);padding:2px 8px;border-radius:999px}
+@media (max-width:560px){.welcome{min-height:300px;background-position:72% 30%}
+ .welcome::before{background:linear-gradient(0deg,rgba(0,24,64,.9) 0%,rgba(0,24,64,.5) 45%,rgba(0,24,64,0) 70%)}
+ .welcome-text{max-width:100%;padding:18px}}
 .cap-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 1.4em}
 .cap{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border-radius:14px;
  box-shadow:inset 0 0 0 1px var(--line);padding:14px;font-size:14px;line-height:1.4}

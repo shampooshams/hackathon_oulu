@@ -4,10 +4,12 @@ Run:  streamlit run app.py
 """
 from __future__ import annotations
 
+import base64
 import copy
 import html
 import os
 import time
+from pathlib import Path
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -140,6 +142,12 @@ SPORTS = {"Hockey": "🏒 Ice hockey", "Football": "⚽ Football (demo)", "Floor
 ICON = {"Hockey": "🏒", "Football": "⚽", "Floorball": "🏑", "Basketball": "🏀", "Bandy": "⛸️"}
 DEFAULT_TEAM = {"Hockey": "KARPAT", "Football": "ACOULU", "Floorball": "OLS", "Basketball": "KATAJA",
                 "Bandy": "OLS"}   # Oulu teams where there is one
+@st.cache_data
+def hero_image() -> str:
+    """The welcome banner photo (AI-generated), inlined so it works without static file serving."""
+    return base64.b64encode((Path(__file__).parent / "assets" / "hero.jpg").read_bytes()).decode()
+
+
 def capabilities(team: str) -> list[tuple[str, str, str]]:
     """What the assistant can do: shown in the empty chat and in the sidebar."""
     return [
@@ -262,9 +270,12 @@ if ng:
     days = (datetime.fromisoformat(ng["date"]).date() - fetched_at.date()).days
     when = {0: "Today", 1: "Tomorrow"}.get(days, fmt_date(ng["date"]))
     cards.append(("Next game", f"{'vs' if ng['home'] == TEAM else 'at'} {OPP}", f"{when} · {ng['time']}", None))
-if not ss.chat:   # before the first message: what the assistant can do
-    st.markdown('<div class="cap-intro">Hi! I follow ' + html.escape(T) + ' for you. Here\'s what I can do:</div>'
-                '<div class="cap-grid">' + "".join(
+if not ss.chat:   # before the first message: a welcome banner and what the assistant can do
+    st.markdown(f'<div class="welcome" style="background-image:url(data:image/jpeg;base64,{hero_image()})">'
+                f'<div class="welcome-text"><div class="welcome-title">Hi! I follow {html.escape(T)} for you.</div>'
+                '<div class="welcome-sub">Ask me anything, any time. Here\'s what I can do.</div></div>'
+                '<span class="welcome-label">AI-generated image</span></div>', unsafe_allow_html=True)
+    st.markdown('<div class="cap-grid">' + "".join(
                     f'<div class="cap"><div class="cap-icon">{icon}</div><div><b>{title}</b>'
                     f'<div class="cap-text">{text}</div></div></div>' for icon, title, text in capabilities(T))
                 + '</div>', unsafe_allow_html=True)
