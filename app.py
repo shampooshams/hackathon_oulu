@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from companion.agent import route  # noqa: E402
-from companion.companion import PERSONAS, Companion  # noqa: E402
+from companion.companion import Companion  # noqa: E402
 from companion.config import LEAGUE, SIMULATIONS  # noqa: E402
 from companion.data.providers import get_provider  # noqa: E402
 from companion.facts import build_team_facts, pct  # noqa: E402
@@ -144,10 +144,6 @@ with st.sidebar:
     team_ids = sorted(snap.teams, key=snap.name)
     prof["team"] = st.selectbox("Your team", team_ids, format_func=snap.name,
                                 index=team_ids.index(prof["team"]) if prof["team"] in team_ids else 0)
-    persona_keys = list(PERSONAS)
-    prof["persona"] = st.radio("Companion style", persona_keys, format_func=lambda k: PERSONAS[k][0],
-                               index=persona_keys.index(prof["persona"]) if prof.get("persona") in PERSONAS
-                               else 0)
     with st.expander("Personalise"):
         prof["name"] = st.text_input("Your name", prof.get("name", ""))
         prof["language"] = st.selectbox("Language", ["English", "Suomi"],
@@ -180,7 +176,7 @@ with st.sidebar:
 
 TEAM = prof["team"]
 T = snap.name(TEAM)
-comp = Companion(backend if use_ai else None, prof["persona"], prof["length"],
+comp = Companion(backend if use_ai else None, "buddy", prof["length"],
                  "Finnish" if prof["language"] == "Suomi" else "English", prof.get("name", ""))
 facts = build_team_facts(snap, TEAM, season, prof)
 row = next(r for r in standings(snap) if r.team == TEAM)

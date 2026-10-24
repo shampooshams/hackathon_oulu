@@ -14,7 +14,7 @@ cp .env.example .env        # optional: add an API key for full AI answers
 streamlit run app.py
 ```
 
-Without an API key, the app uses offline templates. They follow the same fact-citing rules, so the demo always works. Add `GEMINI_API_KEY`, `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` to `.env` (or the app's Streamlit secrets) for fluent AI answers, personas and Finnish.
+Without an API key, the app uses offline templates. They follow the same fact-citing rules, so the demo always works. Add `GEMINI_API_KEY`, `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` to `.env` (or the app's Streamlit secrets) for fluent AI answers and Finnish.
 
 Run the reliability tests with `python -m pytest -q`.
 
@@ -22,7 +22,7 @@ Run the reliability tests with `python -m pytest -q`.
 
 | Tab | What it shows |
 |---|---|
-| Chat | An AI agent in three styles (Superfan buddy, Calm analyst, Stats geek). It answers questions, and can also act: make today's podcast, save your score prediction, set an alert. Every number has a hoverable fact chip and a receipts table. It doesn't do betting. |
+| Chat | An AI agent with a friendly superfan voice. It answers questions, and can also act: make today's podcast, save your score prediction, set an alert. Every number has a hoverable fact chip and a receipts table. It doesn't do betting. |
 | Tonight | Your next game, what a win or loss does to your top-4 chance, your prediction and alerts, plus a simulated preview of the game event by event. At the final whistle the season is re-simulated: recap, chance shift, prediction verdict and triggered alerts. |
 | Table | The live table with top-4 (straight to the quarter-finals), 5th–12th (first playoff round) and miss-playoff chances, plus your team's finishing-position chart. |
 | Podcast | A 1-minute brief or a full two-host episode (Aino the fan, Mikko the analyst) with a labelled sponsor slot. With a Gemini key it's voiced by Gemini's text-to-speech; otherwise by the browser's voices. |
@@ -36,7 +36,7 @@ League data (mock or Liiga API)
    └─ stats.py        table, form, streaks, head-to-head, scorers   (plain code, no AI)
    └─ scenarios.py    10,000 simulated seasons → playoff odds, stakes of the next game
    └─ facts.py        every number becomes a fact: ID, label, value, source
-   └─ companion.py    LLM (or templates) writes in the chosen persona, citing [F12]
+   └─ companion.py    LLM (or templates) writes as a friendly superfan, citing [F12]
    └─ verify.py       every number must match a cited fact → else regenerate → else remove
    └─ app.py          labelled "AI-generated", with receipts
 ```
