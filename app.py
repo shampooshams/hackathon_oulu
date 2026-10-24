@@ -271,17 +271,17 @@ if ng:
     days = (datetime.fromisoformat(ng["date"]).date() - fetched_at.date()).days
     when = {0: "Today", 1: "Tomorrow"}.get(days, fmt_date(ng["date"]))
     cards.append(("Next game", f"{'vs' if ng['home'] == TEAM else 'at'} {OPP}", f"{when} · {ng['time']}", None))
-if not ss.chat:   # before the first message: a welcome banner and what the assistant can do
-    st.markdown(f'<div class="welcome" style="background-image:url(data:image/jpeg;base64,{hero_image()})">'
-                f'<div class="welcome-text"><div class="welcome-title">Hi! I follow {html.escape(T)} for you.</div>'
-                '<div class="welcome-sub">Ask me anything, any time. Here\'s what I can do.</div>'
-                '<a class="welcome-btn" href="#chat-box" target="_self">💬 Chat with me here</a></div>'
-                '<span class="welcome-label">AI-generated image</span></div>', unsafe_allow_html=True)
-    st.markdown('<div class="cap-grid">' + "".join(
-                    f'<div class="cap"><div class="cap-icon">{icon}</div><div><b>{title.removesuffix(" ★")}</b>'
-                    + ('<span class="premium">Premium</span>' if title.endswith("★") else "") +
-                    f'<div class="cap-text">{text}</div></div></div>' for icon, title, text in capabilities(T))
-                + '</div>', unsafe_allow_html=True)
+# A welcome banner and what the assistant can do, always at the top
+st.markdown(f'<div class="welcome" style="background-image:url(data:image/jpeg;base64,{hero_image()})">'
+            f'<div class="welcome-text"><div class="welcome-title">Hi! I follow {html.escape(T)} for you.</div>'
+            '<div class="welcome-sub">Ask me anything, any time. Here\'s what I can do.</div>'
+            '<a class="welcome-btn" href="#chat-box" target="_self">💬 Chat with me here</a></div>'
+            '<span class="welcome-label">AI-generated image</span></div>', unsafe_allow_html=True)
+st.markdown('<div class="cap-grid">' + "".join(
+                f'<div class="cap"><div class="cap-icon">{icon}</div><div><b>{title.removesuffix(" ★")}</b>'
+                + ('<span class="premium">Premium</span>' if title.endswith("★") else "") +
+                f'<div class="cap-text">{text}</div></div></div>' for icon, title, text in capabilities(T))
+            + '</div>', unsafe_allow_html=True)
 st.markdown('<div class="stat-grid">' + "".join(
     f'<div class="stat"><div class="stat-label">{html.escape(k)}</div>'
     f'<div class="stat-value{" long" if len(v) > 10 else ""}">{html.escape(v)}</div>'

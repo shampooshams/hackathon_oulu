@@ -105,7 +105,7 @@ def chat(message: str, fs: FactStore, persona: str, user_name: str = "") -> str:
 
     if intent == "greet":
         hi = rnd.choice(["Hei", "Moi", "Hey"]) + (f" {user_name}" if user_name else "") + "!"
-        out.append(f"{hi} Good to see you. Your {T} companion, ready when you are.")
+        out.append(f"{hi} Good to see you. Your {T} assistant, ready when you are.")
         if fs.has("next_game"):
             out.append(_s(fs, f"Next up: {fs.v('next_game')}.", "next_game"))
         out.append(rnd.choice(["What do you want to know?", "Ask me anything about the team.",
@@ -265,7 +265,7 @@ def podcast(fs: FactStore, sponsor: str = "", short: bool = False) -> str:
     """Two-host episode, one line per turn as 'Name: text'."""
     a, m = HOSTS
     T = fs.v("team")
-    lines = [f"{a}: Hei and welcome to the {T} companion podcast! I'm {a}.",
+    lines = [f"{a}: Hei and welcome to the {T} podcast! I'm {a}.",
              f"{m}: And I'm {m}. Everything we say today comes straight from the Liiga data."]
     if sponsor:
         lines.append(f"{a}: [Ad] This episode is presented by {sponsor}.")
