@@ -171,3 +171,20 @@ def test_companion_compares_with_a_team_the_fan_mentions():
     add_team_facts(fs, SNAP, "KARPAT", "TAPPARA", ODDS)
     r = Companion(None, "buddy").chat(fs, [], "How do we compare to Tappara?")
     assert r.status == "verified" and "Tappara" in r.text and "Head-to-head" in r.text
+
+
+def test_stakes_talk_about_a_race_tonight_can_move():
+    import copy
+    odds = copy.deepcopy(ODDS)
+    team = SNAP.teams[0] if isinstance(SNAP.teams, list) else next(iter(SNAP.teams))
+    c = Companion(None, "buddy")
+    # Top places out of reach, playoff line still open: talk about the playoff line.
+    odds.stakes[team].update(top6_if_win=0.0, top6_if_loss=0.0, top10_if_win=0.3, top10_if_loss=0.2)
+    fs = build_team_facts(SNAP, team, odds)
+    r = c.chat(fs, [], "what's at stake tonight")
+    assert r.status == "verified" and "top 12 chance" in r.text and "swing" in r.text
+    # Nothing tonight can change: say so instead of "<1% vs <1%, a swing of 0".
+    odds.stakes[team].update(top10_if_win=0.003, top10_if_loss=0.002)
+    fs = build_team_facts(SNAP, team, odds)
+    r = c.chat(fs, [], "what's at stake tonight")
+    assert r.status == "verified" and "won't move" in r.text and "swing" not in r.text

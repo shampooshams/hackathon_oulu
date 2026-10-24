@@ -22,7 +22,7 @@ from companion.agent import follow_ups, route  # noqa: E402
 from companion.companion import Companion  # noqa: E402
 from companion.config import FORMATS, LEAGUE, SIMULATIONS, use_league  # noqa: E402
 from companion.data.providers import get_provider  # noqa: E402
-from companion.facts import add_team_facts, build_team_facts, find_teams, pct  # noqa: E402
+from companion.facts import add_team_facts, build_team_facts, find_teams, pct, stake_race  # noqa: E402
 from companion.live import apply_result, event_facts, postgame_facts, simulate_tonight  # noqa: E402
 from companion.llm import explain, get_backend  # noqa: E402
 from companion.offline import HOSTS  # noqa: E402
@@ -351,9 +351,7 @@ with tab_game:
                         unsafe_allow_html=True)
             if st_:
                 # Show the race tonight's game can actually move: the top places, or else the playoff line.
-                race, win, loss = f"top {D}", st_["top6_if_win"], st_["top6_if_loss"]
-                if P > D and max(win, loss) < 0.02:
-                    race, win, loss = f"top {P}", st_["top10_if_win"], st_["top10_if_loss"]
+                race, win, loss = stake_race(st_)
                 st.markdown(f"**What tonight means for {html.escape(T)}**")
                 if max(win, loss) < 0.01 or min(win, loss) > 0.99 or abs(win - loss) < 0.01:
                     where = "out of reach" if max(win, loss) < 0.5 else "almost certain"

@@ -53,6 +53,14 @@ class FactStore:
         return "\n".join(f"{f.id} | {f.label}: {f.display}  (source: {f.source})" for f in self.facts.values())
 
 
+def stake_race(st: dict) -> tuple[str, float, float]:
+    """The race the next game can move: the top places, or the playoff line if the top is out of reach."""
+    D, P = LEAGUE.direct_spots, LEAGUE.playin_last
+    if P > D and max(st["top6_if_win"], st["top6_if_loss"]) < 0.02:
+        return f"top {P}", st["top10_if_win"], st["top10_if_loss"]
+    return f"top {D}", st["top6_if_win"], st["top6_if_loss"]
+
+
 def pct(x: float) -> str:
     p = round(100 * x)
     if p == 0 and x > 0:
@@ -192,15 +200,20 @@ def build_team_facts(snap: Snapshot, team: str, scen: ScenarioResult | None,
         if st:
             fs.add("p_win_next", f"Model's win probability for {T} next game (not betting odds)",
                    pct(st["p_win"]), src_sim)
-            fs.add("stake_win", f"{T} top-{LEAGUE.direct_spots} chance if they win the next game",
-                   pct(st["top6_if_win"]), src_sim)
-            fs.add("stake_loss", f"{T} top-{LEAGUE.direct_spots} chance if they "
-                   + ("don't win the next game (draw or loss)" if LEAGUE.draws else
-                      "lose the next game (incl. OT/SO)"),
-                   pct(st["top6_if_loss"]), src_sim)
-            swing = round(100 * st["top6_if_win"]) - round(100 * st["top6_if_loss"])
-            fs.add("stake_swing", f"Swing in {T} top-{LEAGUE.direct_spots} chance riding on the next game",
-                   f"{swing} percentage point{'' if abs(swing) == 1 else 's'}", src_sim)
+            race, win, loss = stake_race(st)
+            fs.add("stake_race", "Race the next game is about", race, src_sim)
+            if abs(round(100 * win) - round(100 * loss)) < 1:   # tonight can't move it
+                fs.add("stake_flat", f"{T} {race} chance whatever the next game's result "
+                       f"({'out of reach' if win < 0.5 else 'almost certain'})", pct(win), src_sim)
+            else:
+                fs.add("stake_win", f"{T} {race} chance if they win the next game", pct(win), src_sim)
+                fs.add("stake_loss", f"{T} {race} chance if they "
+                       + ("don't win the next game (draw or loss)" if LEAGUE.draws else
+                          "lose the next game (incl. OT/SO)"),
+                       pct(loss), src_sim)
+                swing = round(100 * win) - round(100 * loss)
+                fs.add("stake_swing", f"Swing in {T} {race} chance riding on the next game",
+                       f"{swing} percentage point{'' if abs(swing) == 1 else 's'}", src_sim)
 
     if profile:
         if profile.get("fan_since"):
