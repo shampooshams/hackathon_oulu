@@ -62,7 +62,8 @@ def standings(snap: Snapshot) -> list[Row]:
             r.ga += res["ga"]
             r.pts += res["points"]
             setattr(r, res["outcome"].lower(), getattr(r, res["outcome"].lower()) + 1)
-    ordered = sorted(rows.values(), key=lambda r: (-r.pts, -r.gd, -r.gf, r.name))
+    # Liiga tie-break: points, then regulation (3-point) wins, then goal difference, then goals scored
+    ordered = sorted(rows.values(), key=lambda r: (-r.pts, -r.w, -r.gd, -r.gf, r.name))
     for i, r in enumerate(ordered, 1):
         r.rank = i
     return ordered

@@ -1,7 +1,7 @@
 """Game Night: play tonight's game event by event, then update the season picture.
 
-With the mock source, tonight's game is simulated from team strengths.
-With the real API, the same functions consume the live event feed.
+Tonight's game is simulated from team strengths (real data or mock alike).
+The event shapes match the API's feed, so a live feed can replace the simulation later.
 """
 from __future__ import annotations
 

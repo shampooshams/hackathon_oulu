@@ -242,8 +242,8 @@ with tab_game:
             st.markdown('<div class="kicker">Live</div>', unsafe_allow_html=True)
             st.markdown("### Live companion")
             if ss.game is None:
-                st.caption("Plays tonight's game event by event, then updates the table and playoff odds. "
-                           "With mock data the game is simulated; with the live API it follows the real feed.")
+                st.caption("A simulated preview of tonight's game, event by event, based on both teams' form. "
+                           "It then updates the table and playoff odds. The real game isn't streamed live yet.")
                 g1, g2 = st.columns(2)
                 outcome = g1.selectbox("Demo outcome", ["any", "win", "loss"],
                                        format_func=lambda x: {"any": "Random", "win": f"{T} win",

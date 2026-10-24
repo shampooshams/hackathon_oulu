@@ -182,13 +182,16 @@ def teams_from(raw_teams, schedule: list[dict]) -> dict[str, dict]:
             tid = team_key(g.get(f"{side}TeamId"), g.get(f"{side}TeamName"))
             if tid and tid not in teams:
                 teams[tid] = {"id": tid, "name": g.get(f"{side}TeamName") or tid, "city": ""}
+            elif tid and g.get(f"{side}TeamName"):  # /teams only has abbreviations ("KÄR"); the schedule has "Kärpät"
+                teams[tid]["name"] = g[f"{side}TeamName"]
         city = (g.get("iceRink") or {}).get("city")
         if city:
             home = team_key(g.get("homeTeamId"), g.get("homeTeamName"))
             cities.setdefault(home, {})[city] = cities.setdefault(home, {}).get(city, 0) + 1
     for tid, seen in cities.items():
         if tid in teams and not teams[tid].get("city"):
-            teams[tid]["city"] = max(seen, key=seen.get)
+            city = max(seen, key=seen.get)
+            teams[tid]["city"] = city.title() if city.isupper() else city  # API sends "MIKKELI"
     # Only keep teams that actually play in this serie
     playing = {team_key(g.get(f"{s}TeamId"), g.get(f"{s}TeamName")) for g in schedule for s in ("home", "away")}
     return {k: v for k, v in teams.items() if k in playing} if playing else teams
