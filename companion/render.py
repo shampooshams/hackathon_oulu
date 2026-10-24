@@ -37,8 +37,8 @@ h1,h2,h3,h4{font-weight:800 !important;letter-spacing:-.025em}
 .brand{font-size:20px;line-height:1.2;letter-spacing:-.03em;font-weight:800;margin:.2em 0 1.2em}
 .brand-sub{font-size:13px;letter-spacing:0;font-weight:500;color:var(--muted);margin-top:2px}
 .dot{color:var(--primary)}
-.cap-intro{font-size:17px;font-weight:700;margin:.6em 0 .7em}
-.cap-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 1em}
+.cap-intro{font-size:17px;font-weight:700;margin:.2em 0 .7em}
+.cap-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 1.4em}
 .cap{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border-radius:14px;
  box-shadow:inset 0 0 0 1px var(--line);padding:14px;font-size:14px;line-height:1.4}
 .cap-icon{font-size:20px;line-height:1.2}

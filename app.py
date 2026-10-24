@@ -262,6 +262,12 @@ if ng:
     days = (datetime.fromisoformat(ng["date"]).date() - fetched_at.date()).days
     when = {0: "Today", 1: "Tomorrow"}.get(days, fmt_date(ng["date"]))
     cards.append(("Next game", f"{'vs' if ng['home'] == TEAM else 'at'} {OPP}", f"{when} · {ng['time']}", None))
+if not ss.chat:   # before the first message: what the assistant can do
+    st.markdown('<div class="cap-intro">Hi! I follow ' + html.escape(T) + ' for you. Here\'s what I can do:</div>'
+                '<div class="cap-grid">' + "".join(
+                    f'<div class="cap"><div class="cap-icon">{icon}</div><div><b>{title}</b>'
+                    f'<div class="cap-text">{text}</div></div></div>' for icon, title, text in capabilities(T))
+                + '</div>', unsafe_allow_html=True)
 st.markdown('<div class="stat-grid">' + "".join(
     f'<div class="stat"><div class="stat-label">{html.escape(k)}</div>'
     f'<div class="stat-value{" long" if len(v) > 10 else ""}">{html.escape(v)}</div>'
@@ -337,12 +343,6 @@ with tab_chat:
         ss.chat += [{"role": "user", "content": question}, item]
         st.rerun()
 
-    if not ss.chat:
-        st.markdown('<div class="cap-intro">Hi! I follow ' + html.escape(T) + ' for you. Here\'s what I can do:</div>'
-                    '<div class="cap-grid">' + "".join(
-                        f'<div class="cap"><div class="cap-icon">{icon}</div><div><b>{title}</b>'
-                        f'<div class="cap-text">{text}</div></div></div>' for icon, title, text in capabilities(T))
-                    + '</div>', unsafe_allow_html=True)
     last_q = next((m["content"] for m in reversed(ss.chat) if m["role"] == "user"), None)
     sugg = follow_ups(last_q, OPP, f"Top-{D} race" if P == D else "Playoff chances")
     if not ss.chat:                      # first visit: three questions and one action
