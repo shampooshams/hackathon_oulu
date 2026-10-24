@@ -41,7 +41,7 @@ def _intent(msg: str) -> str:
         ("home_away", r"\bhome\b|\baway\b|on the road"),
         ("schedule", r"schedule|fixtures|coming up|upcoming|next (few|games|matches|week)|when do we play"),
         ("league_scorers", r"(league|whole league|overall|in the league).*(scor|goal)|(scor|goal).*(league|overall)"),
-        ("leaders", r"leader|top of the (table|league)|first place|who.?s (top|first)|best team"),
+        ("leaders", r"leader|\bleads\b|top of the (table|league)|first place|who.?s (top|first)|best team"),
         ("playoff", r"playoff|chance|top.?\d|top.?(four|six|eight)|make it|qualif|season end|finish|semi|group"),
         ("next", r"tonight|next (game|match)|stake|who do we play|who are we playing|preview|today"),
         ("scorer", r"scor|goal|best player|points leader|who.*(leading|best)"),

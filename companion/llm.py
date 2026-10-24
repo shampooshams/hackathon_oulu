@@ -71,11 +71,27 @@ class GeminiBackend:
         self.name = f"Gemini ({self.model})"
 
     def generate(self, system: str, messages: list[dict], max_tokens: int = 700) -> str:
+        return (self._respond(system, messages, max_tokens).text or "").strip()
+
+    def search(self, system: str, messages: list[dict], max_tokens: int = 700) -> tuple[str, list[tuple[str, str]]]:
+        """Answer with Google Search grounding. Returns (text, [(title, url), ...]) for the pages it used."""
+        from google.genai import types
+        resp = self._respond(system, messages, max_tokens, tools=[types.Tool(google_search=types.GoogleSearch())])
+        sources, seen = [], set()
+        meta = resp.candidates[0].grounding_metadata if resp.candidates else None
+        for chunk in (getattr(meta, "grounding_chunks", None) or []):
+            web = getattr(chunk, "web", None)
+            if web and web.uri and web.uri not in seen:
+                seen.add(web.uri)
+                sources.append((web.title or web.uri, web.uri))
+        return (resp.text or "").strip(), sources
+
+    def _respond(self, system, messages, max_tokens, tools=None):
         from google.genai import types
         contents = [types.Content(role="model" if m["role"] == "assistant" else "user",
                                   parts=[types.Part(text=m["content"])]) for m in messages]
         try:
-            return self._call(types, system, contents, max_tokens)
+            return self._call(types, system, contents, max_tokens, tools=tools)
         except Exception as e:
             if not _switchable(e):
                 raise
@@ -83,28 +99,27 @@ class GeminiBackend:
                 if backup == self.model:
                     continue
                 try:
-                    text = self._call(types, system, contents, max_tokens, backup)
+                    resp = self._call(types, system, contents, max_tokens, backup, tools)
                 except Exception:
                     continue
                 self.model, self.name = backup, f"Gemini ({backup}, instead of {self.model})"
-                return text
+                return resp
             raise
 
-    def _call(self, types, system, contents, max_tokens, model=None) -> str:
+    def _call(self, types, system, contents, max_tokens, model=None, tools=None):
         model = model or self.model
         if "flash" in model:  # thinking would use up the answer's token budget
-            config = types.GenerateContentConfig(system_instruction=system, max_output_tokens=max_tokens,
+            config = types.GenerateContentConfig(system_instruction=system, max_output_tokens=max_tokens, tools=tools,
                                                  thinking_config=types.ThinkingConfig(thinking_budget=0))
             try:
-                resp = self.client.models.generate_content(model=model, contents=contents, config=config)
-                return (resp.text or "").strip()
+                return self.client.models.generate_content(model=model, contents=contents, config=config)
             except Exception as e:  # newer models may not accept switching thinking off: try without it
                 if "NOT_FOUND" in str(e) or "API_KEY" in str(e) or getattr(e, "code", None) in (403, 404, 429):
                     raise
         # Pro (and newer) models think first: leave room for the thinking on top of the answer
-        plain = types.GenerateContentConfig(system_instruction=system, max_output_tokens=max_tokens + 2048)
-        resp = self.client.models.generate_content(model=model, contents=contents, config=plain)
-        return (resp.text or "").strip()
+        plain = types.GenerateContentConfig(system_instruction=system, max_output_tokens=max_tokens + 2048, tools=tools)
+        return self.client.models.generate_content(model=model, contents=contents, config=plain)
+
 
 def get_backend():
     """Return a backend, or None for offline template mode."""
