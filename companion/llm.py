@@ -44,12 +44,17 @@ class GeminiBackend:
         from google.genai import types
         contents = [types.Content(role="model" if m["role"] == "assistant" else "user",
                                   parts=[types.Part(text=m["content"])]) for m in messages]
+        plain = types.GenerateContentConfig(system_instruction=system, max_output_tokens=max_tokens + 2048)
         if "flash" in self.model:  # thinking would use up the answer's token budget
             config = types.GenerateContentConfig(system_instruction=system, max_output_tokens=max_tokens,
                                                  thinking_config=types.ThinkingConfig(thinking_budget=0))
-        else:  # Pro models always think: leave room for the thinking on top of the answer
-            config = types.GenerateContentConfig(system_instruction=system, max_output_tokens=max_tokens + 2048)
-        resp = self.client.models.generate_content(model=self.model, contents=contents, config=config)
+            try:
+                resp = self.client.models.generate_content(model=self.model, contents=contents, config=config)
+                return (resp.text or "").strip()
+            except Exception:  # newer models may not accept switching thinking off: try without it
+                pass
+        # Pro (and newer) models think first: leave room for the thinking on top of the answer
+        resp = self.client.models.generate_content(model=self.model, contents=contents, config=plain)
         return (resp.text or "").strip()
 
 
