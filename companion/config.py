@@ -11,10 +11,12 @@ USERS_DIR = DATA_DIR / "users"
 
 @dataclass(frozen=True)
 class LeagueFormat:
-    """Liiga regular-season format. Change here if the format differs."""
+    """Liiga 2026-27 format (17 teams, one-off season). Change here if the format differs.
+    The official standings agree: their playoffsLines are after 4th and 12th."""
     name: str = "Liiga"
-    direct_spots: int = 6        # 1st-6th go straight to the quarter-finals
-    playin_last: int = 10        # 7th-10th play the play-in round
+    direct_spots: int = 4        # 1st-4th go straight to the quarter-finals
+    playin_last: int = 12        # 5th-12th play the first playoff round; 13th and below miss the playoffs
+    first_round: str = "first playoff round"
     points_reg_win: int = 3
     points_ot_win: int = 2       # overtime or shootout win
     points_ot_loss: int = 1      # overtime or shootout loss

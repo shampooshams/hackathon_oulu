@@ -76,7 +76,8 @@ def build_team_facts(snap: Snapshot, team: str, scen: ScenarioResult | None,
     fs.add("team", "User's favourite team", T, "Your profile")
     fs.add("format", "Playoff format",
            f"Top {LEAGUE.direct_spots} go straight to the quarter-finals; {LEAGUE.direct_spots + 1}th–"
-           f"{LEAGUE.playin_last}th play a play-in round; {LEAGUE.playin_last + 1}th–{len(rows)}th miss the playoffs",
+           f"{LEAGUE.playin_last}th play the {LEAGUE.first_round}; {LEAGUE.playin_last + 1}th–{len(rows)}th "
+           f"miss the playoffs",
            "Liiga regular-season rules")
     fs.add("rank", f"{T} league position", ordinal(row.rank), src_calc)
     fs.add("points", f"{T} points", row.pts, src_calc)
@@ -144,9 +145,9 @@ def build_team_facts(snap: Snapshot, team: str, scen: ScenarioResult | None,
     if scen:
         fs.add("p_top6", f"{T} chance of a top-{LEAGUE.direct_spots} finish (direct quarter-final)",
                pct(scen.p_top6[team]), src_sim)
-        fs.add("p_playin", f"{T} chance of finishing {LEAGUE.direct_spots + 1}th–{LEAGUE.playin_last}th (play-in)",
-               pct(scen.p_playin[team]), src_sim)
-        fs.add("p_top10", f"{T} chance of reaching the playoffs incl. play-in (top {LEAGUE.playin_last})",
+        fs.add("p_playin", f"{T} chance of finishing {LEAGUE.direct_spots + 1}th–{LEAGUE.playin_last}th "
+               f"({LEAGUE.first_round})", pct(scen.p_playin[team]), src_sim)
+        fs.add("p_top10", f"{T} chance of reaching the playoffs (top {LEAGUE.playin_last})",
                pct(scen.p_top10[team]), src_sim)
         fs.add("p_out", f"{T} chance of missing the playoffs", pct(scen.p_out[team]), src_sim)
         fs.add("p_first", f"{T} chance of finishing 1st", pct(scen.p_first[team]), src_sim)

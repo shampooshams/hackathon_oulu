@@ -85,7 +85,7 @@ def postgame_facts(before: Snapshot, after: Snapshot, team: str, game: dict,
     fs.add("top6_change", f"Change in {T} top-{LEAGUE.direct_spots} chance",
            f"{'up' if ch > 0 else 'down' if ch < 0 else 'unchanged,'} {abs(ch)} percentage point{'' if abs(ch) == 1 else 's'}",
            src_sim)
-    fs.add("top10_after", f"{T} chance of reaching the playoffs incl. play-in now", pct(scen_after.p_top10[team]),
+    fs.add("top10_after", f"{T} chance of reaching the playoffs (top {LEAGUE.playin_last}) now", pct(scen_after.p_top10[team]),
            src_sim)
 
     goals = {}

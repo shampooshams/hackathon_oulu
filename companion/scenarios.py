@@ -28,7 +28,7 @@ class ScenarioResult:
     p_first: dict[str, float]
     proj_points: dict[str, float]
     rank_dist: dict[str, list[float]]          # P(final rank = 1..N)
-    cutline_median: float                       # final points of the 6th-placed team
+    cutline_median: float                       # final points of the last direct quarter-final place
     cutline_range: tuple[float, float]          # 25th-75th percentile
     stakes: dict[str, dict] = field(default_factory=dict)
 

@@ -161,13 +161,15 @@ if snap.is_mock:
 c1, c2, c3, c4 = st.columns(4)
 c1.metric("Position", ordinal(row.rank), help=f"{row.gp} games played")
 c2.metric("Points", row.pts)
-c3.metric("Top-6 chance", pct(odds.p_top6[TEAM]))
+c3.metric(f"Top-{LEAGUE.direct_spots} chance", pct(odds.p_top6[TEAM]),
+          help=f"Chance of finishing in the top {LEAGUE.direct_spots}, straight to the quarter-finals. "
+               f"Top {LEAGUE.playin_last} make the playoffs: {pct(odds.p_top10[TEAM])}")
 st_ = odds.stakes.get(TEAM)
 if ng and st_:
     opp = snap.name(ng["away"] if ng["home"] == TEAM else ng["home"])
     swing = round(100 * st_["top6_if_win"]) - round(100 * st_["top6_if_loss"])
     c4.metric(f"Next: {'vs' if ng['home'] == TEAM else 'at'} {opp}", fmt_date(ng["date"]),
-              help=f"Top-6 chance swings by {swing} percentage points on this game")
+              help=f"Top-{LEAGUE.direct_spots} chance swings by {swing} percentage points on this game")
 
 tab_chat, tab_game, tab_race, tab_brief = st.tabs(["💬 Companion", "🏒 Game night", "📈 Playoff race",
                                                     "🎧 Daily brief"])
@@ -218,8 +220,8 @@ with tab_game:
             st.caption(f"{fmt_date(ng['date'])} · {ng['time']}")
             if st_:
                 m1, m2 = st.columns(2)
-                m1.metric("Top-6 if they win", pct(st_["top6_if_win"]))
-                m2.metric("Top-6 if they lose", pct(st_["top6_if_loss"]))
+                m1.metric(f"Top-{LEAGUE.direct_spots} if they win", pct(st_["top6_if_win"]))
+                m2.metric(f"Top-{LEAGUE.direct_spots} if they lose", pct(st_["top6_if_loss"]))
 
             st.markdown("**Your prediction**")
             pred = prof["predictions"].get(ng["id"], {"home": 2, "away": 2})
@@ -232,9 +234,9 @@ with tab_game:
                 st.success("Saved. Your companion will check it after the game.")
 
             st.markdown("**Alerts**")
-            prof["alerts"]["top6_drop"] = st.checkbox(f"Tell me if {T} drop out of the top 6",
+            prof["alerts"]["top6_drop"] = st.checkbox(f"Tell me if {T} drop out of the top {LEAGUE.direct_spots}",
                                                       value=prof["alerts"].get("top6_drop", True))
-            prof["alerts"]["odds_below"] = st.slider("Tell me if the top-6 chance falls below (%)", 0, 100,
+            prof["alerts"]["odds_below"] = st.slider(f"Tell me if the top-{LEAGUE.direct_spots} chance falls below (%)", 0, 100,
                                                      int(prof["alerts"].get("odds_below") or 50))
             save_profile(prof)
 
@@ -315,7 +317,7 @@ with tab_race:
     table = pd.DataFrame([{
         "Pos": r.rank, "Team": r.name, "GP": r.gp, "Pts": r.pts, "GD": r.gd,
         f"Top {LEAGUE.direct_spots} %": round(100 * odds.p_top6[r.team]),
-        "Play-in %": round(100 * odds.p_playin[r.team]),
+        f"{LEAGUE.direct_spots + 1}–{LEAGUE.playin_last} %": round(100 * odds.p_playin[r.team]),
         "Miss %": round(100 * odds.p_out[r.team]),
         "Proj. pts": round(odds.proj_points[r.team]),
     } for r in standings(snap)])
@@ -328,14 +330,14 @@ with tab_race:
     dist = odds.rank_dist[TEAM]
     chart = pd.DataFrame({
         "Final position": [ordinal(i + 1) for i in range(len(dist))],
-        "Top 6": [round(100 * p, 1) if i < LEAGUE.direct_spots else 0 for i, p in enumerate(dist)],
-        "Play-in": [round(100 * p, 1) if LEAGUE.direct_spots <= i < LEAGUE.playin_last else 0
+        "Quarter-final": [round(100 * p, 1) if i < LEAGUE.direct_spots else 0 for i, p in enumerate(dist)],
+        "First round": [round(100 * p, 1) if LEAGUE.direct_spots <= i < LEAGUE.playin_last else 0
                     for i, p in enumerate(dist)],
         "Miss": [round(100 * p, 1) if i >= LEAGUE.playin_last else 0 for i, p in enumerate(dist)],
     })
-    st.bar_chart(chart, x="Final position", y=["Top 6", "Play-in", "Miss"], y_label="% of simulations",
+    st.bar_chart(chart, x="Final position", y=["Quarter-final", "First round", "Miss"], y_label="% of simulations",
                  color=["#d3fa5b", "#ff9b63", "#6b7b8b"], sort=False)
-    st.caption(f"The 6th-placed team typically finishes on about {round(odds.cutline_median)} points "
+    st.caption(f"The {ordinal(LEAGUE.direct_spots)}-placed team typically finishes on about {round(odds.cutline_median)} points "
                f"(middle half of simulations: {round(odds.cutline_range[0])}–{round(odds.cutline_range[1])}).")
 
 # ---------- daily brief ----------------------------------------------------
