@@ -1,0 +1,10 @@
+streamlit>=1.50
+pandas>=2.0
+numpy>=1.26
+python-dotenv>=1.0
+requests>=2.31
+anthropic>=0.40
+openai>=1.40
+google-genai>=1.0
+pytest>=8.0
+tzdata>=2024.1

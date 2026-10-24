@@ -1,0 +1,6 @@
+.env
+__pycache__/
+.pytest_cache/
+data/users/
+data/cache/
+api_samples/

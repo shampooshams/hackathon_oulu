@@ -1,0 +1,14 @@
+# Same design tokens as Local SportsReel (frontend/app/globals.css)
+[theme]
+base = "dark"
+primaryColor = "#d3fa5b"
+backgroundColor = "#0b1018"
+secondaryBackgroundColor = "#18212b"
+textColor = "#f0f4f5"
+borderColor = "#2a3340"
+font = "Arial, Helvetica, sans-serif"
+baseRadius = "8px"
+
+[theme.sidebar]
+backgroundColor = "#141b24"
+secondaryBackgroundColor = "#202b36"
