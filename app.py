@@ -137,8 +137,8 @@ def make_podcast(short: bool) -> dict:
 
 
 # ---------- sport and league data ------------------------------------------
-SPORTS = {"Hockey": "🏒 Ice hockey", "Football": "⚽ Football (demo)", "Floorball": "🏑 Floorball (demo)",
-          "Basketball": "🏀 Basketball (demo)", "Bandy": "⛸️ Bandy (demo)"}
+SPORTS = {"Hockey": "🏒 Ice hockey", "Football": "⚽ Football", "Floorball": "🏑 Floorball",
+          "Basketball": "🏀 Basketball", "Bandy": "⛸️ Bandy"}
 ICON = {"Hockey": "🏒", "Football": "⚽", "Floorball": "🏑", "Basketball": "🏀", "Bandy": "⛸️"}
 DEFAULT_TEAM = {"Hockey": "KARPAT", "Football": "ACOULU", "Floorball": "OLS", "Basketball": "KATAJA",
                 "Bandy": "OLS"}   # Oulu teams where there is one
