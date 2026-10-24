@@ -34,10 +34,9 @@ TOKENS = {
 
 COMPONENTS = """
 h1,h2,h3,h4{font-weight:800 !important;letter-spacing:-.025em}
-.brand{display:flex;align-items:center;gap:10px;font-size:20px;letter-spacing:-.03em;font-weight:800;margin:.2em 0 .3em}
-.brand-mark{height:32px;width:32px;display:grid;place-items:center;background:var(--primary);color:var(--on-primary);
- font-size:20px;border-radius:9px}
-.brand-thin{font-weight:400}.dot{color:var(--primary)}
+.brand{font-size:20px;line-height:1.2;letter-spacing:-.03em;font-weight:800;margin:.2em 0 1.2em}
+.brand-sub{font-size:13px;letter-spacing:0;font-weight:500;color:var(--muted);margin-top:2px}
+.dot{color:var(--primary)}
 .kicker{font-size:12px;letter-spacing:.12em;color:var(--primary);font-weight:700;text-transform:uppercase;
  margin:.4em 0 .1em}
 .hero{font-size:clamp(36px,4.5vw,48px);letter-spacing:-.03em;line-height:1.05;font-weight:800;margin:.1em 0 .45em}

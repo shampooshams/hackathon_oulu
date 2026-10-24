@@ -141,8 +141,8 @@ ICON = {"Hockey": "🏒", "Football": "⚽", "Floorball": "🏑", "Basketball": 
 DEFAULT_TEAM = {"Hockey": "KARPAT", "Football": "ACOULU", "Floorball": "OLS", "Basketball": "KATAJA",
                 "Bandy": "OLS"}   # Oulu teams where there is one
 with st.sidebar:
-    st.markdown('<div class="brand"><span class="brand-mark">↗</span><span>FAN<span class="brand-thin">'
-                'COMPANION</span><span class="dot">.</span></span></div>', unsafe_allow_html=True)
+    st.markdown('<div class="brand">Your AI sports assistant<span class="dot">.</span>'
+                '<div class="brand-sub">Personalised for you</div></div>', unsafe_allow_html=True)
     keys = list(SPORTS)
     sport = st.selectbox("Sport", keys, format_func=SPORTS.get,
                          index=keys.index(prof["sport"]) if prof.get("sport") in SPORTS else 0)
