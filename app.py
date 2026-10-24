@@ -35,7 +35,7 @@ from companion.stats import fmt_date, next_game, ordinal, standings  # noqa: E40
 from companion.tts import browser_player, gemini_audio  # noqa: E402
 from companion.verify import strip_citations  # noqa: E402
 
-st.set_page_config(page_title="Fan Companion · Kaleva Media", page_icon="🏒", layout="wide")
+st.set_page_config(page_title="Your AI sports assistant", page_icon="🏒", layout="wide")
 # Light and dark themes: fans pick in ⋮ → Settings (System follows the device). THEME_SYNC (in the sidebar)
 # makes the custom HTML follow. Charts and table colours below are chosen to read well on both.
 st.markdown(CSS, unsafe_allow_html=True)
