@@ -45,7 +45,7 @@ def _intent(msg: str) -> str:
 
 def _opener(persona: str) -> str:
     return {"buddy": "Okay, here's the deal.", "analyst": "Here's the picture.",
-            "bettor": "Notebook check."}.get(persona, "")
+            "stats": "Numbers first."}.get(persona, "")
 
 
 def chat(message: str, fs: FactStore, persona: str, user_name: str = "") -> str:
@@ -94,14 +94,12 @@ def chat(message: str, fs: FactStore, persona: str, user_name: str = "") -> str:
         if persona == "buddy":
             out.append("Big one. Bring your voice!")
     elif intent == "bet":
-        out.append("I don't give betting tips, but here's what the data model says.")
-        if fs.has("p_win_next"):
-            out.append(_s(fs, f"The model gives {T} a {fs.v('p_win_next')} chance to win the next game, "
-                              f"{fs.v('next_game')}.", "p_win_next", "next_game"))
+        out.append("I don't do betting: no tips, odds or bet slips. Happy to talk about the game itself, though.")
+        if fs.has("next_game"):
+            out.append(_s(fs, f"Next up: {fs.v('next_game')}.", "next_game"))
         out.append(_s(fs, f"Recent form: {fs.v('form5')}.", "form5"))
         if fs.has("opp_form5"):
             out.append(_s(fs, f"Opponent form: {fs.v('opp_form5')}.", "opp_form5"))
-        out.append("Model estimates aren't bookmaker odds. If you play, set a budget and keep it fun.")
     elif intent == "scorer":
         if fs.has("top_scorer"):
             out.append(_s(fs, f"Top goalscorer: {fs.v('top_scorer')}.", "top_scorer"))
@@ -154,6 +152,42 @@ def brief(fs: FactStore, persona: str, user_name: str = "", sponsor: str = "") -
         parts.append(_s(fs, f"Player to watch: {fs.v('top_scorer')}.", "top_scorer"))
     parts.append("That's your brief. Enjoy the game!" if persona == "buddy" else "That's the brief for today.")
     return "\n".join(parts)
+
+
+HOSTS = ("Aino", "Mikko")   # Aino: the fan in the stands, Mikko: the calm analyst
+
+
+def podcast(fs: FactStore, sponsor: str = "", short: bool = False) -> str:
+    """Two-host episode, one line per turn as 'Name: text'."""
+    a, m = HOSTS
+    T = fs.v("team")
+    lines = [f"{a}: Hei and welcome to the {T} companion podcast! I'm {a}.",
+             f"{m}: And I'm {m}. Everything we say today comes straight from the Liiga data."]
+    if sponsor:
+        lines.append(f"{a}: [Ad] This episode is presented by {sponsor}.")
+    if fs.has("last_game"):
+        lines.append(f"{a}: " + _s(fs, f"Let's start with the last game: {fs.v('last_game')}.", "last_game"))
+    lines.append(f"{m}: " + _s(fs, f"That leaves {T} {fs.v('rank')} on {fs.v('points')} points, "
+                                   f"{fs.v('gap6')}.", "rank", "points", "gap6"))
+    if fs.has("form5") and not short:
+        lines.append(f"{a}: " + _s(fs, f"Recent form reads {fs.v('form5')}, and the streak: {fs.v('streak')}.",
+                                   "form5", "streak"))
+    if fs.has("next_game"):
+        lines.append(f"{a}: " + _s(fs, f"Next up: {fs.v('next_game')}.", "next_game"))
+        lines.append(f"{m}: " + _s(fs, f"The opponent sits {fs.v('opp_rank')} with recent form {fs.v('opp_form5')}.",
+                                   "opp_rank", "opp_form5"))
+    if fs.has("stake_win"):
+        lines.append(f"{a}: So how big is it?")
+        lines.append(f"{m}: " + _s(fs, f"A win takes the top-{D} chance to {fs.v('stake_win')}, a loss leaves it "
+                                       f"at {fs.v('stake_loss')}.", "stake_win", "stake_loss"))
+    if fs.has("p_top10") and not short:
+        lines.append(f"{m}: " + _s(fs, f"Over the whole season, the simulations put {T} in the top {P} in "
+                                       f"{fs.v('p_top10')} of runs.", "p_top10"))
+    if fs.has("top_scorer"):
+        lines.append(f"{a}: " + _s(fs, f"Player to watch: {fs.v('top_scorer')}.", "top_scorer"))
+    lines.append(f"{m}: That's the numbers. The rest is up to the players.")
+    lines.append(f"{a}: See you at the rink. Hyvä {T}!")
+    return "\n".join(lines)
 
 
 def ping(ev: dict, fs: FactStore, fav_team_name: str) -> str:

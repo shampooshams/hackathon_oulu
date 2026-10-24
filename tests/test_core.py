@@ -1,5 +1,5 @@
 """Reliability tests: run with  python -m pytest -q"""
-from companion.companion import Companion
+from companion.companion import PERSONAS, Companion
 from companion.data.providers import MockProvider
 from companion.facts import build_team_facts
 from companion.live import apply_result, event_facts, postgame_facts, simulate_tonight
@@ -31,7 +31,7 @@ def test_probabilities_are_consistent():
 def test_every_offline_answer_verifies_for_every_team_and_persona():
     for team in SNAP.teams:
         fs = build_team_facts(SNAP, team, ODDS)
-        for persona in ("buddy", "analyst", "bettor"):
+        for persona in PERSONAS:
             c = Companion(None, persona)
             for q in QUESTIONS:
                 r = c.chat(fs, [], q)
@@ -93,3 +93,29 @@ def test_game_night_pipeline():
         assert Companion().postgame(pf, "Kärpät").status == "verified"
         for a in alerts:
             assert verify(a, pf).ok
+
+
+def test_agent_routes_requests_to_tools():
+    from companion.agent import keyword_route
+    assert keyword_route("Make today's podcast")["tool"] == "podcast"
+    assert keyword_route("I predict 3-2") == {"tool": "save_prediction", "home": 3, "away": 2}
+    assert keyword_route("remind me if we fall below 30%") == {"tool": "set_alert", "threshold": 30}
+    assert keyword_route("Should I bet on tonight's game?")["tool"] == "answer"   # no betting tool
+
+
+def test_podcast_is_a_verified_two_host_dialogue():
+    from companion.offline import HOSTS
+    from companion.tts import script_lines
+    fs = build_team_facts(SNAP, "KARPAT", ODDS)
+    r = Companion(None, "buddy").podcast(fs, "Sponsor Oy")
+    assert r.status == "verified", r.report.feedback(fs)
+    lines = script_lines(r.text)
+    assert {h for h, _ in lines} == set(HOSTS)
+    assert not any("[F" in said for _, said in lines)        # citations are not read aloud
+    assert any(said.startswith("Advertisement.") for _, said in lines)
+
+
+def test_companion_declines_betting():
+    fs = build_team_facts(SNAP, "KARPAT", ODDS)
+    r = Companion(None, "stats").chat(fs, [], "Should I bet on tonight?")
+    assert "don't do betting" in r.text and r.status == "verified"

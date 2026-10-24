@@ -3,7 +3,7 @@
 An AI companion that lives a fan's season with them. It is built on three ideas:
 
 1. **Personal and proactive**: it knows your team, your favourite player and your predictions. It pings you live during the game and sends a daily audio brief.
-2. **Explains what's at stake**: a season simulator answers questions like "what do we need for a top-6 finish?" and "what does tonight's game change?"
+2. **Explains what's at stake**: a season simulator answers questions like "what do we need for a top-4 finish?" and "what does tonight's game change?"
 3. **Never lies about numbers (fact receipts)**: every number the AI writes must cite a fact ID. An automatic checker blocks anything that doesn't match the data before the fan sees it.
 
 ## Run it
@@ -14,7 +14,7 @@ cp .env.example .env        # optional: add an API key for full AI answers
 streamlit run app.py
 ```
 
-Without an API key, the app uses offline templates. They follow the same fact-citing rules, so the demo always works. Add `GEMINI_API_KEY`, `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` to `.env` for fluent AI answers, personas and Finnish.
+Without an API key, the app uses offline templates. They follow the same fact-citing rules, so the demo always works. Add `GEMINI_API_KEY`, `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` to `.env` (or the app's Streamlit secrets) for fluent AI answers, personas and Finnish.
 
 Run the reliability tests with `python -m pytest -q`.
 
@@ -22,10 +22,10 @@ Run the reliability tests with `python -m pytest -q`.
 
 | Tab | What it shows |
 |---|---|
-| 💬 Companion | Chat in three personas (Superfan buddy, Calm analyst, Bettor's notebook). Every number has a hoverable fact chip and a receipts table. |
-| 🏒 Game night | Prediction, alerts, then tonight's game event by event with live pings. At the final whistle, the season is re-simulated: post-game recap, odds shift, prediction verdict and triggered alerts. |
-| 📈 Playoff race | Table with top-6, play-in and miss-playoff probabilities for every team, plus your team's finishing-position distribution. |
-| 🎧 Daily brief | A 60-second game-day brief with a labelled sponsor slot, read aloud in the browser. |
+| Chat | An AI agent in three styles (Superfan buddy, Calm analyst, Stats geek). It answers questions, and can also act: make today's podcast, save your score prediction, set an alert. Every number has a hoverable fact chip and a receipts table. It doesn't do betting. |
+| Tonight | Your next game, what a win or loss does to your top-4 chance, your prediction and alerts, plus a simulated preview of the game event by event. At the final whistle the season is re-simulated: recap, chance shift, prediction verdict and triggered alerts. |
+| Table | The live table with top-4 (straight to the quarter-finals), 5th–12th (first playoff round) and miss-playoff chances, plus your team's finishing-position chart. |
+| Podcast | A 1-minute brief or a full two-host episode (Aino the fan, Mikko the analyst) with a labelled sponsor slot. With a Gemini key it's voiced by Gemini's text-to-speech; otherwise by the browser's voices. |
 
 Sidebar toggle **"Demo: inject a hallucination"**: this corrupts one number in the AI's draft, so judges can watch the checker block it and regenerate the answer.
 

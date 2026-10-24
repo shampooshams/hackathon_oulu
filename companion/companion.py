@@ -13,9 +13,8 @@ PERSONAS = {
                                 "keeps it light, but never exaggerates the numbers."),
     "analyst": ("Calm analyst", "A clear, calm sports analyst. Explains what the numbers mean and why, "
                                 "no hype, no filler."),
-    "bettor": ("Bettor's notebook", "A neutral, data-first assistant for fans who follow betting. Focuses on form, "
-                                    "probabilities and stakes. Never recommends a bet, never quotes bookmaker odds, "
-                                    "and reminds the user to play responsibly when betting comes up."),
+    "stats": ("Stats geek", "A precise numbers enthusiast who loves trends, comparisons and probabilities. "
+                            "Dry wit, every claim backed by the data."),
 }
 LENGTHS = {"short": "2–3 sentences", "normal": "4–6 sentences", "long": "two short paragraphs"}
 
@@ -28,7 +27,8 @@ RULES = """RULES (the app automatically checks these; answers that break them ar
 3. If the FACTS don't cover the question (injuries, line-ups, transfers, news, other leagues), say plainly that
    you don't have that data. Never guess.
 4. Opinion, emotion and jokes are welcome, but only in sentences without numbers or factual claims about people.
-5. Never recommend a bet. Model probabilities are not betting odds.
+5. No betting: never give betting tips, odds or bet suggestions. If asked, say you don't do betting and offer
+   the data view of the game instead. Model probabilities are not betting odds.
 6. The 'fictional mock player' names are demo data: use them as given, invent nothing about them."""
 
 
@@ -122,6 +122,21 @@ class Companion:
                 "Short spoken sentences, one per line, no lists or markdown." + ad)
         return self._run(fs, team, task, [{"role": "user", "content": "Give me today's brief."}],
                          lambda: offline.brief(fs, self.persona, self.user_name, sponsor), "brief", simulate_error)
+
+    def podcast(self, fs: FactStore, sponsor: str = "", short: bool = False, simulate_error=False) -> Reply:
+        team = fs.v("team")
+        a, m = offline.HOSTS
+        ad = (f" Early on, {a} reads one clearly labelled ad line: '{a}: [Ad] This episode is presented by "
+              f"{sponsor}.'" if sponsor else "")
+        size = "about 60 seconds (8-10 lines)" if short else "about 2-3 minutes (18-24 lines)"
+        task = (f"Write a spoken podcast episode of {size} for today, as a dialogue between two hosts: {a}, an "
+                f"enthusiastic fan in the stands, and {m}, a calm analyst. Every line starts with the host's name "
+                f"and a colon ('{a}: ...'). Cover the last result, the table, form, tonight's opponent and what's "
+                f"at stake in the playoff race, and a player to watch. Natural spoken sentences, no markdown, "
+                f"no stage directions. Citations go at the end of sentences as usual." + ad)
+        return self._run(fs, team, task, [{"role": "user", "content": "Make today's podcast."}],
+                         lambda: offline.podcast(fs, sponsor, short), "podcast", simulate_error,
+                         max_tokens=1800)
 
     def ping(self, fs: FactStore, ev: dict, fav_team: str, use_ai: bool = False) -> Reply:
         if not use_ai:

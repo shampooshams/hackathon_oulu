@@ -19,7 +19,7 @@ h1,h2,h3,h4{font-weight:900 !important;letter-spacing:-.04em}
 .kicker{font-size:11px;letter-spacing:2px;color:var(--lime);font-weight:800;display:flex;gap:10px;
  align-items:center;text-transform:uppercase;margin:.4em 0 .2em}
 .kicker:before{content:"";display:block;width:23px;height:2px;background:var(--lime)}
-.hero{font-size:clamp(38px,5.4vw,76px);letter-spacing:-.055em;line-height:.98;font-weight:900;margin:.25em 0 .35em;
+.hero{font-size:clamp(32px,4.4vw,60px);letter-spacing:-.055em;line-height:.98;font-weight:900;margin:.25em 0 .35em;
  text-transform:uppercase}
 .hero em{font-style:normal;color:var(--lime)}
 .hero-sub{color:#b5c0c8;font-size:15px;line-height:1.6;max-width:620px;margin-bottom:1em}
@@ -45,6 +45,21 @@ button[kind="primary"],button[data-testid="stBaseButton-primary"]{color:#122014 
 .ping.goal{border-left-color:var(--lime);background:#18231b}.ping.against{border-left-color:var(--red);background:#251a1d}
 .ping.alert{border-left-color:var(--orange);background:#2a2018;font-weight:700}
 .small{font-size:.8em;opacity:.75}
+.script-line{display:flex;gap:.8em;padding:.35em 0;border-bottom:1px solid var(--line);line-height:1.5}
+.script-line b{min-width:3.6em;color:var(--lime);font-size:.8em;letter-spacing:1px;text-transform:uppercase;
+ padding-top:.2em}
+.scoreline{display:flex;align-items:baseline;gap:.5em;font-size:22px;font-weight:700;margin:.2em 0 .6em}
+.scoreline b{font-size:30px;font-weight:900;letter-spacing:-.03em;color:var(--lime);padding:0 .15em}
+.scoreline span{margin-left:auto;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+[data-testid="stSidebar"] [data-testid="stExpander"]{margin-top:.2em}
+.block-container{padding-top:2.2rem;max-width:1180px}
+@media (max-width:640px){
+ [data-testid="stHorizontalBlock"]:has([data-testid="stMetric"]){flex-flow:row wrap;gap:.6rem}
+ [data-testid="stHorizontalBlock"]:has([data-testid="stMetric"])>[data-testid="stColumn"]{
+  flex:1 1 calc(50% - .3rem)!important;min-width:calc(50% - .3rem)!important;width:calc(50% - .3rem)!important}
+ [data-testid="stMetric"]{padding:10px 12px}
+ [data-testid="stMetricValue"]{font-size:1.5rem!important}
+}
 </style>
 """
 

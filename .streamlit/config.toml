@@ -12,3 +12,6 @@ baseRadius = "8px"
 [theme.sidebar]
 backgroundColor = "#141b24"
 secondaryBackgroundColor = "#202b36"
+
+[client]
+toolbarMode = "minimal"   # hide Streamlit's developer menu and Deploy button
