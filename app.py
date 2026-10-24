@@ -24,7 +24,7 @@ from companion.config import FORMATS, LEAGUE, SIMULATIONS, use_league  # noqa: E
 from companion.data.providers import get_provider  # noqa: E402
 from companion.facts import add_team_facts, build_team_facts, find_teams, pct  # noqa: E402
 from companion.live import apply_result, event_facts, postgame_facts, simulate_tonight  # noqa: E402
-from companion.llm import get_backend  # noqa: E402
+from companion.llm import explain, get_backend  # noqa: E402
 from companion.offline import HOSTS  # noqa: E402
 from companion.profile import load_profile, save_profile  # noqa: E402
 from companion.render import CSS, THEME_SYNC, THEME_TOGGLE, badges, receipts_rows, to_html  # noqa: E402
@@ -192,6 +192,12 @@ with st.sidebar:
         use_ai = st.toggle("Use AI model", value=backend is not None, disabled=backend is None)
         st.caption(f"Engine: {backend.name}" if backend else
                    "No AI key found: answers use offline templates. Add GEMINI_API_KEY to the app's secrets.")
+        if backend and st.button("Test AI connection"):
+            try:
+                said = backend.generate("Reply with the single word OK.", [{"role": "user", "content": "Test"}], 20)
+                st.success(f"Connected: {backend.name} replied “{said[:40]}”.")
+            except Exception as e:
+                st.error(f"Not connected: {explain(e)}")
         demo_halluc = st.toggle("Inject a hallucination",
                                 help="Corrupts one number in the AI's draft to show the fact checker catching it.")
         st.markdown(
