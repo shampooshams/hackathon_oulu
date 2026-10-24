@@ -6,8 +6,8 @@ from __future__ import annotations
 import os
 import re
 
-# Tried in order if the chosen Gemini model name isn't found (renamed or retired).
-GEMINI_BACKUPS = ("gemini-flash-latest", "gemini-3.8-flash", "gemini-2.5-flash")
+# Tried in order if the chosen Gemini model isn't found or its quota is used up (each model has its own).
+GEMINI_BACKUPS = ("gemini-flash-latest", "gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-3.8-flash")
 
 
 def explain(e: Exception) -> str:
@@ -20,11 +20,19 @@ def explain(e: Exception) -> str:
         why = "the API key isn't allowed to use this model or API"
     elif code == 404 or "NOT_FOUND" in msg:
         why = "the model name wasn't found; check GEMINI_MODEL"
+    elif (code == 429 or "RESOURCE_EXHAUSTED" in msg) and re.search(r"limit: 0\b", msg):
+        why = "this model has no free quota for your key; try GEMINI_MODEL = \"gemini-2.5-flash\" or turn on billing"
     elif code == 429 or "RESOURCE_EXHAUSTED" in msg:
         why = "the free quota or rate limit is used up; wait a minute or check the plan"
     else:
         why = re.sub(r"\s+", " ", msg)[:160] or "unknown error"
     return f"{type(e).__name__}: {re.sub(r'AIza[0-9A-Za-z_-]{20,}', '[key]', why)}"
+
+
+def _switchable(e: Exception) -> bool:
+    """Model not found, or its quota used up: another model may still work."""
+    msg = str(e)
+    return getattr(e, "code", None) in (404, 429) or "NOT_FOUND" in msg or "RESOURCE_EXHAUSTED" in msg
 
 
 class AnthropicBackend:
@@ -69,16 +77,16 @@ class GeminiBackend:
         try:
             return self._call(types, system, contents, max_tokens)
         except Exception as e:
-            if not ("NOT_FOUND" in str(e) or getattr(e, "code", None) == 404):
+            if not _switchable(e):
                 raise
-            for backup in GEMINI_BACKUPS:  # the chosen name doesn't exist: switch to one that does
+            for backup in GEMINI_BACKUPS:  # not found or out of quota: try another model
                 if backup == self.model:
                     continue
                 try:
                     text = self._call(types, system, contents, max_tokens, backup)
                 except Exception:
                     continue
-                self.model, self.name = backup, f"Gemini ({backup}, '{self.model}' not found)"
+                self.model, self.name = backup, f"Gemini ({backup}, instead of {self.model})"
                 return text
             raise
 

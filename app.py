@@ -265,7 +265,8 @@ def typing(text: str):
 
 def answer(question: str) -> dict:
     """Route the fan's message to a tool (podcast, alert, prediction) or answer it from the facts."""
-    r = route(question, comp.backend, T, OPP, facts.v("next_game") if facts.has("next_game") else "none")
+    r = route(question, None, T, OPP,  # keyword rules: saves one AI call (and quota) per message
+              facts.v("next_game") if facts.has("next_game") else "none")
     if r["tool"] == "podcast":
         return make_podcast(short=False)
     if r["tool"] == "set_alert":
