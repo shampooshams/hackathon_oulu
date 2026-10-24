@@ -84,10 +84,12 @@ def build_team_facts(snap: Snapshot, team: str, scen: ScenarioResult | None,
     fs.add("gp", f"{T} games played", row.gp, src_calc)
     if LEAGUE.draws:
         fs.add("record", f"{T} record (W–D–L)", f"{row.w}–{row.d}–{row.l}", src_calc)
+    elif LEAGUE.points_ot_win == LEAGUE.points_reg_win:   # e.g. basketball: a win is a win
+        fs.add("record", f"{T} record (W–L)", f"{row.w + row.otw}–{row.l + row.otl}", src_calc)
     else:
         fs.add("record", f"{T} record (W–OTW–OTL–L)", f"{row.w}–{row.otw}–{row.otl}–{row.l}", src_calc)
-    fs.add("goals", f"{T} goals for–against", f"{row.gf}–{row.ga}", src_calc)
-    fs.add("gd", f"{T} goal difference", f"{row.gd:+d}", src_calc)
+    fs.add("goals", f"{T} {LEAGUE.score_word}s for–against", f"{row.gf}–{row.ga}", src_calc)
+    fs.add("gd", f"{T} {LEAGUE.score_word} difference", f"{row.gd:+d}", src_calc)
 
     results = team_results(snap, team)
     if results:

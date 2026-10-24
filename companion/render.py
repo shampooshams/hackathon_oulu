@@ -55,6 +55,7 @@ h1,h2,h3,h4{font-weight:800 !important;letter-spacing:-.025em}
 .stat-value{font-size:clamp(28px,3.2vw,40px);font-weight:800;line-height:1.05;letter-spacing:-.02em;
  font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .stat-sub{font-size:13px;color:var(--muted);line-height:1.4}
+.stat-value.long{font-size:clamp(20px,2.1vw,28px);line-height:1.15;overflow-wrap:normal;word-break:normal}
 .stat-bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:4px}
 .stat-bar>span{display:block;height:100%;background:var(--primary)}
 @media (max-width:1250px){.stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}

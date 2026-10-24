@@ -84,14 +84,21 @@ take their colours from `.streamlit/config.toml`; the app's custom HTML uses the
 
 ## Sports
 
-A **Sport** switch in the sidebar picks the league. Everything sport-specific (points, draws, tie-breaks,
-playoff or split format, periods vs halves, wording) lives in `LeagueFormat` in `companion/config.py`;
-the rest of the app reads the active sport's rules.
+The **Sport** dropdown in the sidebar picks the league. Everything sport-specific (points, draws, overtime and
+shootouts, tie-breaks, playoff format, periods/halves/quarters, discipline, wording) lives in `LeagueFormat` in
+`companion/config.py`; the rest of the app reads the active sport's rules.
 
-- **Hockey:** real Liiga data from the Liiga API.
-- **Football:** a Veikkausliiga-style demo season (`data/mock_football/`, real club names, fictional players
-  and results) until a football data feed is available. Add a provider for a real feed in
-  `companion/data/providers.py` and point `get_provider("football")` to it.
+| Sport | League | Data |
+|---|---|---|
+| Ice hockey | Liiga | Real data from the Liiga API |
+| Football | Veikkausliiga | Demo season (`data/mock_football/`) |
+| Floorball | F-liiga | Demo season (`data/mock_floorball/`) |
+| Basketball | Korisliiga | Demo season (`data/mock_basketball/`), quarter scores only |
+| Bandy | Bandyliiga | Demo season (`data/mock_bandy/`) |
+
+Demo seasons use real Finnish club names with invented players and results, are labelled in the app, and are
+regenerated with `python -m companion.data.generate_mock`. Formats are simplified. To use a real feed, add a
+provider in `companion/data/providers.py` and point `get_provider(<sport>)` to it.
 
 ## Demo data
 

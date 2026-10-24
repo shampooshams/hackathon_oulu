@@ -121,28 +121,41 @@ def test_companion_declines_betting():
     assert "don't do betting" in r.text and r.status == "verified"
 
 
-def test_football_demo_season_rules_and_answers():
-    from companion.config import LIIGA, VEIKKAUSLIIGA, use_league
+import pytest  # noqa: E402
+
+
+@pytest.mark.parametrize("sport", ["football", "floorball", "basketball", "bandy"])
+def test_demo_sports_follow_their_rules_and_answers_verify(sport):
+    from companion.config import FORMATS, LIIGA, use_league
     from companion.data.providers import get_provider
-    use_league(VEIKKAUSLIIGA)
+    fmt = FORMATS[sport]
+    use_league(fmt)
     try:
-        snap = get_provider("football").snapshot()
+        snap = get_provider(sport).snapshot()
         scen = simulate(snap, n=2000)
-        rows = standings(snap)
-        assert any(r.d for r in rows)                                  # football has draws
-        for r in rows:
-            assert r.pts == 3 * r.w + r.d and r.gp == r.w + r.d + r.l and r.otw == r.otl == 0
+        for r in standings(snap):
+            assert r.pts == (fmt.points_reg_win * r.w + fmt.points_ot_win * r.otw + fmt.points_ot_loss * r.otl
+                             + fmt.points_draw * r.d)
+            assert r.gp == r.w + r.otw + r.otl + r.d + r.l
+            assert fmt.draws or r.d == 0
         for t in snap.teams:
-            assert abs(scen.p_top6[t] + scen.p_out[t] - 1) < 1e-9     # no middle band: top 6 or not
-        evs = [e for evs in snap.events.values() for e in evs]
-        assert {e["type"] for e in evs} <= {"goal", "card", "period_end", "game_end"}
-        fs = build_team_facts(snap, "ACOULU", scen)
-        assert "championship group" in fs.v("format")
+            assert abs(scen.p_top6[t] + scen.p_playin[t] + scen.p_out[t] - 1) < 1e-9
+        for g in snap.games:
+            if g["status"] == "final":
+                assert (g["home_goals"] == g["away_goals"]) == (fmt.draws and g["home_goals"] == g["away_goals"])
+                evs = snap.events[g["id"]]
+                assert (evs[-1]["home_score"], evs[-1]["away_score"]) == (g["home_goals"], g["away_goals"])
+        team = next(iter(snap.teams))
+        fs = build_team_facts(snap, team, scen)
         for q in QUESTIONS:
             r = Companion(None, "buddy").chat(fs, [], q)
-            assert r.status == "verified", (q, r.report.feedback(fs))
-            assert "quarter-final" not in r.text and "rink" not in r.text
+            assert r.status == "verified", (sport, q, r.report.feedback(fs))
+            assert "quarter-final" not in r.text
         pod = Companion(None, "buddy").podcast(fs, "Sponsor Oy")
-        assert pod.status == "verified" and "stadium" in pod.text
+        assert pod.status == "verified" and fmt.venue in pod.text
+        game, events = simulate_tonight(snap, team, seed=3)
+        assert events[-1]["type"] == "game_end"
+        for ev in events:
+            assert event_facts(snap, game, ev)
     finally:
         use_league(LIIGA)

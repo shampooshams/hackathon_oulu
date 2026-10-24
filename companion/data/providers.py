@@ -10,7 +10,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from datetime import date, datetime, timezone
 
-from companion.config import AS_OF, DATA_DIR, MOCK_DIR, MOCK_FOOTBALL_DIR
+from companion.config import AS_OF, DATA_DIR, MOCK_DIR
 
 CACHE_DIR = DATA_DIR / "cache"
 DEFAULT_BASE = "https://prod.liiga-backend.liiga.fi/stats"
@@ -48,12 +48,12 @@ class MockProvider:
     source_name = "Mock Liiga data"
     is_mock = True
 
-    def __init__(self, path=MOCK_DIR, source_name: str = "Mock Liiga data"):
+    def __init__(self, path=MOCK_DIR, source_name: str = "Mock Liiga data", sport: str = "hockey"):
         self.path = path
         self.source_name = source_name
         if not (path / "games.json").exists():
-            from companion.data.generate_mock import generate, generate_football
-            (generate_football if path == MOCK_FOOTBALL_DIR else generate)(path)
+            from companion.data.generate_mock import generate, generate_demo
+            generate(path) if sport == "hockey" else generate_demo(sport, path)
 
     def _load(self, name):
         return json.loads((self.path / name).read_text(encoding="utf-8"))
@@ -304,6 +304,7 @@ def game_events(details: dict, game: dict) -> list[dict]:
 def get_provider(kind: str = "mock"):
     if kind == "liiga":
         return LiigaApiProvider()
-    if kind == "football":  # no football feed yet: clearly labelled demo season
-        return MockProvider(MOCK_FOOTBALL_DIR, "Demo football data")
+    if kind in ("football", "floorball", "basketball", "bandy"):  # no feed yet: clearly labelled demo season
+        from companion.config import demo_dir
+        return MockProvider(demo_dir(kind), f"Demo {kind} data", sport=kind)
     return MockProvider()

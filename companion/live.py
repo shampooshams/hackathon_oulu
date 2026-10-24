@@ -74,7 +74,7 @@ def postgame_facts(before: Snapshot, after: Snapshot, team: str, game: dict,
     src_sim = f"Season simulation · {scen_after.n:,} runs"
 
     fs.add("final", "Final score", game_line(after, game), src_live)
-    reg = "" if LEAGUE.draws else " in regulation"
+    reg = "" if LEAGUE.draws or LEAGUE.points_ot_win == LEAGUE.points_reg_win else " in regulation"
     fs.add("result", f"{T} result", {"W": f"win{reg}", "OTW": "win in overtime/shootout", "D": "draw",
                                       "OTL": "loss in overtime/shootout", "L": f"loss{reg}"}[res["outcome"]],
            src_live)

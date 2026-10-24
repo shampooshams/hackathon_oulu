@@ -116,7 +116,7 @@ def chat(message: str, fs: FactStore, persona: str, user_name: str = "") -> str:
         out.append(_s(fs, f"Last results, oldest to newest: {fs.v('form5')}, worth {fs.v('form5_pts')} points.",
                       "form5", "form5_pts"))
         out.append(_s(fs, f"Current streak: {fs.v('streak')}.", "streak"))
-        out.append(_s(fs, f"Season record ({fs.get('record').label.split('(')[-1].rstrip(')')}) is {fs.v('record')} with a goal difference of {fs.v('gd')}.",
+        out.append(_s(fs, f"Season record ({fs.get('record').label.split('(')[-1].rstrip(')')}) is {fs.v('record')} with a {LEAGUE.score_word} difference of {fs.v('gd')}.",
                       "record", "gd"))
     elif intent == "last":
         out.append(_s(fs, f"Last game: {fs.v('last_game')}.", "last_game"))

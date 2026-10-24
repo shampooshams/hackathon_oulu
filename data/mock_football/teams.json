@@ -5,60 +5,60 @@
   "city": "Oulu",
   "roster": [
    {
-    "name": "Santeri Jokela",
-    "weight": 2.337060293358045
+    "name": "Jesse Rautio",
+    "weight": 2.986022494967288
    },
    {
-    "name": "Oskari Nyström",
-    "weight": 1.2345137424329182
+    "name": "Markus Tuominen",
+    "weight": 0.8547037773418826
    },
    {
-    "name": "Kasper Ylönen",
-    "weight": 2.9629141115759077
+    "name": "Akseli Seppälä",
+    "weight": 2.2262170635954783
    },
    {
-    "name": "Otto Sirviö",
-    "weight": 2.9020276240303087
+    "name": "Lucas Pöllänen",
+    "weight": 2.1997395541200766
    },
    {
-    "name": "Daniel Jokela",
-    "weight": 1.3462344383575091
+    "name": "Kasper Salminen",
+    "weight": 0.6019530111014635
    },
    {
-    "name": "Henri Karjalainen",
-    "weight": 1.6873767003656068
+    "name": "Valtteri Lindqvist",
+    "weight": 2.070550360378713
    },
    {
-    "name": "Daniel Toivonen",
-    "weight": 1.8145094366626255
+    "name": "Severi Tolvanen",
+    "weight": 2.177890516438196
    },
    {
-    "name": "Otto Toivonen",
-    "weight": 2.1792170671066176
+    "name": "Lauri Vuorinen",
+    "weight": 2.0117521260922517
    },
    {
-    "name": "Leo Karjalainen",
-    "weight": 2.9148781868672424
+    "name": "Elias Mäkelä",
+    "weight": 1.4815498117471868
    },
    {
-    "name": "Topias Huttunen",
-    "weight": 1.8992323466322936
+    "name": "Topias Hakala",
+    "weight": 0.6041376883714723
    },
    {
-    "name": "Ilmari Lehtinen",
-    "weight": 2.6595036082693126
+    "name": "Otto Ylönen",
+    "weight": 0.709086607340242
    },
    {
-    "name": "Viljami Pöllänen",
-    "weight": 2.536254964622248
+    "name": "Onni Ylönen",
+    "weight": 2.481457203045941
    },
    {
-    "name": "Topias Hiltunen",
-    "weight": 2.2208768370747025
+    "name": "Onni Mäkelä",
+    "weight": 1.4070070535273405
    },
    {
-    "name": "Eetu Ylönen",
-    "weight": 2.0153299948835235
+    "name": "Elias Niemi",
+    "weight": 2.0473318790034845
    }
   ]
  },
@@ -68,60 +68,60 @@
   "city": "Helsinki",
   "roster": [
    {
-    "name": "Elias Saarinen",
-    "weight": 2.9888603085830687
+    "name": "Joona Heikkinen",
+    "weight": 1.562061936631907
    },
    {
-    "name": "Juho Pöllänen",
-    "weight": 2.9544065244529922
+    "name": "Jesse Halme",
+    "weight": 1.6385735445058485
    },
    {
-    "name": "Onni Hakala",
-    "weight": 1.2649537452458262
+    "name": "Arttu Keränen",
+    "weight": 1.5702659805484727
    },
    {
-    "name": "Arttu Lehtinen",
-    "weight": 1.8175659093968335
+    "name": "Severi Keränen",
+    "weight": 2.6606979872749394
    },
    {
-    "name": "Topias Ylönen",
-    "weight": 2.1773267405314183
+    "name": "Akseli Sirviö",
+    "weight": 2.6026816919742557
    },
    {
-    "name": "Jesse Moilanen",
-    "weight": 2.259556754993321
+    "name": "Otto Pesonen",
+    "weight": 1.5403633685394138
    },
    {
-    "name": "Otto Riikonen",
-    "weight": 1.0012008266172931
+    "name": "Elias Seppälä",
+    "weight": 2.2053793027326325
    },
    {
-    "name": "Valtteri Ikonen",
-    "weight": 1.4495439376128967
+    "name": "Otto Salminen",
+    "weight": 2.0604382826279912
    },
    {
-    "name": "Oskari Riikonen",
-    "weight": 0.6246995773947818
+    "name": "Jesse Väisänen",
+    "weight": 2.9492781230594503
    },
    {
-    "name": "Arttu Mäkelä",
-    "weight": 2.3882814017851097
+    "name": "Otto Mäkelä",
+    "weight": 1.5492613803658692
    },
    {
-    "name": "Akseli Toivonen",
-    "weight": 2.12281651277054
+    "name": "Roope Pöllänen",
+    "weight": 1.6844515841550751
    },
    {
-    "name": "Joona Seppälä",
-    "weight": 1.898214694616006
+    "name": "Valtteri Niemi",
+    "weight": 1.0660416730106033
    },
    {
-    "name": "Lauri Hakala",
-    "weight": 2.5667329660991336
+    "name": "Eetu Tolvanen",
+    "weight": 2.1655953802353176
    },
    {
-    "name": "Eemil Karjalainen",
-    "weight": 2.7665373173265904
+    "name": "Eemil Salminen",
+    "weight": 1.2764618965668324
    }
   ]
  },
@@ -131,60 +131,60 @@
   "city": "Kuopio",
   "roster": [
    {
-    "name": "Eemil Jokela",
-    "weight": 0.7643734719785709
+    "name": "Markus Pesonen",
+    "weight": 2.6714319565809093
    },
    {
-    "name": "Valtteri Heikkinen",
-    "weight": 2.001128395534106
+    "name": "Kasper Rautio",
+    "weight": 0.643783978698099
    },
    {
-    "name": "Otto Pesonen",
-    "weight": 1.4642662541813305
+    "name": "Akseli Keränen",
+    "weight": 2.8549845038567008
    },
    {
-    "name": "Kasper Vuorinen",
-    "weight": 2.4014579248658148
+    "name": "Markus Hakala",
+    "weight": 2.6780184969583254
    },
    {
-    "name": "Valtteri Tuominen",
-    "weight": 2.4059457859576234
+    "name": "Otto Sirviö",
+    "weight": 1.0564023231849344
    },
    {
-    "name": "Arttu Väisänen",
-    "weight": 2.7283786191761115
+    "name": "Juho Turunen",
+    "weight": 1.0539345001541118
    },
    {
-    "name": "Daniel Koivisto",
-    "weight": 1.6443875170188882
+    "name": "Elias Nyström",
+    "weight": 2.2053523390923058
    },
    {
     "name": "Arttu Ikonen",
-    "weight": 0.7921685597683568
+    "weight": 0.6609632010900484
    },
    {
-    "name": "Jesse Halme",
-    "weight": 2.0959646417784192
+    "name": "Aleksi Toivonen",
+    "weight": 0.6720404872930239
    },
    {
-    "name": "Lauri Huttunen",
-    "weight": 2.7218606661803113
+    "name": "Niko Sirviö",
+    "weight": 1.6897005285108033
    },
    {
-    "name": "Niko Peltola",
-    "weight": 1.3031021823275408
+    "name": "Lauri Hiltunen",
+    "weight": 0.5312636201034566
    },
    {
-    "name": "Santeri Seppälä",
-    "weight": 2.5592637033751995
+    "name": "Joona Karjalainen",
+    "weight": 0.5349122316927913
    },
    {
-    "name": "Veeti Pesonen",
-    "weight": 0.7822641359955822
+    "name": "Eetu Vuorinen",
+    "weight": 1.0993254348682058
    },
    {
-    "name": "Onni Niemi",
-    "weight": 1.3334651061340501
+    "name": "Markus Jokela",
+    "weight": 1.8890155854167476
    }
   ]
  },
@@ -194,60 +194,60 @@
   "city": "Seinäjoki",
   "roster": [
    {
-    "name": "Valtteri Nyström",
-    "weight": 2.406485940808034
+    "name": "Valtteri Koivisto",
+    "weight": 1.2246400411183895
    },
    {
-    "name": "Otto Peltola",
-    "weight": 2.671057740249588
+    "name": "Oskari Halme",
+    "weight": 0.5881662620209702
    },
    {
-    "name": "Jesse Lindqvist",
-    "weight": 2.2868697950301184
+    "name": "Onni Laukkanen",
+    "weight": 2.7866594471301696
    },
    {
-    "name": "Otto Pöllänen",
-    "weight": 0.9493881186031995
+    "name": "Severi Riikonen",
+    "weight": 0.8026074226329301
    },
    {
-    "name": "Eemil Kallio",
-    "weight": 2.743060229513255
+    "name": "Valtteri Laukkanen",
+    "weight": 2.2409688747420655
    },
    {
-    "name": "Leo Hiltunen",
-    "weight": 1.8706601077551839
+    "name": "Topias Hiltunen",
+    "weight": 0.862412587622134
    },
    {
-    "name": "Eetu Salminen",
-    "weight": 0.5844220016503536
+    "name": "Viljami Väisänen",
+    "weight": 1.5882119889554747
    },
    {
-    "name": "Eemil Vuorinen",
-    "weight": 0.6392744741758809
+    "name": "Leo Keränen",
+    "weight": 2.0072873254482015
    },
    {
-    "name": "Otto Ahola",
-    "weight": 2.3275386239590246
+    "name": "Jesse Niemi",
+    "weight": 2.9480287342764653
    },
    {
-    "name": "Eemil Ikonen",
-    "weight": 2.1994992007185292
+    "name": "Juho Sirviö",
+    "weight": 1.1651519649700013
    },
    {
-    "name": "Aleksi Väisänen",
-    "weight": 2.292541429077569
+    "name": "Topias Sirviö",
+    "weight": 2.501562564769213
    },
    {
-    "name": "Roope Laukkanen",
-    "weight": 2.9707488112673737
+    "name": "Markus Moilanen",
+    "weight": 2.1272428548256386
    },
    {
-    "name": "Valtteri Niemi",
-    "weight": 2.639103979066357
+    "name": "Kasper Vuorinen",
+    "weight": 1.3668249293034513
    },
    {
-    "name": "Aleksi Toivonen",
-    "weight": 1.268859109583495
+    "name": "Veeti Aaltonen",
+    "weight": 2.7816893522145434
    }
   ]
  },
@@ -257,60 +257,60 @@
   "city": "Tampere",
   "roster": [
    {
-    "name": "Topias Saarinen",
-    "weight": 0.6450068399595641
+    "name": "Roope Sirviö",
+    "weight": 1.8728497809767282
    },
    {
-    "name": "Aleksi Sirviö",
-    "weight": 2.1097916396745395
+    "name": "Santeri Huttunen",
+    "weight": 2.474218951246912
    },
    {
-    "name": "Niko Koivisto",
-    "weight": 0.7339680169547859
+    "name": "Daniel Aaltonen",
+    "weight": 1.0513864399844666
    },
    {
-    "name": "Juho Mäkelä",
-    "weight": 1.7274194894161183
+    "name": "Roope Hiltunen",
+    "weight": 2.9305324590981288
    },
    {
-    "name": "Niko Turunen",
-    "weight": 1.408629679073064
+    "name": "Niko Lindqvist",
+    "weight": 1.4588985737752362
    },
    {
-    "name": "Arttu Tuominen",
-    "weight": 2.6129600720232737
+    "name": "Onni Nyström",
+    "weight": 1.8488015835085432
    },
    {
-    "name": "Veeti Peltola",
-    "weight": 2.2943404184833622
+    "name": "Lucas Keränen",
+    "weight": 1.483591023448759
    },
    {
-    "name": "Niko Hiltunen",
-    "weight": 2.467716244342042
+    "name": "Roope Hakala",
+    "weight": 2.0693626962732288
    },
    {
-    "name": "Markus Salminen",
-    "weight": 2.291565667659474
+    "name": "Akseli Hakala",
+    "weight": 1.7918369318186982
    },
    {
-    "name": "Elias Mäkelä",
-    "weight": 1.5212278895080806
+    "name": "Topias Rautio",
+    "weight": 1.5223113840890432
    },
    {
-    "name": "Lucas Ahola",
-    "weight": 2.6490680920260887
+    "name": "Kasper Tolvanen",
+    "weight": 2.9724484634460384
    },
    {
-    "name": "Aleksi Seppälä",
-    "weight": 1.850178769543875
+    "name": "Eemil Toivonen",
+    "weight": 0.7253808184737943
    },
    {
-    "name": "Elias Moilanen",
-    "weight": 1.9419366288878117
+    "name": "Otto Halme",
+    "weight": 1.4890916531746516
    },
    {
-    "name": "Henri Ahola",
-    "weight": 2.667439661905304
+    "name": "Lucas Saarinen",
+    "weight": 0.653894085319381
    }
   ]
  },
@@ -320,60 +320,60 @@
   "city": "Turku",
   "roster": [
    {
-    "name": "Eemil Ahola",
-    "weight": 2.8823046155900265
+    "name": "Eetu Ylönen",
+    "weight": 2.613062325376543
    },
    {
-    "name": "Oskari Keränen",
-    "weight": 1.750808141626826
+    "name": "Kasper Toivonen",
+    "weight": 0.799746534324099
    },
    {
-    "name": "Daniel Väisänen",
-    "weight": 0.8494893623947926
+    "name": "Oskari Turunen",
+    "weight": 1.6899152839068385
    },
    {
-    "name": "Jesse Riikonen",
-    "weight": 0.7677679860262405
+    "name": "Joona Lindqvist",
+    "weight": 2.59822551502562
    },
    {
-    "name": "Topias Tolvanen",
-    "weight": 1.4208421814017052
+    "name": "Viljami Keränen",
+    "weight": 2.690971218789302
    },
    {
-    "name": "Oskari Karjalainen",
-    "weight": 1.8185602662825913
+    "name": "Ilmari Heikkinen",
+    "weight": 1.1126366076359195
    },
    {
-    "name": "Juho Toivonen",
-    "weight": 2.403780185246645
+    "name": "Severi Karjalainen",
+    "weight": 2.7296880184763865
    },
    {
-    "name": "Niko Moilanen",
-    "weight": 2.28108621178104
+    "name": "Valtteri Pöllänen",
+    "weight": 2.1728797689045134
    },
    {
-    "name": "Daniel Peltola",
-    "weight": 1.3644575717932175
+    "name": "Santeri Lehtinen",
+    "weight": 2.340649178037105
    },
    {
-    "name": "Henri Kallio",
-    "weight": 0.5392913331296088
+    "name": "Eetu Keränen",
+    "weight": 2.338265611990076
    },
    {
-    "name": "Jesse Niemi",
-    "weight": 1.4770541906297245
+    "name": "Severi Kemppainen",
+    "weight": 2.1946231251324306
    },
    {
-    "name": "Elias Hiltunen",
-    "weight": 2.483387990195981
+    "name": "Daniel Ylönen",
+    "weight": 2.9509628204883183
    },
    {
-    "name": "Severi Heikkinen",
-    "weight": 1.6993729443149095
+    "name": "Severi Sirviö",
+    "weight": 0.6174176334228503
    },
    {
-    "name": "Veeti Vuorinen",
-    "weight": 2.2949216688208054
+    "name": "Valtteri Tolvanen",
+    "weight": 0.9150654967803327
    }
   ]
  },
@@ -383,60 +383,60 @@
   "city": "Lahti",
   "roster": [
    {
-    "name": "Daniel Huttunen",
-    "weight": 1.4366213938309347
+    "name": "Aleksi Ojala",
+    "weight": 1.8340469695899149
    },
    {
-    "name": "Eetu Karjalainen",
-    "weight": 2.427831977146834
+    "name": "Otto Pöllänen",
+    "weight": 2.712017741878327
    },
    {
-    "name": "Valtteri Tolvanen",
-    "weight": 2.7011074353177005
+    "name": "Akseli Väisänen",
+    "weight": 2.739446890605484
    },
    {
-    "name": "Santeri Riikonen",
-    "weight": 2.7009939985952363
+    "name": "Viljami Nyström",
+    "weight": 0.5012302692426863
    },
    {
-    "name": "Kasper Aaltonen",
-    "weight": 2.0134946027191463
+    "name": "Lauri Laukkanen",
+    "weight": 1.687370439021773
    },
    {
-    "name": "Markus Toivonen",
-    "weight": 1.545219616255313
+    "name": "Arttu Ojala",
+    "weight": 0.8505434655331924
    },
    {
-    "name": "Akseli Ylönen",
-    "weight": 2.8433595991614222
+    "name": "Santeri Saarinen",
+    "weight": 2.197098464826718
    },
    {
-    "name": "Akseli Tuominen",
-    "weight": 1.588329207763352
+    "name": "Topias Ahola",
+    "weight": 2.655585223747881
    },
    {
-    "name": "Niko Ylönen",
-    "weight": 1.354343843734103
+    "name": "Topias Seppälä",
+    "weight": 2.0056218789813673
    },
    {
-    "name": "Niko Kemppainen",
-    "weight": 1.920300760658049
+    "name": "Henri Karjalainen",
+    "weight": 2.3141591446674195
    },
    {
-    "name": "Aleksi Aaltonen",
-    "weight": 2.609776308980753
+    "name": "Joona Niemi",
+    "weight": 1.7052554226976944
    },
    {
-    "name": "Eemil Lindqvist",
-    "weight": 1.7602548495925676
+    "name": "Arttu Toivonen",
+    "weight": 2.1705153880776207
    },
    {
-    "name": "Eemil Seppälä",
-    "weight": 1.127596307005517
+    "name": "Jesse Ojala",
+    "weight": 2.281329308773203
    },
    {
-    "name": "Niko Lindqvist",
-    "weight": 2.512701606974495
+    "name": "Eemil Turunen",
+    "weight": 2.5187677839003544
    }
   ]
  },
@@ -446,60 +446,60 @@
   "city": "Vaasa",
   "roster": [
    {
-    "name": "Veeti Lindqvist",
-    "weight": 1.0659948890731554
+    "name": "Topias Turunen",
+    "weight": 2.1720922449877387
    },
    {
-    "name": "Aleksi Ylönen",
-    "weight": 2.507244065518402
+    "name": "Akseli Hiltunen",
+    "weight": 0.5286722372569326
    },
    {
-    "name": "Joona Lehtinen",
-    "weight": 2.3893822922881482
+    "name": "Santeri Mäkelä",
+    "weight": 2.7855389362153105
    },
    {
-    "name": "Lucas Turunen",
-    "weight": 2.0823569054509257
+    "name": "Roope Laukkanen",
+    "weight": 1.686732758103691
    },
    {
-    "name": "Ilmari Kallio",
-    "weight": 2.85797052479838
+    "name": "Niko Ikonen",
+    "weight": 2.7145603327859664
    },
    {
-    "name": "Akseli Ojala",
-    "weight": 1.4222766401314115
+    "name": "Otto Ahola",
+    "weight": 2.16293603647097
    },
    {
-    "name": "Eemil Sirviö",
-    "weight": 1.8850847532867299
+    "name": "Daniel Kemppainen",
+    "weight": 1.1560399095352598
    },
    {
-    "name": "Akseli Jokela",
-    "weight": 1.6540762606765187
+    "name": "Lucas Toivonen",
+    "weight": 2.6034923008317383
    },
    {
-    "name": "Viljami Ylönen",
-    "weight": 2.4704506684991516
+    "name": "Markus Niemi",
+    "weight": 0.5927739360650006
    },
    {
-    "name": "Topias Kemppainen",
-    "weight": 2.814474728677613
+    "name": "Markus Saarinen",
+    "weight": 1.022586063583773
    },
    {
-    "name": "Veeti Ikonen",
-    "weight": 1.5643068791201515
+    "name": "Viljami Rautio",
+    "weight": 0.6646399334527258
    },
    {
-    "name": "Otto Lehtinen",
-    "weight": 2.9236262666523
+    "name": "Daniel Väisänen",
+    "weight": 2.257306960664831
    },
    {
-    "name": "Leo Tolvanen",
-    "weight": 0.7586253759629015
+    "name": "Lucas Kemppainen",
+    "weight": 2.0481549142106537
    },
    {
-    "name": "Ilmari Heikkinen",
-    "weight": 1.2572597194581088
+    "name": "Kasper Peltola",
+    "weight": 1.6052478306544882
    }
   ]
  },
@@ -509,60 +509,60 @@
   "city": "Helsinki",
   "roster": [
    {
-    "name": "Eetu Ahola",
-    "weight": 1.3253478669956897
+    "name": "Valtteri Sirviö",
+    "weight": 2.7185448934097747
    },
    {
-    "name": "Ilmari Pesonen",
-    "weight": 2.841767517445871
+    "name": "Juho Ikonen",
+    "weight": 1.4296781594678516
    },
    {
-    "name": "Veeti Pöllänen",
-    "weight": 2.820383008441032
+    "name": "Onni Tolvanen",
+    "weight": 1.8982772286086376
    },
    {
-    "name": "Niko Pesonen",
-    "weight": 1.4491668875349237
+    "name": "Joona Koivisto",
+    "weight": 2.887204120714908
    },
    {
-    "name": "Severi Hakala",
-    "weight": 1.1525774258710646
+    "name": "Elias Ojala",
+    "weight": 1.8065670762930472
    },
    {
-    "name": "Otto Turunen",
-    "weight": 1.869076181120927
-   },
-   {
-    "name": "Topias Heikkinen",
-    "weight": 2.605456165096493
-   },
-   {
-    "name": "Santeri Halme",
-    "weight": 1.9041377708282377
-   },
-   {
-    "name": "Lucas Hiltunen",
-    "weight": 0.5834728793629191
-   },
-   {
-    "name": "Juho Huttunen",
-    "weight": 1.4332251425747053
-   },
-   {
-    "name": "Topias Kallio",
-    "weight": 0.6199704903954126
+    "name": "Juho Rautio",
+    "weight": 2.849089043355727
    },
    {
     "name": "Severi Toivonen",
-    "weight": 0.7119840619209026
+    "weight": 1.6182264158393647
    },
    {
-    "name": "Elias Lehtinen",
-    "weight": 1.5152931761506938
+    "name": "Kasper Lindqvist",
+    "weight": 2.040600104578912
    },
    {
-    "name": "Viljami Vuorinen",
-    "weight": 2.3988781638168613
+    "name": "Arttu Laukkanen",
+    "weight": 1.1550126791962625
+   },
+   {
+    "name": "Valtteri Tuominen",
+    "weight": 0.6043055396137262
+   },
+   {
+    "name": "Markus Koivisto",
+    "weight": 0.6773327844840372
+   },
+   {
+    "name": "Eetu Niemi",
+    "weight": 1.0156372087994368
+   },
+   {
+    "name": "Juho Moilanen",
+    "weight": 1.3383007866400105
+   },
+   {
+    "name": "Henri Jokela",
+    "weight": 0.8502525572220744
    }
   ]
  },
@@ -572,60 +572,60 @@
   "city": "Pietarsaari",
   "roster": [
    {
-    "name": "Kasper Moilanen",
-    "weight": 1.965191479993475
+    "name": "Arttu Sirviö",
+    "weight": 1.4278915223910045
    },
    {
-    "name": "Severi Halme",
-    "weight": 1.5714444666161396
+    "name": "Kasper Laukkanen",
+    "weight": 1.2408191960451946
    },
    {
-    "name": "Veeti Saarinen",
-    "weight": 2.064686054358633
+    "name": "Severi Peltola",
+    "weight": 2.52182028510476
+   },
+   {
+    "name": "Oskari Mäkelä",
+    "weight": 2.7967048541035924
+   },
+   {
+    "name": "Topias Keränen",
+    "weight": 0.7443806243856048
+   },
+   {
+    "name": "Roope Rautio",
+    "weight": 1.9710655213594719
    },
    {
     "name": "Leo Väisänen",
-    "weight": 1.6289313761565567
+    "weight": 2.1762493140816557
    },
    {
-    "name": "Kasper Kallio",
-    "weight": 2.6943752200206488
+    "name": "Severi Vuorinen",
+    "weight": 2.946979672609701
    },
    {
-    "name": "Viljami Tuominen",
-    "weight": 2.1109381674727263
+    "name": "Lauri Aaltonen",
+    "weight": 2.2760907590173094
    },
    {
-    "name": "Akseli Moilanen",
-    "weight": 2.138817433706559
+    "name": "Viljami Pesonen",
+    "weight": 2.7191426508699332
    },
    {
-    "name": "Kasper Ikonen",
-    "weight": 1.97055899819643
+    "name": "Onni Aaltonen",
+    "weight": 0.5331521927287173
    },
    {
-    "name": "Kasper Tolvanen",
-    "weight": 2.3521257175852366
+    "name": "Valtteri Kemppainen",
+    "weight": 0.9194910972618732
    },
    {
-    "name": "Santeri Toivonen",
-    "weight": 2.8136278526579153
+    "name": "Elias Tuominen",
+    "weight": 1.49203341187607
    },
    {
-    "name": "Henri Koivisto",
-    "weight": 2.882844499734339
-   },
-   {
-    "name": "Veeti Ylönen",
-    "weight": 0.8574902280538822
-   },
-   {
-    "name": "Juho Moilanen",
-    "weight": 1.9035326165977111
-   },
-   {
-    "name": "Viljami Rautio",
-    "weight": 2.786986734316323
+    "name": "Juho Salminen",
+    "weight": 2.477052078811214
    }
   ]
  },
@@ -635,60 +635,60 @@
   "city": "Maarianhamina",
   "roster": [
    {
-    "name": "Niko Kallio",
-    "weight": 0.8633690365178102
+    "name": "Daniel Jokela",
+    "weight": 0.5041204740941175
    },
    {
-    "name": "Leo Moilanen",
-    "weight": 1.8305707611059865
+    "name": "Otto Niemi",
+    "weight": 1.0262697198625421
    },
    {
-    "name": "Arttu Turunen",
-    "weight": 2.7293071373018534
+    "name": "Onni Salminen",
+    "weight": 1.2644832782498372
    },
    {
-    "name": "Joona Hakala",
-    "weight": 2.9135563201827486
+    "name": "Leo Hiltunen",
+    "weight": 1.2393651534651688
    },
    {
-    "name": "Eetu Jokela",
-    "weight": 2.4934582730101917
+    "name": "Lucas Seppälä",
+    "weight": 0.5235956092760697
    },
    {
-    "name": "Elias Laukkanen",
-    "weight": 2.39189773995905
+    "name": "Leo Mäkelä",
+    "weight": 1.2442750888191774
    },
    {
-    "name": "Leo Laukkanen",
-    "weight": 1.2146398876184246
+    "name": "Jesse Tolvanen",
+    "weight": 1.2793074285549884
    },
    {
-    "name": "Oskari Tuominen",
-    "weight": 0.584718930900945
+    "name": "Henri Kemppainen",
+    "weight": 1.1658936750967894
    },
    {
-    "name": "Niko Lehtinen",
-    "weight": 2.658819622216752
+    "name": "Aleksi Turunen",
+    "weight": 2.800407248723789
    },
    {
-    "name": "Niko Halme",
-    "weight": 1.5751236905724766
+    "name": "Jesse Ylönen",
+    "weight": 2.3154652220976817
    },
    {
-    "name": "Kasper Pöllänen",
-    "weight": 1.7345939030935282
+    "name": "Daniel Lehtinen",
+    "weight": 1.2939759502977703
    },
    {
-    "name": "Oskari Peltola",
-    "weight": 1.465940719131782
+    "name": "Veeti Mäkelä",
+    "weight": 1.3066937924523807
    },
    {
-    "name": "Arttu Keränen",
-    "weight": 2.7701322952965204
+    "name": "Jesse Aaltonen",
+    "weight": 2.0852436772725587
    },
    {
-    "name": "Leo Pöllänen",
-    "weight": 0.7647656555526584
+    "name": "Severi Pesonen",
+    "weight": 2.386777423100743
    }
   ]
  },
@@ -698,60 +698,60 @@
   "city": "Valkeakoski",
   "roster": [
    {
-    "name": "Valtteri Salminen",
-    "weight": 2.1864832133818632
+    "name": "Elias Hiltunen",
+    "weight": 1.3280962329213142
    },
    {
-    "name": "Niko Keränen",
-    "weight": 2.3787940069080618
+    "name": "Roope Koivisto",
+    "weight": 2.184395999005681
    },
    {
-    "name": "Leo Ikonen",
-    "weight": 2.9497682644830827
+    "name": "Henri Ahola",
+    "weight": 1.2635211986669783
    },
    {
-    "name": "Onni Seppälä",
-    "weight": 1.0454142045961956
+    "name": "Lucas Peltola",
+    "weight": 0.5076910735263982
    },
    {
-    "name": "Roope Ylönen",
-    "weight": 1.7057116058931454
+    "name": "Onni Jokela",
+    "weight": 2.4200578143985347
    },
    {
-    "name": "Eetu Ikonen",
-    "weight": 2.567726494118061
+    "name": "Akseli Halme",
+    "weight": 2.4467039303121467
    },
    {
-    "name": "Veeti Aaltonen",
-    "weight": 2.4672253750578417
+    "name": "Eetu Lindqvist",
+    "weight": 2.858287043802125
    },
    {
-    "name": "Kasper Toivonen",
-    "weight": 2.748770663566948
+    "name": "Jesse Riikonen",
+    "weight": 1.0002897217029765
    },
    {
-    "name": "Joona Tuominen",
-    "weight": 0.7086846172656123
+    "name": "Akseli Turunen",
+    "weight": 1.534823551110013
    },
    {
-    "name": "Otto Rautio",
-    "weight": 2.3828250612169883
+    "name": "Elias Hakala",
+    "weight": 1.835824916384173
    },
    {
-    "name": "Leo Keränen",
-    "weight": 2.0557565844497803
+    "name": "Otto Saarinen",
+    "weight": 0.5004122421012296
    },
    {
-    "name": "Daniel Aaltonen",
-    "weight": 1.2790733003005446
+    "name": "Onni Peltola",
+    "weight": 1.8031756855840366
    },
    {
-    "name": "Veeti Laukkanen",
-    "weight": 1.0281786927689796
+    "name": "Daniel Kallio",
+    "weight": 2.762198641884577
    },
    {
-    "name": "Otto Koivisto",
-    "weight": 2.394742651635557
+    "name": "Ilmari Jokela",
+    "weight": 1.2672876542921114
    }
   ]
  }

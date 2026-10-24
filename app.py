@@ -126,20 +126,23 @@ def make_podcast(short: bool) -> dict:
 
 
 # ---------- sport and league data ------------------------------------------
-SPORTS = {"Hockey": "🏒 Hockey", "Football": "⚽ Football"}
-DEFAULT_TEAM = {"Hockey": "KARPAT", "Football": "ACOULU"}
+SPORTS = {"Hockey": "🏒 Ice hockey", "Football": "⚽ Football (demo)", "Floorball": "🏑 Floorball (demo)",
+          "Basketball": "🏀 Basketball (demo)", "Bandy": "⛸️ Bandy (demo)"}
+ICON = {"Hockey": "🏒", "Football": "⚽", "Floorball": "🏑", "Basketball": "🏀", "Bandy": "⛸️"}
+DEFAULT_TEAM = {"Hockey": "KARPAT", "Football": "ACOULU", "Floorball": "OLS", "Basketball": "KATAJA",
+                "Bandy": "OLS"}   # Oulu teams where there is one
 with st.sidebar:
     st.markdown('<div class="brand"><span class="brand-mark">↗</span><span>FAN<span class="brand-thin">'
                 'COMPANION</span><span class="dot">.</span></span></div>', unsafe_allow_html=True)
-    sport = st.segmented_control("Sport", list(SPORTS), format_func=SPORTS.get, width="stretch",
-                                 default=prof.get("sport", "Hockey") if prof.get("sport") in SPORTS else "Hockey")
-    sport = sport or prof.get("sport") or "Hockey"
+    keys = list(SPORTS)
+    sport = st.selectbox("Sport", keys, format_func=SPORTS.get,
+                         index=keys.index(prof["sport"]) if prof.get("sport") in SPORTS else 0)
 if ss.get("sport_shown") not in (None, sport):   # switching sport starts a fresh conversation
     ss.chat, ss.game, ss.podcast = [], None, None
 ss.sport_shown = prof["sport"] = sport
 
-# Hockey: real Liiga data (COMPANION_DATA=mock for offline work). Football: demo season until a feed exists.
-source = "football" if sport == "Football" else os.getenv("COMPANION_DATA", "liiga").lower()
+# Hockey: real Liiga data (COMPANION_DATA=mock for offline work). Other sports: demo seasons until feeds exist.
+source = sport.lower() if sport != "Hockey" else os.getenv("COMPANION_DATA", "liiga").lower()
 use_league(FORMATS[source])          # every rule and wording below follows this sport's league
 D, P = LEAGUE.direct_spots, LEAGUE.playin_last
 try:
@@ -206,12 +209,12 @@ OPP = (A if ng["home"] == TEAM else H) if ng else ""
 
 # ---------- header ---------------------------------------------------------
 city = snap.teams[TEAM].get("city")
-st.markdown(f'<div class="kicker">Your team{" · " + html.escape(city) if city else ""}</div>'
+st.markdown(f'<div class="kicker">{LEAGUE.name}{" · " + html.escape(city) if city else ""}</div>'
             f'<div class="hero">{html.escape(T)}</div>', unsafe_allow_html=True)
 if snap.is_mock:
     st.markdown('<div class="notice notice-demo"><span class="notice-label">Demo</span><span>Team names are real '
                 'clubs, but all players, scores and results are invented.'
-                + (" There's no football data feed yet." if sport == "Football" else "") + '</span></div>',
+                + (f" There's no {sport.lower()} data feed yet." if sport != "Hockey" else "") + '</span></div>',
                 unsafe_allow_html=True)
 rows = standings(snap)
 gap = rows[D - 1].pts - row.pts
@@ -226,7 +229,8 @@ if ng:
     when = {0: "Today", 1: "Tomorrow"}.get(days, fmt_date(ng["date"]))
     cards.append(("Next game", f"{'vs' if ng['home'] == TEAM else 'at'} {OPP}", f"{when} · {ng['time']}", None))
 st.markdown('<div class="stat-grid">' + "".join(
-    f'<div class="stat"><div class="stat-label">{html.escape(k)}</div><div class="stat-value">{html.escape(v)}</div>'
+    f'<div class="stat"><div class="stat-label">{html.escape(k)}</div>'
+    f'<div class="stat-value{" long" if len(v) > 10 else ""}">{html.escape(v)}</div>'
     + (f'<div class="stat-bar"><span style="width:{100 * bar:.0f}%"></span></div>' if bar is not None else "")
     + f'<div class="stat-sub">{html.escape(sub)}</div></div>' for k, v, sub, bar in cards) + "</div>",
     unsafe_allow_html=True)
@@ -236,7 +240,7 @@ tab_chat, tab_game, tab_race, tab_pod = st.tabs(["Chat", "Tonight", "Table", "Po
 # ---------- chat (agent) ---------------------------------------------------
 with tab_chat:
     for m in ss.chat:
-        with st.chat_message(m["role"], avatar="🧑" if m["role"] == "user" else ("⚽" if sport == "Football" else "🏒")):
+        with st.chat_message(m["role"], avatar="🧑" if m["role"] == "user" else ICON[sport]):
             if m["role"] == "user":
                 st.markdown(m["content"])
             elif m["kind"] == "podcast":
@@ -250,7 +254,7 @@ with tab_chat:
     if not ss.chat:
         st.caption(f"Ask anything about {T}, or ask me to do something: make today's podcast, "
                    f"save your prediction, set an alert.")
-    sugg = {("Top-6 race" if LEAGUE.draws else "Playoff chances"): "What are our playoff chances?", "Tonight's stakes": "What's at stake tonight?",
+    sugg = {(f"Top-{D} race" if P == D else "Playoff chances"): "What are our playoff chances?", "Tonight's stakes": "What's at stake tonight?",
             "Today's podcast": "Make today's podcast", f"Top-{D} alert": f"Set a top-{D} alert"}
     cols = st.columns(len(sugg))
     for col, (label, q) in zip(cols, sugg.items()):
@@ -398,19 +402,19 @@ with tab_game:
 
 # ---------- table ----------------------------------------------------------
 with tab_race:
-    football = sport == "Football"
     st.markdown(f'<div class="kicker">The race</div><div class="section-title">'
-                f'{"Top-6 race" if football else "Playoff race"}</div>',
+                f'{f"Top-{D} race" if P == D else "Playoff race"}</div>',
                 unsafe_allow_html=True)
     middle = f", {D + 1}th–{P}th play the {LEAGUE.first_round}" if P > D else ""
     st.caption(f"Top {D} go {LEAGUE.direct_goal}{middle}; the rest {LEAGUE.out_label}. Chances come from "
                f"{season.n:,} simulated seasons: probabilities, not predictions.")
     # Bands of the final table: (name, % column, colour, first place, last place)
-    bands = ([("Championship group", f"Top {D} %", CHART["top"], 1, D),
-              ("Relegation group", "Bottom %", CHART["miss"], D + 1, len(snap.teams))] if P == D else
-             [("Quarter-final", f"Top {D} %", CHART["top"], 1, D),
+    bands = ([(LEAGUE.top_band, f"Top {D} %", CHART["top"], 1, D),
+              (LEAGUE.out_band, "Miss %" if LEAGUE.out_band == "Miss" else "Bottom %", CHART["miss"], D + 1,
+               len(snap.teams))] if P == D else
+             [(LEAGUE.top_band, f"Top {D} %", CHART["top"], 1, D),
               ("First round", f"{D + 1}–{P} %", CHART["mid"], D + 1, P),
-              ("Miss", "Miss %", CHART["miss"], P + 1, len(snap.teams))])
+              (LEAGUE.out_band, "Miss %", CHART["miss"], P + 1, len(snap.teams))])
     probs = {f"Top {D} %": season.p_top6, f"{D + 1}–{P} %": season.p_playin, "Miss %": season.p_out,
              "Bottom %": season.p_out}
     table = pd.DataFrame([{
