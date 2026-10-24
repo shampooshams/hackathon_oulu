@@ -132,6 +132,52 @@ sync(); setInterval(sync, 400);
 </script>"""
 
 
+# The design's "Toggle dark" button. Streamlit can't switch themes from Python, so the button (in its own
+# frame) picks Light or Dark in Streamlit's own menu (⋮ → Settings): native widgets, our HTML and the saved
+# choice all stay in step. It shows the theme you'd switch to.
+THEME_TOGGLE = """<style>
+ :root{--t:#0f1a2a;--l:#8796a8;--h:#eef2f7}
+ html[data-theme=dark]{--t:#fff;--l:#6f8fbf;--h:#134489}
+ body{margin:0;padding:4px 2px;display:flex;justify-content:flex-end;font-family:'Plus Jakarta Sans',Helvetica,Arial,sans-serif}
+ button{min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--l);background:transparent;
+   color:var(--t);font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;white-space:nowrap}
+ button:hover{background:var(--h);border-color:var(--t)}
+ button:focus-visible{outline:2px solid var(--t);outline-offset:2px}
+</style>
+<button id="t" type="button"></button>
+<script>
+ const doc = window.parent.document, btn = document.getElementById('t');
+ const current = () => doc.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+ function paint() {
+   const dark = current() === 'dark';
+   document.documentElement.dataset.theme = current();
+   btn.textContent = dark ? '☀ Light' : '☾ Dark';
+   btn.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+ }
+ btn.onclick = () => {
+   const target = current() === 'dark' ? 'Light' : 'Dark';
+   const menu = doc.querySelector('[data-testid="stMainMenuButton"]') || doc.querySelector('[data-testid="stMainMenu"] button');
+   if (!menu) return;
+   const hide = doc.createElement('style');   // keep Streamlit's menu invisible while we use it
+   hide.textContent = '[data-floating-ui-portal]{opacity:0 !important}';
+   doc.head.appendChild(hide);
+   menu.click();
+   let tries = 0;
+   const pick = setInterval(() => {
+     const item = doc.querySelector('[data-testid="stMainMenuItem-theme-' + target + '"]');
+     if (!item && ++tries <= 40) return;
+     clearInterval(pick);
+     if (item) item.click();
+     setTimeout(() => {
+       if (doc.querySelector('[data-testid="stMainMenuItem-theme-Light"]')) menu.click();   // close the menu
+       setTimeout(() => hide.remove(), 150);
+     }, 50);
+   }, 25);
+ };
+ paint(); setInterval(paint, 300);
+</script>"""
+
+
 CITE = re.compile(r"\[([A-Z]\d+)\]")
 
 

@@ -25,7 +25,7 @@ from companion.live import apply_result, event_facts, postgame_facts, simulate_t
 from companion.llm import get_backend  # noqa: E402
 from companion.offline import HOSTS  # noqa: E402
 from companion.profile import load_profile, save_profile  # noqa: E402
-from companion.render import CSS, THEME_SYNC, badges, receipts_rows, to_html  # noqa: E402
+from companion.render import CSS, THEME_SYNC, THEME_TOGGLE, badges, receipts_rows, to_html  # noqa: E402
 from companion.scenarios import simulate  # noqa: E402
 from companion.stats import fmt_date, next_game, ordinal, standings  # noqa: E402
 from companion.tts import browser_player, gemini_audio  # noqa: E402
@@ -209,8 +209,11 @@ OPP = (A if ng["home"] == TEAM else H) if ng else ""
 
 # ---------- header ---------------------------------------------------------
 city = snap.teams[TEAM].get("city")
-st.markdown(f'<div class="kicker">{LEAGUE.name}{" · " + html.escape(city) if city else ""}</div>'
-            f'<div class="hero">{html.escape(T)}</div>', unsafe_allow_html=True)
+head, toggle = st.columns([5, 1], vertical_alignment="top")
+head.markdown(f'<div class="kicker">{LEAGUE.name}{" · " + html.escape(city) if city else ""}</div>'
+              f'<div class="hero">{html.escape(T)}</div>', unsafe_allow_html=True)
+with toggle:
+    components.html(THEME_TOGGLE, height=56)
 if snap.is_mock:
     st.markdown('<div class="notice notice-demo"><span class="notice-label">Demo</span><span>Team names are real '
                 'clubs, but all players, scores and results are invented.'
